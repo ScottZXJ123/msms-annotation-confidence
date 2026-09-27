@@ -1,0 +1,54 @@
+{
+ "_provenance": {
+  "script": "15_checks.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "dirty": true,
+  "utc": "2026-09-27T00:47:24Z"
+ },
+ "query_molecules_single_fold": {
+  "pass": true,
+  "detail": 0
+ },
+ "candidates_respect_nested_libraries": {
+  "pass": true,
+  "detail": 0
+ },
+ "query_spectrum_excluded_from_own_library": {
+  "pass": true,
+  "detail": "0 violations in 2000 sampled queries"
+ },
+ "truth_absent_in_b_c": {
+  "pass": true,
+  "detail": null
+ },
+ "truth_present_in_a": {
+  "pass": true,
+  "detail": null
+ },
+ "no_truth_columns_in_feature_sets": {
+  "pass": true,
+  "detail": []
+ },
+ "train_script_drops_test_fold": {
+  "pass": true,
+  "detail": null
+ },
+ "data_lab_is_git_ignored": {
+  "pass": true,
+  "detail": null
+ },
+ "no_lab_files_tracked": {
+  "pass": true,
+  "detail": null
+ },
+ "no_ai_coauthor_in_git_history": {
+  "pass": true,
+  "detail": null
+ },
+ "paired_a_b_rows_share_query_metadata": {
+  "pass": true,
+  "detail": "78572 paired queries"
+ }
+}

@@ -1,0 +1,186 @@
+{
+ "_provenance": {
+  "script": "08b_recalibrate.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "dirty": true,
+  "utc": "2026-09-27T01:53:36Z"
+ },
+ "calibrators": {
+  "B_gap_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.09608761080062764,
+     "platt": 0.09286493697760427
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.2850340097645202,
+     "platt": 0.30628371494894513
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "80c6d86dc39d140a"
+  },
+  "B_gap_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.2678775006193095,
+     "platt": 0.290663769166156
+    }
+   },
+   "model_sha256": "6e7c0706cca4961c"
+  },
+  "B_lr_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.09513878645283798,
+     "platt": 0.09241665381471581
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.24413205484533762,
+     "platt": 0.25760542210809323
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "8410c420e58b9402"
+  },
+  "B_lr_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.2486348324706131,
+     "platt": 0.26295832958426674
+    }
+   },
+   "model_sha256": "115a019627838782"
+  },
+  "B_s1_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.13354839394171514,
+     "platt": 0.12892037477035098
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.24590628765505923,
+     "platt": 0.2626392452110167
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "a25a506e08af47e5"
+  },
+  "B_s1_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.26638877892097823,
+     "platt": 0.28516003706753534
+    }
+   },
+   "model_sha256": "9c472b64f6f5ce18"
+  },
+  "F_meta": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.13286615364561818,
+     "platt": 0.1264225926403957
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.6927820279980017,
+     "platt": 0.6838468797653563
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "c964e1d10e26f818"
+  },
+  "F_sim": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.08676108614807901,
+     "platt": 0.08444513894307476
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.24258075967332343,
+     "platt": 0.23375016282574607
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "35e796ec64a3ba94"
+  },
+  "M_base": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.046509776631799976,
+     "platt": 0.04419623842354035
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.1263802615513246,
+     "platt": 0.12234287317469802
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "9c07a5b45466fcfc"
+  },
+  "M_full": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.038492444288009006,
+     "platt": 0.03745591508824031
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11488534200164405,
+     "platt": 0.11267967895501292
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "f8aeba7405e70f4d"
+  },
+  "M_full_minus_family": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.040707481881409435,
+     "platt": 0.0387328743631645
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11628999428114212,
+     "platt": 0.11445561425722961
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "dfd6908742fed4ea"
+  }
+ }
+}

@@ -1,0 +1,383 @@
+{
+ "_provenance": {
+  "script": "08b_recalibrate.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "dirty": true,
+  "utc": "2026-09-27T01:53:04Z"
+ },
+ "calibrators": {
+  "B_gap_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.0725243136750223,
+     "platt": 0.07002912841116263
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.23391781176512233,
+     "platt": 0.2448668581781795
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "8f43a2305dcc9259"
+  },
+  "B_gap_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.2128701126299053,
+     "platt": 0.22841511049962113
+    }
+   },
+   "model_sha256": "3088be391add652f"
+  },
+  "B_lr_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.07069597964638838,
+     "platt": 0.0692107789174081
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.19605562217811395,
+     "platt": 0.20244704894052978
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "78cef0fc8461e079"
+  },
+  "B_lr_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.19657441682055682,
+     "platt": 0.20495359318896547
+    }
+   },
+   "model_sha256": "de5e006637fa6086"
+  },
+  "B_s1_dec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11520947157898942,
+     "platt": 0.10661745532204478
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.20343533914524134,
+     "platt": 0.20984359249449672
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "2d4c88993cbb9417"
+  },
+  "B_s1_direct": {
+   "direct": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.2254207187829631,
+     "platt": 0.23138471221398837
+    }
+   },
+   "model_sha256": "68a7e5505bee291d"
+  },
+  "F_meta": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.10931650732829284,
+     "platt": 0.1074846075751877
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.6927820279980017,
+     "platt": 0.6838468797653563
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "72350792e2c80dfa"
+  },
+  "F_sim": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.06617824666950672,
+     "platt": 0.06414748887854725
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.19383802607739387,
+     "platt": 0.1872585203796961
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "8f3f6118f6f16f1d"
+  },
+  "M_base": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.0353352716760099,
+     "platt": 0.033467214823414825
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11872323440997987,
+     "platt": 0.11519232996504844
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "709b25b38d345b08"
+  },
+  "M_candidate_only": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.042088708842237504,
+     "platt": 0.03972239826899796
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.14668763028414186,
+     "platt": 0.14304066322798836
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "d0e33444c33ab3bd"
+  },
+  "M_full": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.03014021159424856,
+     "platt": 0.026968139388903176
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.1098297965867491,
+     "platt": 0.10554652699103675
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "b5ce607459c637bd"
+  },
+  "M_full_direct": {
+   "direct": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.09062932517490842,
+     "platt": 0.0891357034677834
+    }
+   },
+   "model_sha256": "df73861d34c9bf39"
+  },
+  "M_full_lr": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.06385473820980692,
+     "platt": 0.0583517101037272
+    }
+   },
+   "I": {
+    "choice": "isotonic",
+    "crossfit_logloss": {
+     "isotonic": 0.17670119015913066,
+     "platt": 0.18293849289727104
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "5abc09961cf368ff"
+  },
+  "M_full_minus_family": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.03123972279657702,
+     "platt": 0.027325950127726508
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.10999835789534486,
+     "platt": 0.10715125756889668
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "4dfaf6802205648f"
+  },
+  "M_full_minus_spec": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.03234844912048725,
+     "platt": 0.02896699266117746
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.1164494472783267,
+     "platt": 0.11153113216132526
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "7f2fa48ca5f4a100"
+  },
+  "M_full_minus_struct": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.033457284613120454,
+     "platt": 0.029977789750766606
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11130414022385668,
+     "platt": 0.10650471891289412
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "5476e725303b61cf"
+  },
+  "M_full_nocounts": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.027701686593003948,
+     "platt": 0.026677363206153906
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.11196644963031695,
+     "platt": 0.10871354660419685
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "74973b2ecffc1c14"
+  },
+  "M_full_with_libsize": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.027961901529579915,
+     "platt": 0.026682636578355713
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.15067903586005227,
+     "platt": 0.1475058444938372
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "ca8ac3a44d880247"
+  },
+  "M_sim_plus_crowd": {
+   "C": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.052103898262610054,
+     "platt": 0.04872966187067992
+    }
+   },
+   "I": {
+    "choice": "platt",
+    "crossfit_logloss": {
+     "isotonic": 0.17406084175077527,
+     "platt": 0.16828395850074962
+    }
+   },
+   "pi_cal": 0.5390123093590636,
+   "model_sha256": "bea4ff913e369561"
+  }
+ },
+ "group_offsets_recheck": {
+  "mean_gap_global": 0.01812243031215522,
+  "mean_gap_group": 0.01825903341289145,
+  "ll_global": 0.0672386038483116,
+  "ll_group": 0.06729961927491325,
+  "use_group_offsets": false,
+  "folds": {
+   "global": [
+    {
+     "comp": "C",
+     "fit": "A",
+     "gap": 0.010747873649983045,
+     "ll": 0.03663770628532513
+    },
+    {
+     "comp": "I",
+     "fit": "A",
+     "gap": 0.03836363261573982,
+     "ll": 0.1368775017652824
+    },
+    {
+     "comp": "C",
+     "fit": "B",
+     "gap": 0.0032920357014885973,
+     "ll": 0.018014193970127886
+    },
+    {
+     "comp": "I",
+     "fit": "B",
+     "gap": 0.020086179281409426,
+     "ll": 0.07742501337251095
+    }
+   ],
+   "group": [
+    {
+     "comp": "C",
+     "fit": "A",
+     "gap": 0.010751885910020069,
+     "ll": 0.03671022217014261
+    },
+    {
+     "comp": "I",
+     "fit": "A",
+     "gap": 0.03842328938076036,
+     "ll": 0.13676322888545495
+    },
+    {
+     "comp": "C",
+     "fit": "B",
+     "gap": 0.0033508366148448715,
+     "ll": 0.018090919897287703
+    },
+    {
+     "comp": "I",
+     "fit": "B",
+     "gap": 0.020510121745940506,
+     "ll": 0.07763410614676775
+    }
+   ]
+  }
+ }
+}

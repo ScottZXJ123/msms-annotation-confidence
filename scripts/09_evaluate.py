@@ -56,6 +56,8 @@ rows = R["entropy"]
 import os  # noqa: E402
 
 DRY = os.environ.get("MSCONF_DRYRUN_VALA") == "1"  # debug the harness on val-A without touching the test fold
+if os.environ.get("MSCONF_FAST") == "1":
+    ev = dict(ev, bootstrap_repeats=30, wetlab_repeats=30)
 if DRY:
     test = rows[(rows.fold == "val") & (rows.vsplit == "A")].reset_index(drop=True)
     _wr = write_result
@@ -94,10 +96,15 @@ rng = np.random.default_rng(seed)
 mol_idx = testAB.groupby("mol").indices
 mkeys = np.array(list(mol_idx.keys()))
 COMPARE = [c for c in ["B_s1_direct", "B_gap_direct", "B_lr_direct", "B_s1_dec", "B_gap_dec", "B_lr_dec", "F_meta", "F_sim",
-                       "M_base", "M_full", "M_sim_plus_crowd", "M_full_minus_family", "M_full_minus_spec",
+                       "M_base", "M_full", "M_full_nocounts", "M_sim_plus_crowd", "M_full_minus_family", "M_full_minus_spec",
                        "M_full_minus_struct", "M_candidate_only", "M_full_direct", "M_full_lr"] if c in COMP and c != PRIMARY]
-PAIRS = [(PRIMARY, c) for c in COMPARE] + [("M_full", "M_base"), ("M_sim_plus_crowd", "F_sim")]
+PAIRS = [(PRIMARY, c) for c in COMPARE] + [("M_full", "M_base"), ("M_sim_plus_crowd", "F_sim"), ("M_full_with_libsize", PRIMARY)]
 PAIRS = [p for p in PAIRS if p[0] in COMP and p[1] in COMP and p[0] != p[1]]
+
+
+def fast_ll(p, y, w):
+    p = np.clip(p, 1e-6, 1 - 1e-6)
+    return float(-np.sum(w * (y * np.log(p) + (1 - y) * np.log(1 - p))) / np.sum(w))
 
 
 def point_metrics(ix, pi, names):
@@ -111,7 +118,7 @@ def point_metrics(ix, pi, names):
         c = COMP[n]
         sub = {"direct": c["direct"], "pc": c["pc"][ix], "pin_cal": c["pin_cal"][ix], "pi_cal": c["pi_cal"]}
         pc, pin = probs(sub, pi)
-        out[n] = (risk_coverage(pc, y, w)["aurc"], calibration_metrics(pc, y, w)["logloss"])
+        out[n] = (risk_coverage(pc, y, w)["aurc"], fast_ll(pc, y, w))
     return out
 
 
@@ -139,8 +146,13 @@ write_result(cfg, "eval_bootstrap", {"primary": PRIMARY, "mode": "oracle prevale
 print("bootstrap done", f"{time.time()-t0:.0f}s", flush=True)
 
 # ============================================================================= 3. wet-lab simulation
-a_by_mol = testAB[testAB.scenario == "a"].groupby("mol").indices
-b_by_mol = testAB[testAB.scenario == "b"].groupby("mol").indices
+def _pos_by_mol(mask):
+    pos = np.nonzero(mask)[0]  # positions in testAB (not in the filtered frame)
+    return {k: pos[ix] for k, ix in testAB.iloc[pos].groupby("mol").indices.items()}
+
+
+a_by_mol = _pos_by_mol(testAB.scenario.values == "a")
+b_by_mol = _pos_by_mol(testAB.scenario.values == "b")
 ALLM = np.array(sorted(set(a_by_mol) | set(b_by_mol)))
 Y = testAB.correct.values
 YIN = testAB.in_lib.values
@@ -275,7 +287,9 @@ print("groups done", f"{time.time()-t0:.0f}s", flush=True)
 
 # ============================================================================= 5. incremental information of crowding + prior check
 inc = {}
-for a, c in [("M_full", "M_base"), ("M_sim_plus_crowd", "F_sim")]:
+for a, c in dict.fromkeys([(PRIMARY, "M_base"), ("M_full", "M_base"), ("M_full", PRIMARY), ("M_sim_plus_crowd", "F_sim")]):
+    if a == c:
+        continue
     if a not in S or c not in S:
         continue
     pa, pcmp = S[a].p_correct_given_in(testA), S[c].p_correct_given_in(testA)
@@ -296,9 +310,9 @@ for a, c in [("M_full", "M_base"), ("M_sim_plus_crowd", "F_sim")]:
         pick = keys[rng.integers(0, len(keys), len(keys))]
         ixa = np.concatenate([ma[k] for k in pick])
         ixb = np.concatenate([mab[k] for k in pick])
-        dC.append(calibration_metrics(pa[ixa], ya[ixa], testA.w.values[ixa])["logloss"] - calibration_metrics(pcmp[ixa], ya[ixa], testA.w.values[ixa])["logloss"])
+        dC.append(fast_ll(pa[ixa], ya[ixa], testA.w.values[ixa]) - fast_ll(pcmp[ixa], ya[ixa], testA.w.values[ixa]))
         dCa.append(auroc(pa[ixa], ya[ixa], testA.w.values[ixa]) - auroc(pcmp[ixa], ya[ixa], testA.w.values[ixa]))
-        dI.append(calibration_metrics(ia[ixb], yi[ixb], testAB.w.values[ixb])["logloss"] - calibration_metrics(ic[ixb], yi[ixb], testAB.w.values[ixb])["logloss"])
+        dI.append(fast_ll(ia[ixb], yi[ixb], testAB.w.values[ixb]) - fast_ll(ic[ixb], yi[ixb], testAB.w.values[ixb]))
     inc[f"{a} vs {c}"]["C_dlogloss_ci"] = np.percentile(dC, [2.5, 97.5]).tolist()
     inc[f"{a} vs {c}"]["C_dauroc_ci"] = np.nanpercentile(dCa, [2.5, 97.5]).tolist()
     inc[f"{a} vs {c}"]["I_dlogloss_ci"] = np.percentile(dI, [2.5, 97.5]).tolist()

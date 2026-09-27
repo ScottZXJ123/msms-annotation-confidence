@@ -1,54 +1,54 @@
 {
  "_provenance": {
   "script": "06_families.py",
-  "config_hash": "c46a2e1dcdbe",
+  "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
   "dirty": true,
-  "utc": "2026-09-27T00:11:36Z"
+  "utc": "2026-09-27T00:55:52Z"
  },
  "n_molecules": 28921,
  "cf_status": {
-  "missing": 22374,
-  "ok": 6547
+  "ok": 28666,
+  "missing": 255
  },
- "frac_unclassified": 0.7736247017737976,
- "frac_no_class_level": 0.0006915390200892085,
+ "frac_unclassified": 0.008817122506137408,
+ "frac_no_class_level": 0.003077348639396978,
  "n_groups": {
-  "superclass": 18,
-  "class": 247,
-  "subclass": 556
+  "superclass": 20,
+  "class": 320,
+  "subclass": 754
  },
  "frac_unclassified_by_fold": {
-  "test": 0.7794461127794461,
-  "train": 0.7729111697449428,
-  "val": 0.7732412060301508
+  "test": 0.021688355021688355,
+  "train": 0.006288478452066842,
+  "val": 0.014761306532663316
  },
  "top_classes": {
-  "unclassified": 22374,
-  "Benzene and substituted derivatives": 903,
-  "Carboxylic acids and derivatives": 895,
-  "Prenol lipids": 326,
-  "Organooxygen compounds": 254,
-  "Steroids and steroid derivatives": 245,
-  "Fatty Acyls": 232,
-  "Indoles and derivatives": 216,
-  "Quinolines and derivatives": 212,
-  "Azoles": 210,
-  "Flavonoids": 204,
-  "Coumarins and derivatives": 157,
-  "Benzopyrans": 129,
-  "Diazinanes": 128,
-  "Pyridines and derivatives": 122,
-  "Diazanaphthalenes": 121,
-  "Diazines": 97,
-  "Organonitrogen compounds": 96,
-  "Piperidines": 83,
-  "Glycerophospholipids": 82,
-  "Isoflavonoids": 71,
-  "Imidazopyrimidines": 70,
-  "Peptidomimetics": 62,
-  "Naphthalenes": 61,
-  "Phenol ethers": 58
+  "Benzene and substituted derivatives": 3946,
+  "Carboxylic acids and derivatives": 3834,
+  "Prenol lipids": 1511,
+  "Organooxygen compounds": 1109,
+  "Indoles and derivatives": 1069,
+  "Fatty Acyls": 1059,
+  "Flavonoids": 961,
+  "Steroids and steroid derivatives": 948,
+  "Quinolines and derivatives": 880,
+  "Azoles": 876,
+  "Coumarins and derivatives": 665,
+  "Pyridines and derivatives": 611,
+  "Benzopyrans": 515,
+  "Diazanaphthalenes": 495,
+  "Diazinanes": 493,
+  "Organonitrogen compounds": 425,
+  "Diazines": 411,
+  "Piperidines": 391,
+  "Glycerophospholipids": 340,
+  "Isoflavonoids": 332,
+  "Imidazopyrimidines": 312,
+  "Peptidomimetics": 293,
+  "Phenol ethers": 277,
+  "unclassified": 255,
+  "Naphthalenes": 237
  }
 }

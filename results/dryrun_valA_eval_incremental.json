@@ -1,0 +1,1112 @@
+{
+ "_provenance": {
+  "script": "09_evaluate.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "dirty": true,
+  "utc": "2026-09-27T01:49:47Z"
+ },
+ "component_comparisons": {
+  "M_full_minus_family vs M_base": {
+   "C_logloss": [
+    0.018707348701900488,
+    0.021265333175292892
+   ],
+   "C_auroc": [
+    0.9967305586133292,
+    0.9954209770318364
+   ],
+   "I_logloss": [
+    0.07863978229591839,
+    0.08506384276479524
+   ],
+   "I_auroc": [
+    0.9956375799439177,
+    0.9951759955169988
+   ],
+   "C_dlogloss_ci": [
+    -0.005328172468773071,
+    -0.00038408999453263696
+   ],
+   "C_dauroc_ci": [
+    0.0002717533174318554,
+    0.002699195430668637
+   ],
+   "I_dlogloss_ci": [
+    -0.008813405227058849,
+    -0.0033725752721985476
+   ]
+  },
+  "M_full vs M_base": {
+   "C_logloss": [
+    0.018679887561944337,
+    0.021265333175292892
+   ],
+   "C_auroc": [
+    0.9965515275868158,
+    0.9954209770318364
+   ],
+   "I_logloss": [
+    0.07867996827036554,
+    0.08506384276479524
+   ],
+   "I_auroc": [
+    0.9953565748743012,
+    0.9951759955169988
+   ],
+   "C_dlogloss_ci": [
+    -0.004978256731241915,
+    0.0008631691718173784
+   ],
+   "C_dauroc_ci": [
+    0.00012504816430248815,
+    0.0023172705494953175
+   ],
+   "I_dlogloss_ci": [
+    -0.008970845874393162,
+    -0.0026509987697275403
+   ]
+  },
+  "M_full vs M_full_minus_family": {
+   "C_logloss": [
+    0.018679887561944337,
+    0.018707348701900488
+   ],
+   "C_auroc": [
+    0.9965515275868158,
+    0.9967305586133292
+   ],
+   "I_logloss": [
+    0.07867996827036554,
+    0.07863978229591839
+   ],
+   "I_auroc": [
+    0.9953565748743012,
+    0.9956375799439177
+   ],
+   "C_dlogloss_ci": [
+    -0.0019154787096989062,
+    0.0016908522115514127
+   ],
+   "C_dauroc_ci": [
+    -0.0007958620721556564,
+    0.0004045287286496557
+   ],
+   "I_dlogloss_ci": [
+    -0.0020525342286341402,
+    0.0033812629527513577
+   ]
+  },
+  "M_sim_plus_crowd vs F_sim": {
+   "C_logloss": [
+    0.026782909782151466,
+    0.03693821109799094
+   ],
+   "C_auroc": [
+    0.9932631002139815,
+    0.9871331055691286
+   ],
+   "I_logloss": [
+    0.13333681364256428,
+    0.1509911636285814
+   ],
+   "I_auroc": [
+    0.9877199651189869,
+    0.9838260896605667
+   ],
+   "C_dlogloss_ci": [
+    -0.012907795122374272,
+    -0.00691941358142804
+   ],
+   "C_dauroc_ci": [
+    0.0026956962099760453,
+    0.013292419314359566
+   ],
+   "I_dlogloss_ci": [
+    -0.02164550532487577,
+    -0.010652441182660637
+   ]
+  }
+ },
+ "mantel_haenszel_error_vs_crowding": {
+  "top1_struct_nbrs": {
+   "threshold_val_median": 1.0,
+   "mh_odds_ratio_error": 13.980931337117887,
+   "ci95": [
+    8.419213900695015,
+    23.21670922710124
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.15,
+     "err_unexposed": 0.025806451612903226,
+     "n_exposed": 40,
+     "n_unexposed": 620
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.0392156862745098,
+     "err_unexposed": 0.009009009009009009,
+     "n_exposed": 51,
+     "n_unexposed": 555
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.014492753623188406,
+     "err_unexposed": 0.006633499170812604,
+     "n_exposed": 69,
+     "n_unexposed": 603
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.047619047619047616,
+     "err_unexposed": 0.0014858841010401188,
+     "n_exposed": 42,
+     "n_unexposed": 673
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.12962962962962962,
+     "err_unexposed": 0.0015600624024961,
+     "n_exposed": 54,
+     "n_unexposed": 641
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.19148936170212766,
+     "err_unexposed": 0.00482315112540193,
+     "n_exposed": 47,
+     "n_unexposed": 622
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.0967741935483871,
+     "err_unexposed": 0.0017605633802816902,
+     "n_exposed": 62,
+     "n_unexposed": 568
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.0392156862745098,
+     "err_unexposed": 0.002,
+     "n_exposed": 51,
+     "n_unexposed": 500
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.009615384615384616,
+     "err_unexposed": 0.0,
+     "n_exposed": 208,
+     "n_unexposed": 644
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.0030959752321981426,
+     "n_exposed": 136,
+     "n_unexposed": 323
+    }
+   ]
+  },
+  "fam_spec_crowd_train": {
+   "threshold_val_median": 5.899965741692361,
+   "mh_odds_ratio_error": 0.7559089476483651,
+   "ci95": [
+    0.42462841124559025,
+    1.3456432071013307
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.0364963503649635,
+     "err_unexposed": 0.032504780114722756,
+     "n_exposed": 137,
+     "n_unexposed": 523
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.0053475935828877,
+     "err_unexposed": 0.014319809069212411,
+     "n_exposed": 187,
+     "n_unexposed": 419
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.005025125628140704,
+     "err_unexposed": 0.008456659619450317,
+     "n_exposed": 199,
+     "n_unexposed": 473
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.005780346820809248,
+     "n_exposed": 196,
+     "n_unexposed": 519
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.009389671361502348,
+     "err_unexposed": 0.012448132780082987,
+     "n_exposed": 213,
+     "n_unexposed": 482
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.011363636363636364,
+     "err_unexposed": 0.02028397565922921,
+     "n_exposed": 176,
+     "n_unexposed": 493
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.020512820512820513,
+     "err_unexposed": 0.006896551724137931,
+     "n_exposed": 195,
+     "n_unexposed": 435
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.007731958762886598,
+     "n_exposed": 163,
+     "n_unexposed": 388
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.0030534351145038168,
+     "n_exposed": 197,
+     "n_unexposed": 655
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.003215434083601286,
+     "n_exposed": 148,
+     "n_unexposed": 311
+    }
+   ]
+  },
+  "n_open_hi": {
+   "threshold_val_median": 1.0,
+   "mh_odds_ratio_error": 7.347075252113483,
+   "ci95": [
+    4.182733608396539,
+    12.90531977744372
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.03709949409780776,
+     "n_exposed": 67,
+     "n_unexposed": 593
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.010101010101010102,
+     "err_unexposed": 0.011834319526627219,
+     "n_exposed": 99,
+     "n_unexposed": 507
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.022222222222222223,
+     "err_unexposed": 0.0037243947858473,
+     "n_exposed": 135,
+     "n_unexposed": 537
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.02142857142857143,
+     "err_unexposed": 0.0,
+     "n_exposed": 140,
+     "n_unexposed": 575
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.04678362573099415,
+     "err_unexposed": 0.0,
+     "n_exposed": 171,
+     "n_unexposed": 524
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.06779661016949153,
+     "err_unexposed": 0.0,
+     "n_exposed": 177,
+     "n_unexposed": 492
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.03286384976525822,
+     "err_unexposed": 0.0,
+     "n_exposed": 213,
+     "n_unexposed": 417
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.013761467889908258,
+     "err_unexposed": 0.0,
+     "n_exposed": 218,
+     "n_unexposed": 333
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.006289308176100629,
+     "err_unexposed": 0.0,
+     "n_exposed": 318,
+     "n_unexposed": 534
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.0028653295128939827,
+     "n_exposed": 110,
+     "n_unexposed": 349
+    }
+   ]
+  },
+  "top1_specdens": {
+   "threshold_val_median": 4.0,
+   "mh_odds_ratio_error": 3.3025542828031518,
+   "ci95": [
+    2.001527407651252,
+    5.449270766499473
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.06796116504854369,
+     "err_unexposed": 0.026929982046678635,
+     "n_exposed": 103,
+     "n_unexposed": 557
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.011904761904761904,
+     "err_unexposed": 0.01141552511415525,
+     "n_exposed": 168,
+     "n_unexposed": 438
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.012048192771084338,
+     "err_unexposed": 0.005928853754940711,
+     "n_exposed": 166,
+     "n_unexposed": 506
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.005291005291005291,
+     "n_exposed": 148,
+     "n_unexposed": 567
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.03723404255319149,
+     "err_unexposed": 0.0019723865877712033,
+     "n_exposed": 188,
+     "n_unexposed": 507
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.03535353535353535,
+     "err_unexposed": 0.010615711252653927,
+     "n_exposed": 198,
+     "n_unexposed": 471
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.024291497975708502,
+     "err_unexposed": 0.0026109660574412533,
+     "n_exposed": 247,
+     "n_unexposed": 383
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.009615384615384616,
+     "err_unexposed": 0.0029154518950437317,
+     "n_exposed": 208,
+     "n_unexposed": 343
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.005154639175257732,
+     "err_unexposed": 0.0,
+     "n_exposed": 388,
+     "n_unexposed": 464
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.0024330900243309003,
+     "n_exposed": 48,
+     "n_unexposed": 411
+    }
+   ]
+  },
+  "n_near_tie": {
+   "threshold_val_median": 0.0,
+   "mh_odds_ratio_error": 111.31685740398618,
+   "ci95": [
+    57.546057079104294,
+    215.33087358645273
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.30612244897959184,
+     "err_unexposed": 0.011456628477905073,
+     "n_exposed": 49,
+     "n_unexposed": 611
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.625,
+     "err_unexposed": 0.0033444816053511705,
+     "n_exposed": 8,
+     "n_unexposed": 598
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.4,
+     "err_unexposed": 0.004497751124437781,
+     "n_exposed": 5,
+     "n_unexposed": 667
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.5,
+     "err_unexposed": 0.0014064697609001407,
+     "n_exposed": 4,
+     "n_unexposed": 711
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.7272727272727273,
+     "err_unexposed": 0.0,
+     "n_exposed": 11,
+     "n_unexposed": 684
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 1.0,
+     "err_unexposed": 0.0075528700906344415,
+     "n_exposed": 7,
+     "n_unexposed": 662
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.5833333333333334,
+     "err_unexposed": 0.0,
+     "n_exposed": 12,
+     "n_unexposed": 618
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.25,
+     "err_unexposed": 0.003656307129798903,
+     "n_exposed": 4,
+     "n_unexposed": 547
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.1111111111111111,
+     "err_unexposed": 0.0,
+     "n_exposed": 18,
+     "n_unexposed": 834
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.0022371364653243847,
+     "n_exposed": 12,
+     "n_unexposed": 447
+    }
+   ]
+  },
+  "fam_ent_topk": {
+   "threshold_val_median": 0.016669493896428546,
+   "mh_odds_ratio_error": 0.82128343134619,
+   "ci95": [
+    0.4915561007867995,
+    1.3721861523519625
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.03913894324853229,
+     "err_unexposed": 0.013422818791946308,
+     "n_exposed": 511,
+     "n_unexposed": 149
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.01240694789081886,
+     "err_unexposed": 0.009852216748768473,
+     "n_exposed": 403,
+     "n_unexposed": 203
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.010940919037199124,
+     "err_unexposed": 0.0,
+     "n_exposed": 457,
+     "n_unexposed": 215
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.0057692307692307696,
+     "err_unexposed": 0.0,
+     "n_exposed": 520,
+     "n_unexposed": 195
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.010416666666666666,
+     "err_unexposed": 0.013953488372093023,
+     "n_exposed": 480,
+     "n_unexposed": 215
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.0137524557956778,
+     "err_unexposed": 0.03125,
+     "n_exposed": 509,
+     "n_unexposed": 160
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.0022988505747126436,
+     "err_unexposed": 0.03076923076923077,
+     "n_exposed": 435,
+     "n_unexposed": 195
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.002551020408163265,
+     "err_unexposed": 0.012578616352201259,
+     "n_exposed": 392,
+     "n_unexposed": 159
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.007142857142857143,
+     "n_exposed": 572,
+     "n_unexposed": 280
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.004081632653061225,
+     "err_unexposed": 0.0,
+     "n_exposed": 245,
+     "n_unexposed": 214
+    }
+   ]
+  },
+  "tani12": {
+   "threshold_val_median": 0.12745098769664764,
+   "mh_odds_ratio_error": 16.770824175946586,
+   "ci95": [
+    8.025663748614363,
+    35.04514422113364
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.06818181818181818,
+     "err_unexposed": 0.015909090909090907,
+     "n_exposed": 220,
+     "n_unexposed": 440
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.02843601895734597,
+     "err_unexposed": 0.002531645569620253,
+     "n_exposed": 211,
+     "n_unexposed": 395
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.02242152466367713,
+     "err_unexposed": 0.0,
+     "n_exposed": 223,
+     "n_unexposed": 449
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.013452914798206279,
+     "err_unexposed": 0.0,
+     "n_exposed": 223,
+     "n_unexposed": 492
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.04081632653061224,
+     "err_unexposed": 0.0,
+     "n_exposed": 196,
+     "n_unexposed": 499
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.05194805194805195,
+     "err_unexposed": 0.0,
+     "n_exposed": 231,
+     "n_unexposed": 438
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.04375,
+     "err_unexposed": 0.0,
+     "n_exposed": 160,
+     "n_unexposed": 470
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.018867924528301886,
+     "err_unexposed": 0.0,
+     "n_exposed": 159,
+     "n_unexposed": 392
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.00784313725490196,
+     "err_unexposed": 0.0,
+     "n_exposed": 255,
+     "n_unexposed": 597
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.005917159763313609,
+     "err_unexposed": 0.0,
+     "n_exposed": 169,
+     "n_unexposed": 290
+    }
+   ]
+  }
+ },
+ "family_level_prior": {
+  "top1_class": {
+   "n_families": 20,
+   "spearman_rho": 0.3468439878096479,
+   "p": 0.13407612120334217,
+   "rho_ci95_family_bootstrap": [
+    0.06815670375422858,
+    0.5898695641675319
+   ],
+   "table": [
+    {
+     "top1_class": "Thioethers",
+     "n": 50,
+     "n_mol": 15,
+     "err": 0.0,
+     "crowd": 0.02564102564102564
+    },
+    {
+     "top1_class": "unclassified",
+     "n": 66,
+     "n_mol": 24,
+     "err": 0.0,
+     "crowd": 0.08391608391608392
+    },
+    {
+     "top1_class": "Diazines",
+     "n": 138,
+     "n_mol": 40,
+     "err": 0.04347826086956519,
+     "crowd": 0.13445378151260504
+    },
+    {
+     "top1_class": "Benzopyrans",
+     "n": 52,
+     "n_mol": 15,
+     "err": 0.0,
+     "crowd": 0.36404494382022473
+    },
+    {
+     "top1_class": "Diazinanes",
+     "n": 246,
+     "n_mol": 50,
+     "err": 0.0,
+     "crowd": 0.4084507042253521
+    },
+    {
+     "top1_class": "Piperidines",
+     "n": 115,
+     "n_mol": 33,
+     "err": 0.0,
+     "crowd": 0.6311475409836066
+    },
+    {
+     "top1_class": "Phenol ethers",
+     "n": 139,
+     "n_mol": 19,
+     "err": 0.0,
+     "crowd": 0.7042253521126761
+    },
+    {
+     "top1_class": "Organooxygen compounds",
+     "n": 160,
+     "n_mol": 54,
+     "err": 0.012499999999999956,
+     "crowd": 1.0523690773067331
+    },
+    {
+     "top1_class": "Pyridines and derivatives",
+     "n": 146,
+     "n_mol": 43,
+     "err": 0.013698630136986356,
+     "crowd": 1.089058524173028
+    },
+    {
+     "top1_class": "Naphthalenes",
+     "n": 85,
+     "n_mol": 21,
+     "err": 0.04705882352941182,
+     "crowd": 1.1818181818181819
+    },
+    {
+     "top1_class": "Peptidomimetics",
+     "n": 55,
+     "n_mol": 16,
+     "err": 0.0,
+     "crowd": 1.2254901960784312
+    },
+    {
+     "top1_class": "Ergoline and derivatives",
+     "n": 150,
+     "n_mol": 11,
+     "err": 0.0,
+     "crowd": 1.3333333333333333
+    },
+    {
+     "top1_class": "Organonitrogen compounds",
+     "n": 79,
+     "n_mol": 27,
+     "err": 0.0,
+     "crowd": 1.4817275747508305
+    },
+    {
+     "top1_class": "Diazanaphthalenes",
+     "n": 154,
+     "n_mol": 48,
+     "err": 0.01948051948051943,
+     "crowd": 2.3179190751445087
+    },
+    {
+     "top1_class": "Quinolines and derivatives",
+     "n": 93,
+     "n_mol": 29,
+     "err": 0.010752688172043001,
+     "crowd": 3.377279102384292
+    },
+    {
+     "top1_class": "Azoles",
+     "n": 374,
+     "n_mol": 76,
+     "err": 0.002673796791443861,
+     "crowd": 3.8631178707224336
+    },
+    {
+     "top1_class": "Benzene and substituted derivatives",
+     "n": 1293,
+     "n_mol": 274,
+     "err": 0.02088167053364265,
+     "crowd": 5.899965741692361
+    },
+    {
+     "top1_class": "Indoles and derivatives",
+     "n": 251,
+     "n_mol": 55,
+     "err": 0.003984063745019917,
+     "crowd": 6.47906976744186
+    },
+    {
+     "top1_class": "Prenol lipids",
+     "n": 193,
+     "n_mol": 27,
+     "err": 0.010362694300518172,
+     "crowd": 8.810865191146881
+    },
+    {
+     "top1_class": "Carboxylic acids and derivatives",
+     "n": 1102,
+     "n_mol": 132,
+     "err": 0.00907441016333943,
+     "crowd": 14.243489174772515
+    }
+   ]
+  },
+  "ana_true_class": {
+   "n_families": 20,
+   "spearman_rho": 0.22893159263582208,
+   "p": 0.33161466203848755,
+   "rho_ci95_family_bootstrap": [
+    -0.0586143209946281,
+    0.656128397035318
+   ],
+   "table": [
+    {
+     "ana_true_class": "Thioethers",
+     "n": 50,
+     "n_mol": 15,
+     "err": 0.0,
+     "crowd": 0.02564102564102564
+    },
+    {
+     "ana_true_class": "unclassified",
+     "n": 66,
+     "n_mol": 24,
+     "err": 0.0,
+     "crowd": 0.08391608391608392
+    },
+    {
+     "ana_true_class": "Diazines",
+     "n": 136,
+     "n_mol": 39,
+     "err": 0.02941176470588236,
+     "crowd": 0.13445378151260504
+    },
+    {
+     "ana_true_class": "Benzopyrans",
+     "n": 52,
+     "n_mol": 15,
+     "err": 0.0,
+     "crowd": 0.36404494382022473
+    },
+    {
+     "ana_true_class": "Diazinanes",
+     "n": 248,
+     "n_mol": 51,
+     "err": 0.008064516129032251,
+     "crowd": 0.4084507042253521
+    },
+    {
+     "ana_true_class": "Piperidines",
+     "n": 116,
+     "n_mol": 33,
+     "err": 0.008620689655172376,
+     "crowd": 0.6311475409836066
+    },
+    {
+     "ana_true_class": "Phenol ethers",
+     "n": 139,
+     "n_mol": 19,
+     "err": 0.0,
+     "crowd": 0.7042253521126761
+    },
+    {
+     "ana_true_class": "Organooxygen compounds",
+     "n": 159,
+     "n_mol": 52,
+     "err": 0.0062893081761006275,
+     "crowd": 1.0523690773067331
+    },
+    {
+     "ana_true_class": "Pyridines and derivatives",
+     "n": 148,
+     "n_mol": 43,
+     "err": 0.027027027027026973,
+     "crowd": 1.089058524173028
+    },
+    {
+     "ana_true_class": "Naphthalenes",
+     "n": 85,
+     "n_mol": 21,
+     "err": 0.04705882352941182,
+     "crowd": 1.1818181818181819
+    },
+    {
+     "ana_true_class": "Peptidomimetics",
+     "n": 55,
+     "n_mol": 16,
+     "err": 0.0,
+     "crowd": 1.2254901960784312
+    },
+    {
+     "ana_true_class": "Ergoline and derivatives",
+     "n": 150,
+     "n_mol": 11,
+     "err": 0.0,
+     "crowd": 1.3333333333333333
+    },
+    {
+     "ana_true_class": "Organonitrogen compounds",
+     "n": 80,
+     "n_mol": 27,
+     "err": 0.012499999999999956,
+     "crowd": 1.4817275747508305
+    },
+    {
+     "ana_true_class": "Diazanaphthalenes",
+     "n": 152,
+     "n_mol": 46,
+     "err": 0.006578947368421018,
+     "crowd": 2.3179190751445087
+    },
+    {
+     "ana_true_class": "Quinolines and derivatives",
+     "n": 94,
+     "n_mol": 29,
+     "err": 0.021276595744680882,
+     "crowd": 3.377279102384292
+    },
+    {
+     "ana_true_class": "Azoles",
+     "n": 374,
+     "n_mol": 75,
+     "err": 0.002673796791443861,
+     "crowd": 3.8631178707224336
+    },
+    {
+     "ana_true_class": "Benzene and substituted derivatives",
+     "n": 1291,
+     "n_mol": 271,
+     "err": 0.01936483346243223,
+     "crowd": 5.899965741692361
+    },
+    {
+     "ana_true_class": "Indoles and derivatives",
+     "n": 250,
+     "n_mol": 54,
+     "err": 0.0,
+     "crowd": 6.47906976744186
+    },
+    {
+     "ana_true_class": "Prenol lipids",
+     "n": 193,
+     "n_mol": 26,
+     "err": 0.010362694300518172,
+     "crowd": 8.810865191146881
+    },
+    {
+     "ana_true_class": "Carboxylic acids and derivatives",
+     "n": 1102,
+     "n_mol": 131,
+     "err": 0.00907441016333943,
+     "crowd": 14.243489174772515
+    }
+   ]
+  }
+ },
+ "query_level_error_by_crowding_bin": {
+  "top1_struct_nbrs": [
+   {
+    "bin_top1_struct_nbrs": 1,
+    "n": 4979,
+    "err": 0.0044185579433621,
+    "mean_s1": 0.8295473088223213
+   },
+   {
+    "bin_top1_struct_nbrs": 2,
+    "n": 1221,
+    "err": 0.016380016380016404,
+    "mean_s1": 0.8737563210296201
+   },
+   {
+    "bin_top1_struct_nbrs": 3,
+    "n": 309,
+    "err": 0.09061488673139162,
+    "mean_s1": 0.914651849557281
+   }
+  ],
+  "fam_spec_crowd_train": [
+   {
+    "bin_fam_spec_crowd_train": 0,
+    "n": 1810,
+    "err": 0.0055248618784530246,
+    "mean_s1": 0.8229833688113571
+   },
+   {
+    "bin_fam_spec_crowd_train": 1,
+    "n": 1450,
+    "err": 0.012413793103448256,
+    "mean_s1": 0.8418552573333526
+   },
+   {
+    "bin_fam_spec_crowd_train": 2,
+    "n": 1599,
+    "err": 0.01751094434021261,
+    "mean_s1": 0.8455163791561365
+   },
+   {
+    "bin_fam_spec_crowd_train": 3,
+    "n": 1650,
+    "err": 0.00848484848484854,
+    "mean_s1": 0.8591086237358324
+   }
+  ],
+  "n_open_hi": [
+   {
+    "bin_n_open_hi": 1,
+    "n": 939,
+    "err": 0.026624068157614533,
+    "mean_s1": 0.5109163788291086
+   },
+   {
+    "bin_n_open_hi": 2,
+    "n": 3922,
+    "err": 0.0015298317185109545,
+    "mean_s1": 0.8975600312705675
+   },
+   {
+    "bin_n_open_hi": 3,
+    "n": 1648,
+    "err": 0.023665048543689338,
+    "mean_s1": 0.8979484331025516
+   }
+  ],
+  "top1_specdens": [
+   {
+    "bin_top1_specdens": 1,
+    "n": 4440,
+    "err": 0.007432432432432412,
+    "mean_s1": 0.8249456132300668
+   },
+   {
+    "bin_top1_specdens": 2,
+    "n": 1351,
+    "err": 0.01702442635085122,
+    "mean_s1": 0.8714883390022683
+   },
+   {
+    "bin_top1_specdens": 3,
+    "n": 718,
+    "err": 0.01949860724233987,
+    "mean_s1": 0.8908922999765215
+   }
+  ],
+  "n_win_mol": [
+   {
+    "bin_n_win_mol": 0,
+    "n": 1184,
+    "err": 0.0,
+    "mean_s1": 0.847281123517786
+   },
+   {
+    "bin_n_win_mol": 1,
+    "n": 822,
+    "err": 0.0036496350364964014,
+    "mean_s1": 0.8514696111734911
+   },
+   {
+    "bin_n_win_mol": 2,
+    "n": 1964,
+    "err": 0.0193482688391039,
+    "mean_s1": 0.8354186872570432
+   },
+   {
+    "bin_n_win_mol": 3,
+    "n": 2539,
+    "err": 0.011421819614021222,
+    "mean_s1": 0.8412559148145736
+   }
+  ]
+ }
+}

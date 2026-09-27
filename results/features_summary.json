@@ -1,31 +1,31 @@
 {
  "_provenance": {
   "script": "07_features.py",
-  "config_hash": "c46a2e1dcdbe",
+  "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
   "dirty": true,
-  "utc": "2026-09-27T00:16:24Z"
+  "utc": "2026-09-27T00:57:56Z"
  },
- "seconds": 116.8995418548584,
+ "seconds": 112.27689099311829,
  "n_rows": 431126,
  "cosine/test/a": {
   "n_queries": 14706,
   "frac_no_candidate": 0.0,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.9821841425268598
+  "top1_acc_unweighted": "withheld"
  },
  "cosine/test/b": {
   "n_queries": 14706,
   "frac_no_candidate": 0.182578539371685,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.0
+  "top1_acc_unweighted": "withheld"
  },
  "cosine/test/c": {
   "n_queries": 14706,
   "frac_no_candidate": 0.20427036583707325,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.0
+  "top1_acc_unweighted": "withheld"
  },
  "cosine/train/a": {
   "n_queries": 61724,
@@ -61,19 +61,19 @@
   "n_queries": 14706,
   "frac_no_candidate": 0.0,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.9874881000951993
+  "top1_acc_unweighted": "withheld"
  },
  "entropy/test/b": {
   "n_queries": 14706,
   "frac_no_candidate": 0.182578539371685,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.0
+  "top1_acc_unweighted": "withheld"
  },
  "entropy/test/c": {
   "n_queries": 14706,
   "frac_no_candidate": 0.20427036583707325,
   "n_mol": 2490,
-  "top1_acc_unweighted": 0.0
+  "top1_acc_unweighted": "withheld"
  },
  "entropy/train/a": {
   "n_queries": 61724,

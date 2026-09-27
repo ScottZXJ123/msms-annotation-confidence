@@ -35,8 +35,13 @@ GROUPS = {
     "analog": ["x1", "x1_minus_s1"],
     "crowd_spec": ["n_open_lo", "n_open_hi", "n_near_tie", "n_win_ge05", "top1_specdens"],
     "crowd_struct": ["tani12", "tani_mean_top5", "top1_struct_nbrs", "n_win_struct_nbrs"],
-    "crowd_family": ["fam_ent_topk", "fam_frac_topk_same", "fam_n_win_same", "fam_lib_size",
+    "crowd_family": ["fam_ent_topk", "fam_frac_topk_same", "fam_n_win_same",
                      "fam_frac_open_same", "fam_spec_crowd_train", "fam_struct_crowd_train"],
+    # EXCLUDED from all proposed feature sets (see LOG 2026-09-26 22:15): with the family-level tables
+    # identifying the class, the library count of the class differs by exactly one between the paired (a)/(b)
+    # rows of training queries, and the model memorizes per-class counts of the training library — a
+    # construction shortcut that does not transfer (val-A log loss of P(in) 0.083 -> 0.171).
+    "crowd_family_libsize": ["fam_lib_size"],
 }
 
 
@@ -84,6 +89,7 @@ class FeatureContext:
             self.fam_names[lv] = list(cats.categories)
         self.fam_tables = {lv: self._family_tables(lv) for lv in self.fam_levels}
         self._fam_cache = {}
+        self.extra_excl_pos = None
         self.hashperm = np.random.default_rng(12345).permutation(self.nmol)  # fixed tie-break, label-free
         self.q = queries
         self.L = qlists
@@ -205,9 +211,14 @@ class FeatureContext:
             r["n_win_ge05"] = int((s >= self.lo).sum())
             tpos = self.mol_positions(t)
             tpos = tpos[phase_pos[tpos] & (tpos != qpos)]
+            xpos = self.extra_excl_pos.get(i) if self.extra_excl_pos else None  # scenario a_x only
+            if xpos is not None and len(xpos):
+                tpos = tpos[~np.isin(tpos, xpos)]
             if len(tpos):
                 nb = np.concatenate([self.sn_idx[self.sn_ptr[p]:self.sn_ptr[p + 1]] for p in tpos])
                 nb = nb[phase_pos[nb] & (nb != qpos)]
+                if xpos is not None and len(xpos):
+                    nb = nb[~np.isin(nb, xpos)]
                 nm = np.unique(self.lib_mol[nb])
                 nm = nm[(nm != t) & ~np.isin(nm, excl)]
                 r["top1_specdens"] = int(len(nm))

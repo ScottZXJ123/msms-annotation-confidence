@@ -22,6 +22,8 @@ FEATURE_SETS = {
     "sim_only": ["sim"],
     "base": ["meta", "sim", "sim_extra", "analog"],
     "full": ["meta", "sim", "sim_extra", "analog", "crowd_spec", "crowd_struct", "crowd_family"],
+    "full_nocounts": ["meta_nocounts", "sim", "sim_extra", "analog", "crowd_spec", "crowd_struct", "crowd_family"],
+    "full_with_libsize": ["meta", "sim", "sim_extra", "analog", "crowd_spec", "crowd_struct", "crowd_family", "crowd_family_libsize"],
     "full_minus_family": ["meta", "sim", "sim_extra", "analog", "crowd_spec", "crowd_struct"],
     "full_minus_spec": ["meta", "sim", "sim_extra", "analog", "crowd_struct", "crowd_family"],
     "full_minus_struct": ["meta", "sim", "sim_extra", "analog", "crowd_spec", "crowd_family"],
@@ -40,7 +42,7 @@ def columns(set_name: str) -> list[str]:
         return list(CANDIDATE_ONLY)
     cols = []
     for g in FEATURE_SETS[set_name]:
-        cols += GROUPS[g]
+        cols += [c for c in GROUPS["meta"] if c not in ("n_win_mol", "n_win_spec")] if g == "meta_nocounts" else GROUPS[g]
     for c in cols:  # guard: truth-derived columns can never become features (failure mode #3)
         assert not c.startswith("ana_") and c not in {"mol", "correct", "in_lib", "scenario", "top1", "top5"}, c
     return cols
@@ -127,6 +129,36 @@ class Isotonic:
 
     def __call__(self, raw):
         return self.iso.predict(raw)
+
+
+class Platt:
+    """Platt scaling (logistic regression on the logit of a probability, or on a raw score)."""
+    def __init__(self, on_logit):
+        self.on_logit = on_logit
+
+    def _x(self, raw):
+        raw = np.asarray(raw, float)
+        if self.on_logit:
+            p = np.clip(raw, 1e-6, 1 - 1e-6)
+            raw = np.log(p / (1 - p))
+        return raw[:, None]
+
+    def fit(self, raw, y, w):
+        self.lr = LogisticRegression(C=1e6, max_iter=1000).fit(self._x(raw), y, sample_weight=w)
+        return self
+
+    def __call__(self, raw):
+        return np.clip(self.lr.predict_proba(self._x(raw))[:, 1], 1e-4, 1 - 1e-4)
+
+
+class Iso:
+    def fit(self, raw, y, w):
+        self.m = IsotonicRegression(out_of_bounds="clip", y_min=1e-4, y_max=1 - 1e-4).fit(raw, y, sample_weight=w)
+        return self
+
+    def __call__(self, raw):
+        return self.m.predict(raw)
+
 
 
 class GroupOffset:

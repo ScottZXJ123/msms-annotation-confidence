@@ -110,6 +110,8 @@ SYSTEMS = [
     ("F_sim", "dec", "lgbm", "sim_only"),
     ("M_base", "dec", "lgbm", "base"),
     ("M_full", "dec", "lgbm", "full"),
+    ("M_full_nocounts", "dec", "lgbm", "full_nocounts"),
+    ("M_full_with_libsize", "dec", "lgbm", "full_with_libsize"),
     ("M_sim_plus_crowd", "dec", "lgbm", "sim_plus_crowd"),
     ("M_full_minus_family", "dec", "lgbm", "full_minus_family"),
     ("M_full_minus_spec", "dec", "lgbm", "full_minus_spec"),

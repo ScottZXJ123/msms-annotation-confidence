@@ -81,3 +81,24 @@ with ThreadPoolExecutor(max_workers=8) as ex:
         if n % 1000 == 0:
             print(n, st, f"{time.time()-t0:.0f}s", flush=True)
 print("finished", n, flush=True)
+
+# (3) new classification requests for structures still missing (public structures only)
+done = {}
+for line in open(cache_f):
+    r = json.loads(line)
+    done[r["inchikey"]] = r
+missing = mols[mols.inchikey_full.map(lambda k: done.get(k, {}).get("status") != "ok")]
+submit_log = {"n_missing_after_lookup": int(len(missing))}
+if len(missing):
+    smi_col = "std_smiles" if "std_smiles" in missing else "smiles"
+    body = {"label": "msconf_public_massspecgym", "query_input": "\n".join(missing[smi_col].astype(str).tolist()[:1000]),
+            "query_type": "STRUCTURE"}
+    try:
+        req = urllib.request.Request("http://classyfire.wishartlab.com/queries.json", data=json.dumps(body).encode(),
+                                     headers={"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            submit_log["submission"] = json.loads(r.read())
+    except Exception as e:  # the ClassyFire query service answered HTTP 500 on 2026-09-26 (see LOG)
+        submit_log["submission_error"] = str(e)
+print(submit_log)
+

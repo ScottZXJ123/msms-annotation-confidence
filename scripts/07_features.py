@@ -64,7 +64,8 @@ if __name__ == "__main__":
         gg = g[g.has_candidate == 1]
         summ[f"{eng}/{f}/{sc}"] = {"n_queries": int(len(g)), "frac_no_candidate": float(1 - g.has_candidate.mean()),
                                    "n_mol": int(g.mol.nunique()),
-                                   "top1_acc_unweighted": float(gg.correct.mean()) if len(gg) else None}
+                                   # engine accuracy is not summarized for the test fold here (test is read only by 09_evaluate)
+                                   "top1_acc_unweighted": (float(gg.correct.mean()) if len(gg) else None) if f != "test" else "withheld"}
     if not lim:
         write_result(cfg, "features_summary" + ("_ext" if os.environ.get("MSCONF_DERIVED") else ""), summ)
     import json

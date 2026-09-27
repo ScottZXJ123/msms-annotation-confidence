@@ -1,0 +1,1212 @@
+{
+ "_provenance": {
+  "script": "09_evaluate.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "dirty": true,
+  "utc": "2026-09-27T01:49:41Z"
+ },
+ "primary": "M_full_minus_family",
+ "bin_edges_from_valB": {
+  "top1_struct_nbrs": [
+   0.0,
+   1.0,
+   5.0
+  ],
+  "fam_spec_crowd_train": [
+   1.0,
+   5.899965741692361,
+   8.810865191146881
+  ],
+  "n_open_hi": [
+   0.0,
+   1.0,
+   2.0
+  ],
+  "top1_specdens": [
+   0.0,
+   4.0,
+   16.0
+  ],
+  "n_win_mol": [
+   2.0,
+   3.0,
+   6.0
+  ]
+ },
+ "groups": {
+  "M_full_minus_family": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012221673046611474,
+     "max_abs_gap_sufficient": 0.030982423815105048
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009758363955222046,
+     "max_abs_gap_sufficient": 0.021090197539465255
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.022282255701407,
+     "max_abs_gap_sufficient": 0.03574106747435751
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008675725931385193,
+     "max_abs_gap_sufficient": 0.012033213267873905
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009966494514169304,
+     "max_abs_gap_sufficient": 0.019473905145943243
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.017347805014715573,
+     "max_abs_gap_sufficient": 0.028668596601535534
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009629978819966736,
+     "max_abs_gap_sufficient": 0.01359436267755823
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009592632661506964,
+     "max_abs_gap_sufficient": 0.015258104465698252
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012925802277733815,
+     "max_abs_gap_sufficient": 0.027064844107287656
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.9375,
+     "mean_abs_gap_sufficient": 0.016047353078051774,
+     "max_abs_gap_sufficient": 0.07543153580444528
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.011059539494466728,
+     "max_abs_gap_sufficient": 0.020775446424103894
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01859727243852715,
+     "max_abs_gap_sufficient": 0.04064323145534998
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0108201632427991,
+     "max_abs_gap_sufficient": 0.01873260201708002
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.00958942906555349,
+     "max_abs_gap_sufficient": 0.018267399190672662
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013772394964697806,
+     "max_abs_gap_sufficient": 0.027545334626056794
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.011413843555544248,
+     "max_abs_gap_sufficient": 0.01638794038635849
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009621909765588119,
+     "max_abs_gap_sufficient": 0.01611431407802366
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.011841113419057707,
+     "max_abs_gap_sufficient": 0.03184618267502892
+    }
+   },
+   "component_C": {
+    "top1_class": {
+     "n_groups": 117,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.5936395759717314,
+     "frac_consistent_sufficient": 0.7777777777777778,
+     "mean_abs_gap_sufficient": 0.00914716157546194,
+     "max_abs_gap_sufficient": 0.02719701263311658
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9599016746043939,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.003718716013362346,
+     "max_abs_gap_sufficient": 0.015427566953269634
+    },
+    "top1_subclass": {
+     "n_groups": 253,
+     "n_sufficient": 6,
+     "frac_rows_in_sufficient": 0.30219695805807345,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0035411555045655,
+     "max_abs_gap_sufficient": 0.011821908330783892
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.002666370196181267,
+     "max_abs_gap_sufficient": 0.00410913791831502
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013141689375662846,
+     "max_abs_gap_sufficient": 0.03495959506595203
+    }
+   },
+   "component_I_pi0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013571272919909134,
+     "max_abs_gap_sufficient": 0.05385204585206016
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.009665038050628738,
+     "max_abs_gap_sufficient": 0.020511656269881273
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.02143266310968421,
+     "max_abs_gap_sufficient": 0.038423637693870805
+    }
+   }
+  },
+  "M_full": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012932493143491123,
+     "max_abs_gap_sufficient": 0.03431106657354874
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008166476350127481,
+     "max_abs_gap_sufficient": 0.018463753060093957
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.021003437563845945,
+     "max_abs_gap_sufficient": 0.0378384695127682
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.007005659652364983,
+     "max_abs_gap_sufficient": 0.00988406975970138
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008007592283855336,
+     "max_abs_gap_sufficient": 0.018832026520436862
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013449232891362758,
+     "max_abs_gap_sufficient": 0.022899633302604916
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0078092576974283,
+     "max_abs_gap_sufficient": 0.011380304952552711
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.006809184151289727,
+     "max_abs_gap_sufficient": 0.010135532353500926
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.014911347555406067,
+     "max_abs_gap_sufficient": 0.05137374852106613
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.9375,
+     "mean_abs_gap_sufficient": 0.019275382736289936,
+     "max_abs_gap_sufficient": 0.11390979386641964
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008641792005844326,
+     "max_abs_gap_sufficient": 0.013748825987900948
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.019550434714506515,
+     "max_abs_gap_sufficient": 0.041096759484706924
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.007911014261839516,
+     "max_abs_gap_sufficient": 0.013389961731697347
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008093675885511464,
+     "max_abs_gap_sufficient": 0.01696375749379031
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.010715406880346065,
+     "max_abs_gap_sufficient": 0.02047118637163381
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008903247540993134,
+     "max_abs_gap_sufficient": 0.012577592132281601
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0076700980131413354,
+     "max_abs_gap_sufficient": 0.01201991784841705
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013803467051406015,
+     "max_abs_gap_sufficient": 0.05073035833399869
+    }
+   },
+   "component_C": {
+    "top1_class": {
+     "n_groups": 117,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.5936395759717314,
+     "frac_consistent_sufficient": 0.8888888888888888,
+     "mean_abs_gap_sufficient": 0.008227125881846289,
+     "max_abs_gap_sufficient": 0.028501832512946246
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9599016746043939,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.003907770322047588,
+     "max_abs_gap_sufficient": 0.018361252019848173
+    },
+    "top1_subclass": {
+     "n_groups": 253,
+     "n_sufficient": 6,
+     "frac_rows_in_sufficient": 0.30219695805807345,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.00332351645417465,
+     "max_abs_gap_sufficient": 0.011553450176975288
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.002422504871186254,
+     "max_abs_gap_sufficient": 0.003950366447573184
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008956358266099529,
+     "max_abs_gap_sufficient": 0.021645516720451008
+    }
+   },
+   "component_I_pi0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.9375,
+     "mean_abs_gap_sufficient": 0.015618057341526801,
+     "max_abs_gap_sufficient": 0.09615108136281114
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.007587434843961373,
+     "max_abs_gap_sufficient": 0.013188528643141795
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.021246771477710764,
+     "max_abs_gap_sufficient": 0.04183990236831803
+    }
+   }
+  },
+  "M_base": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.014500781756418293,
+     "max_abs_gap_sufficient": 0.03382370637551657
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.010985818431199815,
+     "max_abs_gap_sufficient": 0.02569196298767637
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.024466886387045434,
+     "max_abs_gap_sufficient": 0.03919228826266552
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.00872060224017074,
+     "max_abs_gap_sufficient": 0.019150310556490385
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.75,
+     "mean_abs_gap_sufficient": 0.013198304857633208,
+     "max_abs_gap_sufficient": 0.022765532517942277
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.023180672068363956,
+     "max_abs_gap_sufficient": 0.03814852835336813
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.010146432602723542,
+     "max_abs_gap_sufficient": 0.015068158950700794
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012097657787086873,
+     "max_abs_gap_sufficient": 0.017980519010453472
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01338595220477068,
+     "max_abs_gap_sufficient": 0.028978358584907132
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.019069988744612104,
+     "max_abs_gap_sufficient": 0.07178133248036955
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.8571428571428571,
+     "mean_abs_gap_sufficient": 0.012852004580414621,
+     "max_abs_gap_sufficient": 0.02573598880409378
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.02175871765218931,
+     "max_abs_gap_sufficient": 0.041073182847508494
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.010226603618004778,
+     "max_abs_gap_sufficient": 0.020153106380459418
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013896316308564638,
+     "max_abs_gap_sufficient": 0.02197865956333256
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.019327171700151607,
+     "max_abs_gap_sufficient": 0.03625124191344453
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.011677658965184134,
+     "max_abs_gap_sufficient": 0.01794812113960309
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.013329744838183333,
+     "max_abs_gap_sufficient": 0.01744789526601731
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012757456032377405,
+     "max_abs_gap_sufficient": 0.03260207220831335
+    }
+   },
+   "component_C": {
+    "top1_class": {
+     "n_groups": 117,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.5936395759717314,
+     "frac_consistent_sufficient": 0.8888888888888888,
+     "mean_abs_gap_sufficient": 0.010514668448477137,
+     "max_abs_gap_sufficient": 0.03084139787086737
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9599016746043939,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.003347974483228084,
+     "max_abs_gap_sufficient": 0.009453662460627732
+    },
+    "top1_subclass": {
+     "n_groups": 253,
+     "n_sufficient": 6,
+     "frac_rows_in_sufficient": 0.30219695805807345,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.004802936642716378,
+     "max_abs_gap_sufficient": 0.01133230289984355
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0026873007286468686,
+     "max_abs_gap_sufficient": 0.003811201927135577
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008784556858506912,
+     "max_abs_gap_sufficient": 0.016719198468114205
+    }
+   },
+   "component_I_pi0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01553477498993089,
+     "max_abs_gap_sufficient": 0.044735891034707875
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.8571428571428571,
+     "mean_abs_gap_sufficient": 0.011666657085284202,
+     "max_abs_gap_sufficient": 0.0246777641103747
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.02364045794213863,
+     "max_abs_gap_sufficient": 0.044476414103460815
+    }
+   }
+  },
+  "B_lr_dec": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 0.8333333333333334,
+     "mean_abs_gap_sufficient": 0.028107004905445987,
+     "max_abs_gap_sufficient": 0.07098114265008676
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.7142857142857143,
+     "mean_abs_gap_sufficient": 0.015770748708762772,
+     "max_abs_gap_sufficient": 0.03917320473369096
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 0.8,
+     "mean_abs_gap_sufficient": 0.05600108699584775,
+     "max_abs_gap_sufficient": 0.08990517858076438
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.027766549724871897,
+     "max_abs_gap_sufficient": 0.04769185232334944
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.25,
+     "mean_abs_gap_sufficient": 0.02291634603572327,
+     "max_abs_gap_sufficient": 0.04055269465044167
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.027674560400262716,
+     "max_abs_gap_sufficient": 0.06252652770836553
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.02402338775707506,
+     "max_abs_gap_sufficient": 0.04037440319976826
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.25,
+     "mean_abs_gap_sufficient": 0.022648468487246935,
+     "max_abs_gap_sufficient": 0.029669777800962277
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 0.8181818181818182,
+     "mean_abs_gap_sufficient": 0.023699271869139147,
+     "max_abs_gap_sufficient": 0.04996667560500162
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.875,
+     "mean_abs_gap_sufficient": 0.029039790793332163,
+     "max_abs_gap_sufficient": 0.07092824270171139
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.7142857142857143,
+     "mean_abs_gap_sufficient": 0.013810441116665751,
+     "max_abs_gap_sufficient": 0.039847199054335425
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 0.7777777777777778,
+     "mean_abs_gap_sufficient": 0.045653151203538446,
+     "max_abs_gap_sufficient": 0.08417586900583529
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.035787075545350294,
+     "max_abs_gap_sufficient": 0.045503534575105586
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.75,
+     "mean_abs_gap_sufficient": 0.0215722914711432,
+     "max_abs_gap_sufficient": 0.04023668304608119
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.019975124447234937,
+     "max_abs_gap_sufficient": 0.029752110549701977
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.033617306286277536,
+     "max_abs_gap_sufficient": 0.039964966121056045
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.5,
+     "mean_abs_gap_sufficient": 0.024576573828972645,
+     "max_abs_gap_sufficient": 0.03508286920915271
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 0.9333333333333333,
+     "mean_abs_gap_sufficient": 0.024717598701873775,
+     "max_abs_gap_sufficient": 0.05281805850322846
+    }
+   },
+   "component_C": {
+    "top1_class": {
+     "n_groups": 117,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.5936395759717314,
+     "frac_consistent_sufficient": 0.8888888888888888,
+     "mean_abs_gap_sufficient": 0.01236392705587799,
+     "max_abs_gap_sufficient": 0.02715595331810461
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9599016746043939,
+     "frac_consistent_sufficient": 0.7142857142857143,
+     "mean_abs_gap_sufficient": 0.007345564445235565,
+     "max_abs_gap_sufficient": 0.01409864380681003
+    },
+    "top1_subclass": {
+     "n_groups": 253,
+     "n_sufficient": 6,
+     "frac_rows_in_sufficient": 0.30219695805807345,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0075126772022355475,
+     "max_abs_gap_sufficient": 0.009986840251425377
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.5,
+     "mean_abs_gap_sufficient": 0.006261594264384274,
+     "max_abs_gap_sufficient": 0.01158381910328321
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.01787916091602748,
+     "max_abs_gap_sufficient": 0.034632045426965186
+    }
+   },
+   "component_I_pi0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.875,
+     "mean_abs_gap_sufficient": 0.024371523141699797,
+     "max_abs_gap_sufficient": 0.06471594827193539
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.7142857142857143,
+     "mean_abs_gap_sufficient": 0.01350334284165937,
+     "max_abs_gap_sufficient": 0.03530400103105935
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 0.8888888888888888,
+     "mean_abs_gap_sufficient": 0.04352075458263224,
+     "max_abs_gap_sufficient": 0.08958747194407846
+    }
+   }
+  },
+  "B_lr_direct": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 0.75,
+     "mean_abs_gap_sufficient": 0.03433155643677901,
+     "max_abs_gap_sufficient": 0.07807127654834714
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.14285714285714285,
+     "mean_abs_gap_sufficient": 0.039960125800148016,
+     "max_abs_gap_sufficient": 0.07807127654834714
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01747288637509395,
+     "max_abs_gap_sufficient": 0.025553266106438682
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.051377829926342024,
+     "max_abs_gap_sufficient": 0.06900730354283974
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.036694793794026445,
+     "max_abs_gap_sufficient": 0.04496383364455983
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.048668131595228536,
+     "max_abs_gap_sufficient": 0.09132005005917543
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.0519144421873561,
+     "max_abs_gap_sufficient": 0.07462616713928168
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.25,
+     "mean_abs_gap_sufficient": 0.03306980832651632,
+     "max_abs_gap_sufficient": 0.04234332881496777
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 0.6363636363636364,
+     "mean_abs_gap_sufficient": 0.037423015049626356,
+     "max_abs_gap_sufficient": 0.07333706025001424
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.9375,
+     "mean_abs_gap_sufficient": 0.026471938547178213,
+     "max_abs_gap_sufficient": 0.06669731580557403
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 0.8571428571428571,
+     "mean_abs_gap_sufficient": 0.012483673661315975,
+     "max_abs_gap_sufficient": 0.032619116710925655
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.03981567681697784,
+     "max_abs_gap_sufficient": 0.07412624790817957
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.04540560001120825,
+     "max_abs_gap_sufficient": 0.06158074969760563
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.75,
+     "mean_abs_gap_sufficient": 0.014474437849439928,
+     "max_abs_gap_sufficient": 0.033320574301386796
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.3333333333333333,
+     "mean_abs_gap_sufficient": 0.02372900148098329,
+     "max_abs_gap_sufficient": 0.026339879763039087
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.0,
+     "mean_abs_gap_sufficient": 0.03945149842642775,
+     "max_abs_gap_sufficient": 0.04782399670318088
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.75,
+     "mean_abs_gap_sufficient": 0.015793062160107965,
+     "max_abs_gap_sufficient": 0.027713345838360104
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 0.9333333333333333,
+     "mean_abs_gap_sufficient": 0.02129957071480435,
+     "max_abs_gap_sufficient": 0.04948885136460068
+    }
+   }
+  },
+  "M_full_direct": {
+   "0.2": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 12,
+     "frac_rows_in_sufficient": 0.5935440256886936,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.010471978972619811,
+     "max_abs_gap_sufficient": 0.03095735463233318
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.012262768035965873,
+     "max_abs_gap_sufficient": 0.022191099683467302
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 5,
+     "frac_rows_in_sufficient": 0.22553658948791616,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.005971026472100338,
+     "max_abs_gap_sufficient": 0.012713269568976615
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01123485834175699,
+     "max_abs_gap_sufficient": 0.017530869248335773
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.01341277456226149,
+     "max_abs_gap_sufficient": 0.021983651798808734
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.014324391663181009,
+     "max_abs_gap_sufficient": 0.01893600906819548
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 0.6666666666666666,
+     "mean_abs_gap_sufficient": 0.010563947852927273,
+     "max_abs_gap_sufficient": 0.01641798616268189
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.014707469629803516,
+     "max_abs_gap_sufficient": 0.02084472611836577
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 11,
+     "frac_rows_in_sufficient": 0.6266689200608416,
+     "frac_consistent_sufficient": 0.9090909090909091,
+     "mean_abs_gap_sufficient": 0.020271101204488346,
+     "max_abs_gap_sufficient": 0.08309737490756577
+    }
+   },
+   "0.5": {
+    "top1_class": {
+     "n_groups": 168,
+     "n_sufficient": 16,
+     "frac_rows_in_sufficient": 0.6558222071995944,
+     "frac_consistent_sufficient": 0.9375,
+     "mean_abs_gap_sufficient": 0.020510183353133246,
+     "max_abs_gap_sufficient": 0.12942319400182545
+    },
+    "top1_superclass": {
+     "n_groups": 13,
+     "n_sufficient": 7,
+     "frac_rows_in_sufficient": 0.9569038364035829,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.008199457830619844,
+     "max_abs_gap_sufficient": 0.012722871753050313
+    },
+    "top1_subclass": {
+     "n_groups": 374,
+     "n_sufficient": 9,
+     "frac_rows_in_sufficient": 0.2922933919215819,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.018731116147054812,
+     "max_abs_gap_sufficient": 0.03392193058131021
+    },
+    "bin_top1_struct_nbrs": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.00708586995488263,
+     "max_abs_gap_sufficient": 0.013084337426765874
+    },
+    "bin_fam_spec_crowd_train": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.006474480201902041,
+     "max_abs_gap_sufficient": 0.016168395096756383
+    },
+    "bin_n_open_hi": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.00886673335369125,
+     "max_abs_gap_sufficient": 0.01818537505628459
+    },
+    "bin_top1_specdens": {
+     "n_groups": 3,
+     "n_sufficient": 3,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.0070199814427749085,
+     "max_abs_gap_sufficient": 0.010755476029802868
+    },
+    "bin_n_win_mol": {
+     "n_groups": 4,
+     "n_sufficient": 4,
+     "frac_rows_in_sufficient": 1.0,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.006206692019157203,
+     "max_abs_gap_sufficient": 0.011469093183167134
+    },
+    "ana_true_class": {
+     "n_groups": 113,
+     "n_sufficient": 15,
+     "frac_rows_in_sufficient": 0.6874260605036336,
+     "frac_consistent_sufficient": 1.0,
+     "mean_abs_gap_sufficient": 0.014241529752866404,
+     "max_abs_gap_sufficient": 0.05526707737341785
+    }
+   }
+  }
+ }
+}
