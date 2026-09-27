@@ -28,3 +28,10 @@ cosmic/customdb/results/.done_*
 .Rhistory
 .DS_Store
 cosmic/_to_delete/
+# SIRIUS by-products kept on the owner's Mac (only structure_identifications.tsv is tracked)
+cosmic/results/log_*.txt
+cosmic/customdb/results/log_*.txt
+cosmic/results/summaries_*/*
+!cosmic/results/summaries_*/structure_identifications.tsv
+cosmic/customdb/results/summaries_*/*
+!cosmic/customdb/results/summaries_*/structure_identifications.tsv
