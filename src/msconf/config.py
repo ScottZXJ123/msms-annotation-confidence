@@ -35,7 +35,11 @@ def config_hash(path: str | os.PathLike | None = None) -> str:
 def git_commit() -> dict:
     try:
         sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, stderr=subprocess.DEVNULL).decode().strip()
-        dirty = bool(subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT).decode().strip())
+        # "dirty" refers to code and configuration only; regenerated outputs (results/, figures/, reports/, models/,
+        # REPORT.md, WETLAB_PREREG.md, cosmic/) are expected to change when the pipeline is re-run.
+        dirty = bool(subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no", "--", "src", "scripts",
+                                              "config.yaml", "Makefile", "requirements.txt", "reports/templates"],
+                                             cwd=ROOT).decode().strip())
     except Exception:
         sha, dirty = "unknown", True
     return {"commit": sha, "dirty": dirty}
