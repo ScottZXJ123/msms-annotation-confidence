@@ -60,5 +60,5 @@ if __name__ == "__main__":
             "mean_deg_ge0.7": float(deg7.mean()),
             "max_tani_to_train_by_fold": {f: np.percentile(maxtrain[mols.fold.values == f], [5, 25, 50, 75, 95]).tolist()
                                           for f in ["val", "test"]}}
-    write_result(cfg, "struct_neighbors_summary" + ("_ext" if os.environ.get("MSCONF_DERIVED") else ""), summ)
+    write_result(cfg, "struct_neighbors_summary" + ("_" + der.name if os.environ.get("MSCONF_DERIVED") else ""), summ)
     print(summ)

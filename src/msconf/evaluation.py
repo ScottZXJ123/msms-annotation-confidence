@@ -129,10 +129,10 @@ def summarize_wetlab(records: list[dict]) -> dict:
             "obs_acc_mean": float(g.obs_acc.mean()),
             "obs_acc_q025": float(g.obs_acc.quantile(0.025)), "obs_acc_q975": float(g.obs_acc.quantile(0.975)),
             "pred_acc_mean": float(g.pred_acc.mean()),
-            "acc_consistent_rate": float(g.acc_consistent.mean()),
+            "acc_consistent_rate": float(g.acc_consistent.astype(float).mean()),
             "mean_abs_gap_acc": float((g.obs_acc - g.pred_acc).abs().mean()),
             "obs_in_mean": float(g.obs_in.mean()), "pred_in_mean": float(g.pred_in.mean()),
-            "in_consistent_rate": float(g.in_consistent.mean()),
+            "in_consistent_rate": float(g.in_consistent.astype(float).mean()),
         }
     return res
 
@@ -151,7 +151,7 @@ def risk_coverage(conf, correct, weights=None, grid=None):
     # AURC: mean selective risk over coverage (weighted steps)
     aurc = float(np.sum(risk * w_) / cw[-1])
     # oracle AURC for e-AURC
-    oo = np.argsort(-c, kind="stable")
+    oo = np.argsort(-correct, kind="stable")
     cwo = np.cumsum(w[oo])
     risko = np.cumsum(w[oo] * (1 - correct[oo])) / cwo
     aurc_oracle = float(np.sum(risko * w[oo]) / cwo[-1])

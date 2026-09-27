@@ -195,5 +195,5 @@ if __name__ == "__main__":
             "n_queries_by_fold": q.fold.value_counts().to_dict(), "n_query_molecules_by_fold": q.groupby("fold").mol_idx.nunique().to_dict(),
             "mean_window_molecules": float(np.diff(wi).mean()), "seconds": time.time() - t0}
     if not lim:
-        write_result(cfg, "search_summary" + ("_ext" if "ext" in QUERY_FOLDS else ""), summ)
+        write_result(cfg, "search_summary" + ("_" + der.name if os.environ.get("MSCONF_DERIVED") else ""), summ)
     print(summ)

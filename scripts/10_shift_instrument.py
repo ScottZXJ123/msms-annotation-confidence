@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from msconf import evalutil  # noqa: E402
 from msconf.config import load_config, path, write_result  # noqa: E402
 from msconf.evalutil import components, evaluate_weighted  # noqa: E402
+from msconf.models import choose_calibrator  # noqa: E402
 from msconf.pipeline import load_rows, resolve_cols, train_decomposed, val_split  # noqa: E402
 
 cfg = load_config()
@@ -31,7 +32,11 @@ rows = load_rows(der, "entropy")
 rows["vsplit"] = rows.mol.map(split)
 GROUP = "top1_" + cfg["family"]["primary_level"]
 INST = {0.0: "Orbitrap", 1.0: "QTOF"}
-specs = {"M_full": "full", "M_base": "base", "B_lr_dec": ["s1", "gap12"]}
+from msconf.pipeline import SYSTEMS  # noqa: E402
+
+spec_of = {n: sp for n, _, _, sp in SYSTEMS}
+base_primary = PRIMARY.replace("_gc", "")
+specs = {base_primary: spec_of[base_primary], "M_base": "base", "B_lr_dec": ["s1", "gap12"]}
 res = {"primary": PRIMARY, "note": "library unchanged; model trained/calibrated on the other instrument type"}
 for held, hname in INST.items():
     other = 1.0 - held
@@ -42,10 +47,15 @@ for held, hname in INST.items():
     out = {"n_train_rows": int(len(tr)), "n_test_rows": int(len(te)), "n_test_mol": int(te.mol.nunique())}
     for name, spec in specs.items():
         kind = "lr" if isinstance(spec, list) else "lgbm"
-        use_gc = (name == "M_full" and PRIMARY == "M_full_gc")
+        use_gc = (name == base_primary and PRIMARY.endswith("_gc"))
         sysm, log = train_decomposed(name + ("_gc" if use_gc else ""), kind, resolve_cols(spec), tr, vA, vB, cfg, seed,
                                      group_col=GROUP if use_gc else None,
                                      min_group=cfg["family"]["min_group_size_val"] if use_gc else None)
+        va = rows[(rows.fold == "val") & (rows.instrument == other)]
+        if not use_gc:
+            sysm.calC, _ = choose_calibrator(sysm.mC, va[va.scenario == "a"], "correct")
+            sysm.calI, _ = choose_calibrator(sysm.mI, va[va.scenario.isin(["a", "b"])], "in_lib")
+            sysm.pi_cal = float(np.average(va[va.scenario.isin(["a", "b"])].in_lib, weights=va[va.scenario.isin(["a", "b"])].w))
         comp = components(sysm, te)
         ref_name = (name + "_gc") if use_gc else name
         ref = pickle.loads((der / "models" / "entropy" / f"{ref_name}.pkl").read_bytes())

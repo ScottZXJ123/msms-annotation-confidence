@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from msconf.config import load_config, path, write_result  # noqa: E402
 from msconf.evaluation import group_calibration  # noqa: E402
-from msconf.models import DirectSystem, GroupOffset, Iso, Platt, ScoreModel, logloss  # noqa: E402
+from msconf.models import DirectSystem, GroupOffset, Iso, Platt, ScoreModel, choose_calibrator as choose, logloss  # noqa: E402
 from msconf.pipeline import load_rows, val_split  # noqa: E402
 
 cfg = load_config()
@@ -28,20 +28,6 @@ seed = cfg["project"]["seed"]
 fam = pd.read_parquet(der / "families.parquet")
 split = val_split(fam, dict(np.load(der / "struct_nbrs.npz")), cfg["models"]["val_cluster_tanimoto"], cfg["models"]["val_split_frac_calib"], seed)
 GROUP = "top1_" + cfg["family"]["primary_level"]
-
-
-def choose(model, d, target):
-    on_logit = not isinstance(model, ScoreModel)
-    scores = {"isotonic": [], "platt": []}
-    for fh, eh in [("A", "B"), ("B", "A")]:
-        F, E = d[d.vsplit == fh], d[d.vsplit == eh]
-        for name, C in [("isotonic", Iso()), ("platt", Platt(on_logit))]:
-            c = C.fit(model.raw(F), F[target].values, F.w.values)
-            scores[name].append(logloss(c(model.raw(E)), E[target].values, E.w.values))
-    best = min(scores, key=lambda k: np.mean(scores[k]))
-    C = Iso() if best == "isotonic" else Platt(on_logit)
-    C.fit(model.raw(d), d[target].values, d.w.values)
-    return C, {"choice": best, "crossfit_logloss": {k: float(np.mean(v)) for k, v in scores.items()}}
 
 
 for engine in [a for a in sys.argv[1:] if not a.startswith("--")] or ["entropy", "cosine"]:

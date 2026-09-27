@@ -44,5 +44,5 @@ summ = {"n_molecules": len(fam), "cf_status": fam.cf_status.value_counts().to_di
         "n_groups": {lv: int(fam[lv].nunique()) for lv in ["superclass", "class", "subclass"]},
         "frac_unclassified_by_fold": fam.assign(u=fam["class"] == UN).groupby("fold").u.mean().to_dict(),
         "top_classes": fam["class"].value_counts().head(25).to_dict()}
-write_result(cfg, "families_summary" + ("_ext" if os.environ.get("MSCONF_DERIVED") else ""), summ)
+write_result(cfg, "families_summary" + ("_" + der.name if os.environ.get("MSCONF_DERIVED") else ""), summ)
 print(json.dumps(summ, indent=1)[:3000])

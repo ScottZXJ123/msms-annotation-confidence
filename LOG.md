@@ -1,7 +1,7 @@
 # Experiment log
 
 Chronological. Every attempted variant, its configuration and the decision taken, including abandoned
-directions. Times are US Eastern. Numbers quoted here are copied from the named result files
+directions. Times are US Eastern (container clock; result files carry exact UTC stamps). Numbers quoted here are copied from the named result files
 (`results/*.json`), which carry the script / config hash / seed / commit that produced them.
 
 ---
@@ -103,7 +103,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   3,928 spectra (3,307 after the min-peak filter). Contributors: Eawag 2,308, BAFG 506, mFam 300, …
   (`results/external_prepare.json`). These spectra are added to the library as a new source.
 
-### 21:05 ClassyFire lookup complete
+### 20:55 ClassyFire lookup complete
 - 28,666 / 28,921 molecules (99.1%) found by InChIKey (existing ClassyFire results). For the 255 others a
   new ClassyFire classification request was attempted (public structures only); the ClassyFire query
   service answered HTTP 500 → these 255 molecules form the `unclassified` group (0.9% overall; train 0.6%,
@@ -112,7 +112,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   (`results/families_summary.json`).
 - External MassBank molecules: all 748 found in the ClassyFire cache.
 
-### 21:08 Final features computed; one test-fold statistic seen
+### 20:57 Final features computed; one test-fold statistic seen
 - `07_features.py` printed per-fold engine top-1 accuracy, including the test fold (scenario a, unweighted).
   This is an engine-level descriptive statistic, not a method result, and no decision was based on it;
   recorded here for transparency. The script now withholds test-fold accuracy.
@@ -124,7 +124,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   study population (§4), counted.
 - External set: 2,955 eligible query spectra from 348 molecules.
 
-### 21:10 Pre-registered before touching the test fold
+### 21:00 Pre-registered before touching the test fold
 - Supplementary "near-correct" definition: top-1 Tanimoto to truth ≥ 0.8 (Morgan r2/2048)
   (`evaluation.approx_correct_tanimoto`). Primary definition unchanged (InChIKey first block).
 - Tier thresholds frozen in config: trusted iff p_correct ≥ 0.9; absent iff p_in ≤ 0.2; otherwise suspicious.
@@ -136,7 +136,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   (`scripts/cosmic/make_subset.py`) with a runner and an ingestion script; the baseline is reported as
   NOT RUN until executed with the project owner's academic SIRIUS login.
 
-### 22:00 Full training run #1 (all 17 systems, entropy + cosine) — `results/train_entropy.json` (superseded entries noted below)
+### 21:15 Full training run #1 (all 17 systems, entropy + cosine) — `results/train_entropy.json` (superseded entries noted below)
 - Val-A (hyperparameter-selection split) log losses of the two components (lower is better):
   | system | P(correct\|in) | P(in) |
   |---|---|---|
@@ -148,7 +148,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   | full − family crowding | 0.0187 | 0.0753 |
 - Crowding helps P(correct | in) (0.0219 → 0.0187), but the family-crowding group made P(in) much WORSE.
 
-### 22:15 Diagnosis: a construction shortcut in `fam_lib_size` (§5.2) — `results/dev_feature_variants.json`
+### 21:24 Diagnosis: a construction shortcut in `fam_lib_size` (§5.2) — `results/dev_feature_variants.json`
 - Validation-only diagnostic with fixed hyperparameters, varying only the feature set
   (`scripts/dev/diag_feature_variants.py`). Adding `fam_lib_size` alone to the base set: P(in) train log
   loss 0.084 → 0.033 while val-A log loss 0.083 → 0.171. Removing only `fam_lib_size` from the family group
@@ -173,7 +173,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
 - Retraining the affected systems (training run #2 for: M_full, M_full_nocounts, M_full_with_libsize,
   M_sim_plus_crowd, M_full_minus_spec, M_full_minus_struct, M_full_direct, M_full_lr; cosine M_full).
 
-### 22:55 Training run #2 + validation decisions (`results/selection.json`, `results/train_entropy.json`)
+### 21:38 Training run #2 + validation decisions (`results/selection.json`, `results/train_entropy.json`)
 - Val-A log loss of combined p_correct (calibrated on val-B) at π = 0.5 / 0.2:
   M_full_minus_family 0.0691 / 0.0585; M_full 0.0706 / 0.0608; M_full_nocounts 0.0716 / 0.0612;
   M_base 0.0780 / 0.0655. → **Primary = M_full_minus_family** (meta + similarity + analog + spectral
@@ -188,7 +188,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
 - Cosine engine: M_full_minus_family added so the engine-swap check uses the same primary configuration.
 - FROZEN from here on: models in data/derived/models/, config, thresholds, primary system.
 
-### 23:05 Harness dry run on val-A (code debugging only; `results/dryrun_valA_*.json`)
+### 21:46 Harness dry run on val-A (code debugging only; `results/dryrun_valA_*.json`)
 - Found and fixed a bug in the wet-lab batch sampler (row positions taken relative to a filtered frame),
   which had made every simulated batch ≈ 50% in-library. After the fix, EM prevalence estimates track the
   truth on val-A (π = 0.1 → 0.092, 0.2 → 0.19, 0.5 → 0.49).
@@ -196,7 +196,7 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   (direct full-feature model: predicted 98.5%, observed 91%); with EM correction predicted 96%, observed 99%.
 - The suspicious tier was under-predicted on val-A (predicted 0.54–0.65 vs observed 0.65–0.72).
 
-### 23:20 Calibrator choice (validation only; `results/dev_calibrators.json`, `results/calibration_*.json`)
+### 21:53 Calibrator choice (validation only; `results/dev_calibrators.json`, `results/calibration_*.json`)
 - Cross-fitting val-A ↔ val-B for the primary system: P(correct|in) log loss isotonic 0.0312, Platt 0.0273;
   P(in) isotonic 0.1100, Platt 0.1072. The mid-range (0.2–0.9) calibration gap of P(in) flips sign with the
   fitting direction (−0.11 vs +0.10): the two structurally disjoint halves of val genuinely differ in the
@@ -210,3 +210,58 @@ directions. Times are US Eastern. Numbers quoted here are copied from the named 
   offsets. Primary stays M_full_minus_family.
 - Validation data are now fully used for calibration; the val-A dry run is no longer an independent check.
   The next step is the single final evaluation on the test fold.
+
+### 21:57 FINAL test evaluation (single run of the frozen procedure) — `results/eval_sweep.json`, `eval_bootstrap.json`, `eval_wetlab.json`, `eval_groups.json`, `eval_incremental.json`, `eval_extra.json`
+- Ran `scripts/09_evaluate.py` once on the test fold with the frozen models/thresholds.
+- Metric bug found while reading the output: the oracle ordering inside `risk_coverage` (used only for
+  e-AURC) sorted by the wrong array, giving negative e-AURC. AURC, risk@coverage, coverage@risk,
+  calibration and all tier/wet-lab numbers are unaffected. Fixed (unit check: oracle ranking → e-AURC 0)
+  and the identical frozen evaluation is re-run so that every stored e-AURC is correct. Nothing about the
+  method, models, thresholds or selection changed.
+- Second harness bug found in the same read-through: `summarize_wetlab` averaged an object-dtype column of
+  numpy booleans; when a tier was empty in some repeats (only B_lr_dec at π ≤ 0.2 — its trusted tier is
+  almost always empty there), pandas summed numpy booleans with logical OR and the "prediction inside
+  95% CI" rate collapsed to 1/1000. Fixed by casting to float. Rates for systems without empty tiers
+  (including the proposed system) were not affected. The frozen evaluation is re-run once more.
+
+### 22:17 Main test evaluation complete (after the two harness-bug re-runs); frozen-procedure results stored
+- The proposed system and every pre-registered baseline were evaluated once more with identical frozen
+  models; only the two reporting bugs above differ from the first pass.
+- Pre-planned shift tests launched in this order: library-level cross-instrument scenario (a_x,
+  `16_scenario_cross_instrument.py`), external MassBank source (`12_external_eval.py`), leave-one-instrument
+  model training (`10_shift_instrument.py`). None of them fits or selects anything on test data (the
+  instrument test re-trains on train/val rows of one instrument type with the frozen recipe).
+
+### 22:20 Two further baselines requested by the project owner — ADDED AFTER THE MAIN TEST EVALUATION
+The proposed method is not modified in any way. Both baselines are configured on train/validation only,
+calibrated with exactly the same rule/budget as every other system (`choose_calibrator`: isotonic vs Platt by
+val-A ↔ val-B cross-fit, refit on the whole validation fold), and evaluated once on the test fold
+(`scripts/19_new_baselines.py` → `results/eval_new_baselines.json`).
+
+**MS2Query.** Route chosen: re-implement its neighbourhood-consistency mechanism with our retrieval engine
+and train its random forest on the train fold only (`scripts/17_ms2query_features.py`). Reasons: (i) the
+official Spec2Vec / MS2Deepscore / random-forest models were trained on public libraries that overlap the
+MassSpecGym test molecules — using them leaks; (ii) retraining MS2Deepscore/Spec2Vec is a deep-embedding
+training job, outside the CPU-only budget and outside what would make the comparison about the
+neighbourhood mechanism; (iii) with one shared similarity (entropy) for all systems, any difference is
+attributable to how neighbourhood information is used, not to a better embedding. Faithful parts: 5
+features (similarity, query precursor m/z, precursor m/z difference, mean similarity between the query and
+ALL spectra of the 10 library molecules most Tanimoto-similar to the candidate, mean Tanimoto of those 10),
+random forest regression on Tanimoto(candidate, truth), 250 trees, max depth 5, ~500k training pairs
+(train fold, both scenarios), candidates = precursor-window molecules + 10 best analogue molecules. The
+10 structural neighbours are taken from the scenario library only (the truth is never a neighbour in (b)).
+Deviation: Spec2Vec/MS2Deepscore → entropy similarity. Three uses are reported: MS2Query's own top-1
+(`B_ms2q_rerank_direct`), its score for our top-1 (`B_ms2q_conf_direct`), and its neighbourhood features
+inside our decomposed/label-shift framework (`B_ms2q_dec`, same LightGBM budget) — the last isolates the
+neighbourhood mechanism from the absence/prevalence machinery. The official pre-trained MS2Query was NOT
+run (it would only be a leaky reference; not needed for the comparison).
+
+**Target-decoy.** Decoy construction fixed a priori (`scripts/18_target_decoy.py`): one decoy per library
+spectrum; same precursor m/z, peak count and intensity multiset; fragment m/z values drawn from real
+fragments of random library spectra of other molecules with precursor within ±5 Da (conditional,
+spectrum-based decoys), processed like targets; decoys mirror the scenario library. Two uses:
+(i) per-query score s1 − d1 (`B_tda_margin_direct`, calibrated like everything else); (ii) set-level FDR:
+within each simulated batch, concatenated target–decoy competition with (decoys+1)/targets q-values,
+accept q ≤ 0.10, compared with the proposed trusted tier (nominal ≥ 90% correct) on the SAME batches
+(realized error, coverage, estimated vs realized error). This is the fair comparison because TDA certifies
+a set, not individual queries.

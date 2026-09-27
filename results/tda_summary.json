@@ -1,0 +1,14 @@
+{
+ "_provenance": {
+  "script": "18_target_decoy.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "2a5d27abd0d6637020aa946ce9fc6113f9a2414f",
+  "dirty": true,
+  "utc": "2026-09-27T02:17:16Z"
+ },
+ "n_decoys": 203935,
+ "frac_decoy_nonempty": 1.0,
+ "n_rows": 61410,
+ "seconds": 94.00355982780457
+}

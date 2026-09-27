@@ -1,0 +1,1287 @@
+{
+ "_provenance": {
+  "script": "09_evaluate.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "2a5d27abd0d6637020aa946ce9fc6113f9a2414f",
+  "dirty": true,
+  "utc": "2026-09-27T02:16:51Z"
+ },
+ "component_comparisons": {
+  "M_full_minus_family vs M_base": {
+   "C_logloss": [
+    0.026614020010991214,
+    0.02848239768287356
+   ],
+   "C_auroc": [
+    0.9936203893297301,
+    0.992443261112061
+   ],
+   "I_logloss": [
+    0.09751559178805949,
+    0.10107232768950211
+   ],
+   "I_auroc": [
+    0.9935795521822679,
+    0.9931835823060644
+   ],
+   "C_dlogloss_ci": [
+    -0.004060121804865251,
+    0.0005826377692531766
+   ],
+   "C_dauroc_ci": [
+    -0.0014495675580923073,
+    0.0041981329486797765
+   ],
+   "I_dlogloss_ci": [
+    -0.006125438948188616,
+    -0.0007484864500043288
+   ]
+  },
+  "M_full vs M_base": {
+   "C_logloss": [
+    0.025425504876110172,
+    0.02848239768287356
+   ],
+   "C_auroc": [
+    0.9944556952272967,
+    0.992443261112061
+   ],
+   "I_logloss": [
+    0.09662584226864672,
+    0.10107232768950211
+   ],
+   "I_auroc": [
+    0.9935607319972265,
+    0.9931835823060644
+   ],
+   "C_dlogloss_ci": [
+    -0.0055577840545434415,
+    -0.0008728512560136334
+   ],
+   "C_dauroc_ci": [
+    0.0002357216754517777,
+    0.004686760511218643
+   ],
+   "I_dlogloss_ci": [
+    -0.007802194043448852,
+    -0.0009962088218664809
+   ]
+  },
+  "M_full vs M_full_minus_family": {
+   "C_logloss": [
+    0.025425504876110172,
+    0.026614020010991214
+   ],
+   "C_auroc": [
+    0.9944556952272967,
+    0.9936203893297301
+   ],
+   "I_logloss": [
+    0.09662584226864672,
+    0.09751559178805949
+   ],
+   "I_auroc": [
+    0.9935607319972265,
+    0.9935795521822679
+   ],
+   "C_dlogloss_ci": [
+    -0.002579273365468292,
+    0.00013317891579777086
+   ],
+   "C_dauroc_ci": [
+    -7.944927934430134e-05,
+    0.0022448724406039836
+   ],
+   "I_dlogloss_ci": [
+    -0.0037829645362312983,
+    0.001959014397222398
+   ]
+  },
+  "M_sim_plus_crowd vs F_sim": {
+   "C_logloss": [
+    0.03879084865422973,
+    0.050440308460114935
+   ],
+   "C_auroc": [
+    0.9870350280492073,
+    0.9694742090198726
+   ],
+   "I_logloss": [
+    0.16539434929062324,
+    0.17761744997911494
+   ],
+   "I_auroc": [
+    0.978858114637497,
+    0.9753409148550409
+   ],
+   "C_dlogloss_ci": [
+    -0.016121200321465818,
+    -0.0076723035723365715
+   ],
+   "C_dauroc_ci": [
+    0.010793311111171388,
+    0.025814439329454604
+   ],
+   "I_dlogloss_ci": [
+    -0.01755595736310942,
+    -0.0071430891738749145
+   ]
+  }
+ },
+ "mantel_haenszel_error_vs_crowding": {
+  "top1_struct_nbrs": {
+   "threshold_val_median": 1.0,
+   "mh_odds_ratio_error": 2.1465913642506114,
+   "ci95": [
+    1.5983713320490922,
+    2.8828435499828995
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.10431654676258993,
+     "err_unexposed": 0.03687445127304653,
+     "n_exposed": 278,
+     "n_unexposed": 1139
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.045627376425855515,
+     "err_unexposed": 0.014213197969543147,
+     "n_exposed": 263,
+     "n_unexposed": 985
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.012195121951219513,
+     "err_unexposed": 0.003913894324853229,
+     "n_exposed": 328,
+     "n_unexposed": 1022
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.010452961672473868,
+     "err_unexposed": 0.0008741258741258741,
+     "n_exposed": 287,
+     "n_unexposed": 1144
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.03018867924528302,
+     "err_unexposed": 0.0041459369817578775,
+     "n_exposed": 265,
+     "n_unexposed": 1206
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.017699115044247787,
+     "err_unexposed": 0.004248088360237893,
+     "n_exposed": 452,
+     "n_unexposed": 1177
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.014925373134328358,
+     "err_unexposed": 0.006306306306306306,
+     "n_exposed": 536,
+     "n_unexposed": 1110
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.0017421602787456446,
+     "err_unexposed": 0.004790419161676647,
+     "n_exposed": 574,
+     "n_unexposed": 835
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.008481764206955046,
+     "n_exposed": 646,
+     "n_unexposed": 1179
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.010279001468428781,
+     "err_unexposed": 0.02003338898163606,
+     "n_exposed": 681,
+     "n_unexposed": 599
+    }
+   ]
+  },
+  "fam_spec_crowd_train": {
+   "threshold_val_median": 5.899965741692361,
+   "mh_odds_ratio_error": 0.9320512744455326,
+   "ci95": [
+    0.6811987949173217,
+    1.275280556391735
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.05707196029776675,
+     "err_unexposed": 0.047337278106508875,
+     "n_exposed": 403,
+     "n_unexposed": 1014
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.02557544757033248,
+     "err_unexposed": 0.01866977829638273,
+     "n_exposed": 391,
+     "n_unexposed": 857
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.004301075268817204,
+     "err_unexposed": 0.006779661016949152,
+     "n_exposed": 465,
+     "n_unexposed": 885
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.004158004158004158,
+     "n_exposed": 469,
+     "n_unexposed": 962
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.006211180124223602,
+     "err_unexposed": 0.010121457489878543,
+     "n_exposed": 483,
+     "n_unexposed": 988
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.0048543689320388345,
+     "err_unexposed": 0.009891196834817012,
+     "n_exposed": 618,
+     "n_unexposed": 1011
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.00725689404934688,
+     "err_unexposed": 0.01044932079414838,
+     "n_exposed": 689,
+     "n_unexposed": 957
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.0,
+     "err_unexposed": 0.006631299734748011,
+     "n_exposed": 655,
+     "n_unexposed": 754
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.006837606837606838,
+     "err_unexposed": 0.004838709677419355,
+     "n_exposed": 585,
+     "n_unexposed": 1240
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.01584786053882726,
+     "err_unexposed": 0.01386748844375963,
+     "n_exposed": 631,
+     "n_unexposed": 649
+    }
+   ]
+  },
+  "n_open_hi": {
+   "threshold_val_median": 1.0,
+   "mh_odds_ratio_error": 5.549018375050915,
+   "ci95": [
+    3.943176605631195,
+    7.808832321301471
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.0903954802259887,
+     "err_unexposed": 0.04435483870967742,
+     "n_exposed": 177,
+     "n_unexposed": 1240
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.04245283018867924,
+     "err_unexposed": 0.016409266409266408,
+     "n_exposed": 212,
+     "n_unexposed": 1036
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.016129032258064516,
+     "err_unexposed": 0.002044989775051125,
+     "n_exposed": 372,
+     "n_unexposed": 978
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.008174386920980926,
+     "err_unexposed": 0.0009398496240601503,
+     "n_exposed": 367,
+     "n_unexposed": 1064
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.02877697841726619,
+     "err_unexposed": 0.0009487666034155598,
+     "n_exposed": 417,
+     "n_unexposed": 1054
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.020442930153321975,
+     "err_unexposed": 0.0009596928982725527,
+     "n_exposed": 587,
+     "n_unexposed": 1042
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.0167427701674277,
+     "err_unexposed": 0.004044489383215369,
+     "n_exposed": 657,
+     "n_unexposed": 989
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.007246376811594203,
+     "err_unexposed": 0.0,
+     "n_exposed": 690,
+     "n_unexposed": 719
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.013140604467805518,
+     "err_unexposed": 0.0,
+     "n_exposed": 761,
+     "n_unexposed": 1064
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.041463414634146344,
+     "err_unexposed": 0.0022988505747126436,
+     "n_exposed": 410,
+     "n_unexposed": 870
+    }
+   ]
+  },
+  "top1_specdens": {
+   "threshold_val_median": 4.0,
+   "mh_odds_ratio_error": 1.2439768030764,
+   "ci95": [
+    0.9239939208300413,
+    1.6747710690586053
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.08446866485013624,
+     "err_unexposed": 0.0380952380952381,
+     "n_exposed": 367,
+     "n_unexposed": 1050
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.03307888040712468,
+     "err_unexposed": 0.0152046783625731,
+     "n_exposed": 393,
+     "n_unexposed": 855
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.007952286282306162,
+     "err_unexposed": 0.004722550177095631,
+     "n_exposed": 503,
+     "n_unexposed": 847
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.002178649237472767,
+     "err_unexposed": 0.0030864197530864196,
+     "n_exposed": 459,
+     "n_unexposed": 972
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.009157509157509158,
+     "err_unexposed": 0.008648648648648649,
+     "n_exposed": 546,
+     "n_unexposed": 925
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.00625,
+     "err_unexposed": 0.009650180940892641,
+     "n_exposed": 800,
+     "n_unexposed": 829
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.006659267480577136,
+     "err_unexposed": 0.012080536912751677,
+     "n_exposed": 901,
+     "n_unexposed": 745
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.002257336343115124,
+     "err_unexposed": 0.0057361376673040155,
+     "n_exposed": 886,
+     "n_unexposed": 523
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.003835091083413231,
+     "err_unexposed": 0.0076726342710997444,
+     "n_exposed": 1043,
+     "n_unexposed": 782
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.009009009009009009,
+     "err_unexposed": 0.017942583732057416,
+     "n_exposed": 444,
+     "n_unexposed": 836
+    }
+   ]
+  },
+  "n_near_tie": {
+   "threshold_val_median": 0.0,
+   "mh_odds_ratio_error": 82.68009122790959,
+   "ci95": [
+    56.559590028803136,
+    120.86363217933871
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.4634146341463415,
+     "err_unexposed": 0.010819165378670788,
+     "n_exposed": 123,
+     "n_unexposed": 1294
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.6111111111111112,
+     "err_unexposed": 0.012195121951219513,
+     "n_exposed": 18,
+     "n_unexposed": 1230
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.3076923076923077,
+     "err_unexposed": 0.0029917726252804786,
+     "n_exposed": 13,
+     "n_unexposed": 1337
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.08333333333333333,
+     "err_unexposed": 0.0021141649048625794,
+     "n_exposed": 12,
+     "n_unexposed": 1419
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.5714285714285714,
+     "err_unexposed": 0.0034317089910775567,
+     "n_exposed": 14,
+     "n_unexposed": 1457
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.3333333333333333,
+     "err_unexposed": 0.001876172607879925,
+     "n_exposed": 30,
+     "n_unexposed": 1599
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.2682926829268293,
+     "err_unexposed": 0.0024922118380062306,
+     "n_exposed": 41,
+     "n_unexposed": 1605
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.1,
+     "err_unexposed": 0.0021598272138228943,
+     "n_exposed": 20,
+     "n_unexposed": 1389
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.08695652173913043,
+     "err_unexposed": 0.003372681281618887,
+     "n_exposed": 46,
+     "n_unexposed": 1779
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.23333333333333334,
+     "err_unexposed": 0.0096,
+     "n_exposed": 30,
+     "n_unexposed": 1250
+    }
+   ]
+  },
+  "fam_ent_topk": {
+   "threshold_val_median": 0.016669493896428546,
+   "mh_odds_ratio_error": 1.7979872857698647,
+   "ci95": [
+    1.2743298589748417,
+    2.5368300499454177
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.0599803343166175,
+     "err_unexposed": 0.025,
+     "n_exposed": 1017,
+     "n_unexposed": 400
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.022556390977443608,
+     "err_unexposed": 0.017777777777777778,
+     "n_exposed": 798,
+     "n_unexposed": 450
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.006968641114982578,
+     "err_unexposed": 0.00408997955010225,
+     "n_exposed": 861,
+     "n_unexposed": 489
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.003105590062111801,
+     "err_unexposed": 0.002150537634408602,
+     "n_exposed": 966,
+     "n_unexposed": 465
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.009852216748768473,
+     "err_unexposed": 0.006578947368421052,
+     "n_exposed": 1015,
+     "n_unexposed": 456
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.005660377358490566,
+     "err_unexposed": 0.012302284710017574,
+     "n_exposed": 1060,
+     "n_unexposed": 569
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.015873015873015872,
+     "err_unexposed": 0.0013089005235602095,
+     "n_exposed": 882,
+     "n_unexposed": 764
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.004398826979472141,
+     "err_unexposed": 0.002751031636863824,
+     "n_exposed": 682,
+     "n_unexposed": 727
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.0041841004184100415,
+     "err_unexposed": 0.006904487917146145,
+     "n_exposed": 956,
+     "n_unexposed": 869
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.022288261515601784,
+     "err_unexposed": 0.006589785831960461,
+     "n_exposed": 673,
+     "n_unexposed": 607
+    }
+   ]
+  },
+  "tani12": {
+   "threshold_val_median": 0.12745098769664764,
+   "mh_odds_ratio_error": 6.386938014215701,
+   "ci95": [
+    4.435520784255534,
+    9.196885592833574
+   ],
+   "strata": [
+    {
+     "stratum": 0,
+     "err_exposed": 0.08102345415778252,
+     "err_unexposed": 0.03481012658227848,
+     "n_exposed": 469,
+     "n_unexposed": 948
+    },
+    {
+     "stratum": 1,
+     "err_exposed": 0.050314465408805034,
+     "err_unexposed": 0.0025940337224383916,
+     "n_exposed": 477,
+     "n_unexposed": 771
+    },
+    {
+     "stratum": 2,
+     "err_exposed": 0.01646090534979424,
+     "err_unexposed": 0.0,
+     "n_exposed": 486,
+     "n_unexposed": 864
+    },
+    {
+     "stratum": 3,
+     "err_exposed": 0.007067137809187279,
+     "err_unexposed": 0.0,
+     "n_exposed": 566,
+     "n_unexposed": 865
+    },
+    {
+     "stratum": 4,
+     "err_exposed": 0.02355072463768116,
+     "err_unexposed": 0.0,
+     "n_exposed": 552,
+     "n_unexposed": 919
+    },
+    {
+     "stratum": 5,
+     "err_exposed": 0.018544935805991442,
+     "err_unexposed": 0.0,
+     "n_exposed": 701,
+     "n_unexposed": 928
+    },
+    {
+     "stratum": 6,
+     "err_exposed": 0.021398002853067047,
+     "err_unexposed": 0.0,
+     "n_exposed": 701,
+     "n_unexposed": 945
+    },
+    {
+     "stratum": 7,
+     "err_exposed": 0.007668711656441718,
+     "err_unexposed": 0.0,
+     "n_exposed": 652,
+     "n_unexposed": 757
+    },
+    {
+     "stratum": 8,
+     "err_exposed": 0.01240694789081886,
+     "err_unexposed": 0.0,
+     "n_exposed": 806,
+     "n_unexposed": 1019
+    },
+    {
+     "stratum": 9,
+     "err_exposed": 0.021848739495798318,
+     "err_unexposed": 0.008759124087591242,
+     "n_exposed": 595,
+     "n_unexposed": 685
+    }
+   ]
+  }
+ },
+ "family_level_prior": {
+  "top1_class": {
+   "n_families": 33,
+   "spearman_rho": 0.1918756485770714,
+   "p": 0.28474544138708013,
+   "rho_ci95_family_bootstrap": [
+    -0.19785082370499513,
+    0.5252853547457936
+   ],
+   "table": [
+    {
+     "top1_class": "Pyrroles",
+     "n": 52,
+     "n_mol": 19,
+     "err": 0.0,
+     "crowd": 0.0
+    },
+    {
+     "top1_class": "Thioethers",
+     "n": 95,
+     "n_mol": 31,
+     "err": 0.0,
+     "crowd": 0.02564102564102564
+    },
+    {
+     "top1_class": "Thiophenes",
+     "n": 60,
+     "n_mol": 20,
+     "err": 0.0,
+     "crowd": 0.05
+    },
+    {
+     "top1_class": "Thienopyrimidines",
+     "n": 64,
+     "n_mol": 23,
+     "err": 0.0,
+     "crowd": 0.05555555555555555
+    },
+    {
+     "top1_class": "unclassified",
+     "n": 162,
+     "n_mol": 55,
+     "err": 0.006172839506172867,
+     "crowd": 0.08391608391608392
+    },
+    {
+     "top1_class": "Diazines",
+     "n": 183,
+     "n_mol": 55,
+     "err": 0.032786885245901676,
+     "crowd": 0.13445378151260504
+    },
+    {
+     "top1_class": "Tetrahydroisoquinolines",
+     "n": 96,
+     "n_mol": 12,
+     "err": 0.04166666666666663,
+     "crowd": 0.16867469879518074
+    },
+    {
+     "top1_class": "Benzopyrans",
+     "n": 118,
+     "n_mol": 29,
+     "err": 0.05932203389830504,
+     "crowd": 0.36404494382022473
+    },
+    {
+     "top1_class": "Diazinanes",
+     "n": 287,
+     "n_mol": 81,
+     "err": 0.017421602787456414,
+     "crowd": 0.4084507042253521
+    },
+    {
+     "top1_class": "Naphthopyrans",
+     "n": 53,
+     "n_mol": 14,
+     "err": 0.09433962264150941,
+     "crowd": 0.5
+    },
+    {
+     "top1_class": "Benzimidazoles",
+     "n": 75,
+     "n_mol": 22,
+     "err": 0.0,
+     "crowd": 0.5806451612903226
+    },
+    {
+     "top1_class": "Piperidines",
+     "n": 215,
+     "n_mol": 66,
+     "err": 0.009302325581395321,
+     "crowd": 0.6311475409836066
+    },
+    {
+     "top1_class": "Isoindoles and derivatives",
+     "n": 50,
+     "n_mol": 14,
+     "err": 0.020000000000000018,
+     "crowd": 0.631578947368421
+    },
+    {
+     "top1_class": "Phenol ethers",
+     "n": 93,
+     "n_mol": 23,
+     "err": 0.010752688172043001,
+     "crowd": 0.7042253521126761
+    },
+    {
+     "top1_class": "Macrolides and analogues",
+     "n": 105,
+     "n_mol": 10,
+     "err": 0.0,
+     "crowd": 0.8627450980392156
+    },
+    {
+     "top1_class": "Organooxygen compounds",
+     "n": 1339,
+     "n_mol": 146,
+     "err": 0.012696041822255366,
+     "crowd": 1.0523690773067331
+    },
+    {
+     "top1_class": "Pyridines and derivatives",
+     "n": 339,
+     "n_mol": 95,
+     "err": 0.008849557522123908,
+     "crowd": 1.089058524173028
+    },
+    {
+     "top1_class": "Naphthalenes",
+     "n": 125,
+     "n_mol": 27,
+     "err": 0.02400000000000002,
+     "crowd": 1.1818181818181819
+    },
+    {
+     "top1_class": "Peptidomimetics",
+     "n": 154,
+     "n_mol": 24,
+     "err": 0.00649350649350644,
+     "crowd": 1.2254901960784312
+    },
+    {
+     "top1_class": "Organonitrogen compounds",
+     "n": 145,
+     "n_mol": 44,
+     "err": 0.006896551724137945,
+     "crowd": 1.4817275747508305
+    },
+    {
+     "top1_class": "Azaphilones",
+     "n": 79,
+     "n_mol": 18,
+     "err": 0.012658227848101222,
+     "crowd": 2.2222222222222223
+    },
+    {
+     "top1_class": "Diazanaphthalenes",
+     "n": 189,
+     "n_mol": 58,
+     "err": 0.0,
+     "crowd": 2.3179190751445087
+    },
+    {
+     "top1_class": "Quinolines and derivatives",
+     "n": 243,
+     "n_mol": 60,
+     "err": 0.0,
+     "crowd": 3.377279102384292
+    },
+    {
+     "top1_class": "Azoles",
+     "n": 512,
+     "n_mol": 152,
+     "err": 0.009765625,
+     "crowd": 3.8631178707224336
+    },
+    {
+     "top1_class": "Cinnamic acids and derivatives",
+     "n": 162,
+     "n_mol": 21,
+     "err": 0.07407407407407407,
+     "crowd": 4.9787234042553195
+    },
+    {
+     "top1_class": "Benzene and substituted derivatives",
+     "n": 2286,
+     "n_mol": 412,
+     "err": 0.004374453193350836,
+     "crowd": 5.899965741692361
+    },
+    {
+     "top1_class": "Flavonoids",
+     "n": 257,
+     "n_mol": 21,
+     "err": 0.011673151750972721,
+     "crowd": 6.315325248070563
+    },
+    {
+     "top1_class": "Indoles and derivatives",
+     "n": 397,
+     "n_mol": 77,
+     "err": 0.007556675062972307,
+     "crowd": 6.47906976744186
+    },
+    {
+     "top1_class": "Imidazopyrimidines",
+     "n": 131,
+     "n_mol": 28,
+     "err": 0.022900763358778664,
+     "crowd": 7.425287356321839
+    },
+    {
+     "top1_class": "Prenol lipids",
+     "n": 2568,
+     "n_mol": 156,
+     "err": 0.006619937694704037,
+     "crowd": 8.810865191146881
+    },
+    {
+     "top1_class": "Fatty Acyls",
+     "n": 93,
+     "n_mol": 24,
+     "err": 0.010752688172043001,
+     "crowd": 9.382765531062123
+    },
+    {
+     "top1_class": "Steroids and steroid derivatives",
+     "n": 163,
+     "n_mol": 24,
+     "err": 0.06134969325153372,
+     "crowd": 9.688725490196079
+    },
+    {
+     "top1_class": "Carboxylic acids and derivatives",
+     "n": 1726,
+     "n_mol": 257,
+     "err": 0.010428736964078755,
+     "crowd": 14.243489174772515
+    }
+   ]
+  },
+  "ana_true_class": {
+   "n_families": 32,
+   "spearman_rho": -0.049374275191867635,
+   "p": 0.7884265888553356,
+   "rho_ci95_family_bootstrap": [
+    -0.4286129714102624,
+    0.2783123756219743
+   ],
+   "table": [
+    {
+     "ana_true_class": "Pyrroles",
+     "n": 53,
+     "n_mol": 19,
+     "err": 0.018867924528301883,
+     "crowd": 0.0
+    },
+    {
+     "ana_true_class": "Thioethers",
+     "n": 95,
+     "n_mol": 31,
+     "err": 0.0,
+     "crowd": 0.02564102564102564
+    },
+    {
+     "ana_true_class": "Thiophenes",
+     "n": 60,
+     "n_mol": 20,
+     "err": 0.0,
+     "crowd": 0.05
+    },
+    {
+     "ana_true_class": "Thienopyrimidines",
+     "n": 65,
+     "n_mol": 23,
+     "err": 0.01538461538461533,
+     "crowd": 0.05555555555555555
+    },
+    {
+     "ana_true_class": "unclassified",
+     "n": 161,
+     "n_mol": 54,
+     "err": 0.0,
+     "crowd": 0.08391608391608392
+    },
+    {
+     "ana_true_class": "Diazines",
+     "n": 181,
+     "n_mol": 53,
+     "err": 0.02209944751381221,
+     "crowd": 0.13445378151260504
+    },
+    {
+     "ana_true_class": "Tetrahydroisoquinolines",
+     "n": 96,
+     "n_mol": 12,
+     "err": 0.04166666666666663,
+     "crowd": 0.16867469879518074
+    },
+    {
+     "ana_true_class": "Benzopyrans",
+     "n": 116,
+     "n_mol": 28,
+     "err": 0.0431034482758621,
+     "crowd": 0.36404494382022473
+    },
+    {
+     "ana_true_class": "Diazinanes",
+     "n": 287,
+     "n_mol": 81,
+     "err": 0.017421602787456414,
+     "crowd": 0.4084507042253521
+    },
+    {
+     "ana_true_class": "Naphthopyrans",
+     "n": 53,
+     "n_mol": 13,
+     "err": 0.09433962264150941,
+     "crowd": 0.5
+    },
+    {
+     "ana_true_class": "Benzimidazoles",
+     "n": 78,
+     "n_mol": 22,
+     "err": 0.038461538461538436,
+     "crowd": 0.5806451612903226
+    },
+    {
+     "ana_true_class": "Piperidines",
+     "n": 217,
+     "n_mol": 66,
+     "err": 0.018433179723502335,
+     "crowd": 0.6311475409836066
+    },
+    {
+     "ana_true_class": "Phenol ethers",
+     "n": 92,
+     "n_mol": 22,
+     "err": 0.0,
+     "crowd": 0.7042253521126761
+    },
+    {
+     "ana_true_class": "Macrolides and analogues",
+     "n": 105,
+     "n_mol": 10,
+     "err": 0.0,
+     "crowd": 0.8627450980392156
+    },
+    {
+     "ana_true_class": "Organooxygen compounds",
+     "n": 1340,
+     "n_mol": 143,
+     "err": 0.013432835820895495,
+     "crowd": 1.0523690773067331
+    },
+    {
+     "ana_true_class": "Pyridines and derivatives",
+     "n": 342,
+     "n_mol": 95,
+     "err": 0.01754385964912286,
+     "crowd": 1.089058524173028
+    },
+    {
+     "ana_true_class": "Naphthalenes",
+     "n": 125,
+     "n_mol": 26,
+     "err": 0.02400000000000002,
+     "crowd": 1.1818181818181819
+    },
+    {
+     "ana_true_class": "Peptidomimetics",
+     "n": 153,
+     "n_mol": 23,
+     "err": 0.0,
+     "crowd": 1.2254901960784312
+    },
+    {
+     "ana_true_class": "Organonitrogen compounds",
+     "n": 144,
+     "n_mol": 43,
+     "err": 0.0,
+     "crowd": 1.4817275747508305
+    },
+    {
+     "ana_true_class": "Azaphilones",
+     "n": 79,
+     "n_mol": 17,
+     "err": 0.012658227848101222,
+     "crowd": 2.2222222222222223
+    },
+    {
+     "ana_true_class": "Diazanaphthalenes",
+     "n": 190,
+     "n_mol": 58,
+     "err": 0.0052631578947368585,
+     "crowd": 2.3179190751445087
+    },
+    {
+     "ana_true_class": "Quinolines and derivatives",
+     "n": 244,
+     "n_mol": 60,
+     "err": 0.004098360655737654,
+     "crowd": 3.377279102384292
+    },
+    {
+     "ana_true_class": "Azoles",
+     "n": 511,
+     "n_mol": 150,
+     "err": 0.007827788649706457,
+     "crowd": 3.8631178707224336
+    },
+    {
+     "ana_true_class": "Cinnamic acids and derivatives",
+     "n": 162,
+     "n_mol": 20,
+     "err": 0.07407407407407407,
+     "crowd": 4.9787234042553195
+    },
+    {
+     "ana_true_class": "Benzene and substituted derivatives",
+     "n": 2292,
+     "n_mol": 410,
+     "err": 0.006980802792321161,
+     "crowd": 5.899965741692361
+    },
+    {
+     "ana_true_class": "Flavonoids",
+     "n": 257,
+     "n_mol": 20,
+     "err": 0.011673151750972721,
+     "crowd": 6.315325248070563
+    },
+    {
+     "ana_true_class": "Indoles and derivatives",
+     "n": 396,
+     "n_mol": 75,
+     "err": 0.005050505050505083,
+     "crowd": 6.47906976744186
+    },
+    {
+     "ana_true_class": "Imidazopyrimidines",
+     "n": 131,
+     "n_mol": 27,
+     "err": 0.022900763358778664,
+     "crowd": 7.425287356321839
+    },
+    {
+     "ana_true_class": "Prenol lipids",
+     "n": 2572,
+     "n_mol": 154,
+     "err": 0.008164852255054478,
+     "crowd": 8.810865191146881
+    },
+    {
+     "ana_true_class": "Fatty Acyls",
+     "n": 94,
+     "n_mol": 23,
+     "err": 0.021276595744680882,
+     "crowd": 9.382765531062123
+    },
+    {
+     "ana_true_class": "Steroids and steroid derivatives",
+     "n": 155,
+     "n_mol": 16,
+     "err": 0.012903225806451646,
+     "crowd": 9.688725490196079
+    },
+    {
+     "ana_true_class": "Carboxylic acids and derivatives",
+     "n": 1731,
+     "n_mol": 253,
+     "err": 0.013287117273252491,
+     "crowd": 14.243489174772515
+    }
+   ]
+  }
+ },
+ "query_level_error_by_crowding_bin": {
+  "top1_struct_nbrs": [
+   {
+    "bin_top1_struct_nbrs": 1,
+    "n": 8342,
+    "err": 0.008151522416686596,
+    "mean_s1": 0.8274747521483217
+   },
+   {
+    "bin_top1_struct_nbrs": 2,
+    "n": 4440,
+    "err": 0.017342342342342332,
+    "mean_s1": 0.8697801299661666
+   },
+   {
+    "bin_top1_struct_nbrs": 3,
+    "n": 1924,
+    "err": 0.020270270270270285,
+    "mean_s1": 0.9107875657091672
+   }
+  ],
+  "fam_spec_crowd_train": [
+   {
+    "bin_fam_spec_crowd_train": 0,
+    "n": 2943,
+    "err": 0.01868841318382608,
+    "mean_s1": 0.8086674799506575
+   },
+   {
+    "bin_fam_spec_crowd_train": 1,
+    "n": 3647,
+    "err": 0.015080888401425852,
+    "mean_s1": 0.8358558915388978
+   },
+   {
+    "bin_fam_spec_crowd_train": 2,
+    "n": 3087,
+    "err": 0.007450599287333937,
+    "mean_s1": 0.8694379086107508
+   },
+   {
+    "bin_fam_spec_crowd_train": 3,
+    "n": 5029,
+    "err": 0.010141181149333822,
+    "mean_s1": 0.8758687178518562
+   }
+  ],
+  "n_open_hi": [
+   {
+    "bin_n_open_hi": 1,
+    "n": 1920,
+    "err": 0.03125,
+    "mean_s1": 0.5109353821656745
+   },
+   {
+    "bin_n_open_hi": 2,
+    "n": 8136,
+    "err": 0.0028269419862340106,
+    "mean_s1": 0.9013253002946752
+   },
+   {
+    "bin_n_open_hi": 3,
+    "n": 4650,
+    "err": 0.02172043010752689,
+    "mean_s1": 0.9038268513849346
+   }
+  ],
+  "top1_specdens": [
+   {
+    "bin_top1_specdens": 1,
+    "n": 7900,
+    "err": 0.012025316455696156,
+    "mean_s1": 0.8199382212807578
+   },
+   {
+    "bin_top1_specdens": 2,
+    "n": 3073,
+    "err": 0.015619915392124928,
+    "mean_s1": 0.8696871014282209
+   },
+   {
+    "bin_top1_specdens": 3,
+    "n": 3733,
+    "err": 0.01098312349316899,
+    "mean_s1": 0.9019322328123783
+   }
+  ],
+  "n_win_mol": [
+   {
+    "bin_n_win_mol": 0,
+    "n": 2685,
+    "err": 0.0,
+    "mean_s1": 0.856619740942115
+   },
+   {
+    "bin_n_win_mol": 1,
+    "n": 2319,
+    "err": 0.010349288486416586,
+    "mean_s1": 0.8472214764704564
+   },
+   {
+    "bin_n_win_mol": 2,
+    "n": 4449,
+    "err": 0.015284333558102992,
+    "mean_s1": 0.8640288323972849
+   },
+   {
+    "bin_n_win_mol": 3,
+    "n": 5253,
+    "err": 0.017513801637159765,
+    "mean_s1": 0.839173529829703
+   }
+  ]
+ }
+}

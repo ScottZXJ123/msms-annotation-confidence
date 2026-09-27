@@ -1,0 +1,211 @@
+{
+ "_provenance": {
+  "script": "21_wetlab_ax.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "2a5d27abd0d6637020aa946ce9fc6113f9a2414f",
+  "dirty": true,
+  "utc": "2026-09-27T02:27:37Z"
+ },
+ "primary": "M_full_minus_family",
+ "n_in_molecules": 420,
+ "n_absent_molecules": 334,
+ "wetlab": {
+  "0.1": {
+   "absent": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 158.984,
+    "obs_acc_mean": 0.018025,
+    "obs_acc_q025": 0.0,
+    "obs_acc_q975": 0.075,
+    "pred_acc_mean": 0.009639852967590035,
+    "acc_consistent_rate": 0.864,
+    "mean_abs_gap_acc": 0.016408497843110003,
+    "obs_in_mean": 0.022275,
+    "pred_in_mean": 0.011721370564931114,
+    "in_consistent_rate": 0.841
+   },
+   "suspicious": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.002,
+    "mean_tier_size_in_batch": 16.584,
+    "obs_acc_mean": 0.34381420840482757,
+    "obs_acc_q025": 0.13333333333333333,
+    "obs_acc_q975": 0.5384615384615384,
+    "pred_acc_mean": 0.4769366802028313,
+    "acc_consistent_rate": 0.827,
+    "mean_abs_gap_acc": 0.14490950099714076,
+    "obs_in_mean": 0.3606693858374242,
+    "pred_in_mean": 0.5222289479945228,
+    "in_consistent_rate": 0.76
+   },
+   "trusted": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.002,
+    "mean_tier_size_in_batch": 10.026,
+    "obs_acc_mean": 0.9061135053671819,
+    "obs_acc_q025": 0.7142857142857143,
+    "obs_acc_q975": 1.0,
+    "pred_acc_mean": 0.9737492995747264,
+    "acc_consistent_rate": 0.674,
+    "mean_abs_gap_acc": 0.08459852479089491,
+    "obs_in_mean": 0.9061135053671819,
+    "pred_in_mean": 0.9754573453385497,
+    "in_consistent_rate": 0.648
+   },
+   "_pi_used": {
+    "mean": 0.10961290321578994,
+    "q025": 0.07522715484533131,
+    "q975": 0.14338377577363418
+   }
+  },
+  "0.2": {
+   "absent": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 157.724,
+    "obs_acc_mean": 0.028825000000000003,
+    "obs_acc_q025": 0.0,
+    "obs_acc_q975": 0.1,
+    "pred_acc_mean": 0.013046309589438757,
+    "acc_consistent_rate": 0.784,
+    "mean_abs_gap_acc": 0.0229983279931285,
+    "obs_in_mean": 0.036175000000000006,
+    "pred_in_mean": 0.016246474522628316,
+    "in_consistent_rate": 0.754
+   },
+   "suspicious": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.004,
+    "mean_tier_size_in_batch": 27.644,
+    "obs_acc_mean": 0.46800609032489204,
+    "obs_acc_q025": 0.30434782608695654,
+    "obs_acc_q975": 0.631578947368421,
+    "pred_acc_mean": 0.5234751032237704,
+    "acc_consistent_rate": 0.949,
+    "mean_abs_gap_acc": 0.0800476350215404,
+    "obs_in_mean": 0.5006672007657452,
+    "pred_in_mean": 0.574231845716062,
+    "in_consistent_rate": 0.884
+   },
+   "trusted": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.001,
+    "mean_tier_size_in_batch": 23.451,
+    "obs_acc_mean": 0.9446148078528941,
+    "obs_acc_q025": 0.8460526315789474,
+    "obs_acc_q975": 1.0,
+    "pred_acc_mean": 0.9804261762601664,
+    "acc_consistent_rate": 0.654,
+    "mean_abs_gap_acc": 0.045629051492091816,
+    "obs_in_mean": 0.9446148078528941,
+    "pred_in_mean": 0.9822043889839244,
+    "in_consistent_rate": 0.626
+   },
+   "_pi_used": {
+    "mean": 0.19865917373254852,
+    "q025": 0.16253555311709247,
+    "q975": 0.23334999948620824
+   }
+  },
+  "0.3": {
+   "absent": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 155.868,
+    "obs_acc_mean": 0.038875,
+    "obs_acc_q025": 0.0,
+    "obs_acc_q975": 0.1,
+    "pred_acc_mean": 0.014929777828833502,
+    "acc_consistent_rate": 0.697,
+    "mean_abs_gap_acc": 0.029290476584106044,
+    "obs_in_mean": 0.049400000000000006,
+    "pred_in_mean": 0.018952834882888108,
+    "in_consistent_rate": 0.672
+   },
+   "suspicious": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.555,
+    "mean_tier_size_in_batch": 40.344,
+    "obs_acc_mean": 0.5233977874815523,
+    "obs_acc_q025": 0.3946898496240602,
+    "obs_acc_q975": 0.6501293103448275,
+    "pred_acc_mean": 0.5389780729386688,
+    "acc_consistent_rate": 0.976,
+    "mean_abs_gap_acc": 0.056894672782383734,
+    "obs_in_mean": 0.5711522060404576,
+    "pred_in_mean": 0.5972178352708245,
+    "in_consistent_rate": 0.955
+   },
+   "trusted": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 0.738,
+    "mean_tier_size_in_batch": 42.47,
+    "obs_acc_mean": 0.9617196949990519,
+    "obs_acc_q025": 0.9,
+    "obs_acc_q975": 1.0,
+    "pred_acc_mean": 0.9823177986464529,
+    "acc_consistent_rate": 0.791,
+    "mean_abs_gap_acc": 0.02672210969061441,
+    "obs_in_mean": 0.9617196949990519,
+    "pred_in_mean": 0.9840376066018075,
+    "in_consistent_rate": 0.738
+   },
+   "_pi_used": {
+    "mean": 0.2886351912582818,
+    "q025": 0.2541681057401181,
+    "q975": 0.32168070371793656
+   }
+  },
+  "0.5": {
+   "absent": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 152.93,
+    "obs_acc_mean": 0.059575,
+    "obs_acc_q025": 0.0,
+    "obs_acc_q975": 0.125,
+    "pred_acc_mean": 0.019216556561121725,
+    "acc_consistent_rate": 0.546,
+    "mean_abs_gap_acc": 0.04333176048258319,
+    "obs_in_mean": 0.0782,
+    "pred_in_mean": 0.02541405466426644,
+    "in_consistent_rate": 0.474
+   },
+   "suspicious": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 69.463,
+    "obs_acc_mean": 0.6061749999999999,
+    "obs_acc_q025": 0.475,
+    "obs_acc_q975": 0.725,
+    "pred_acc_mean": 0.5514077222780635,
+    "acc_consistent_rate": 0.927,
+    "mean_abs_gap_acc": 0.07187501846403992,
+    "obs_in_mean": 0.6817750000000001,
+    "pred_in_mean": 0.6249451729698576,
+    "in_consistent_rate": 0.913
+   },
+   "trusted": {
+    "n_repeats_nonempty": 1000,
+    "frac_repeats_full_n": 1.0,
+    "mean_tier_size_in_batch": 111.401,
+    "obs_acc_mean": 0.9661499999999998,
+    "obs_acc_q025": 0.9,
+    "obs_acc_q975": 1.0,
+    "pred_acc_mean": 0.9827378994483092,
+    "acc_consistent_rate": 0.821,
+    "mean_abs_gap_acc": 0.023778445373764216,
+    "obs_in_mean": 0.9671499999999998,
+    "pred_in_mean": 0.9845076991917265,
+    "in_consistent_rate": 0.797
+   },
+   "_pi_used": {
+    "mean": 0.47013769745195055,
+    "q025": 0.44225586161022573,
+    "q975": 0.4976457358750939
+   }
+  }
+ }
+}

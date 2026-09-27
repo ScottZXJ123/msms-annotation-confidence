@@ -255,6 +255,84 @@ def table_checks():
                             for k, v in c.items()]))
 
 
+def prereg_table(resname):
+    w = J[resname]["wetlab"]
+    key = f"{P}|em"
+    rows = []
+    for pi in ["0.1", "0.2", "0.3", "0.5"]:
+        if pi not in w:
+            continue
+        v = w[pi][key] if key in w[pi] else w[pi]
+        for t in ["trusted", "suspicious", "absent"]:
+            x = v.get(t, {})
+            if not x or not x.get("n_repeats_nonempty"):
+                continue
+            rows.append({"batch in-library fraction π": pi, "tier": t, "tier size / batch": f"{x['mean_tier_size_in_batch']:.0f}",
+                         "predicted accuracy": pct(x["pred_acc_mean"]),
+                         "obs. accuracy, mean (2.5–97.5%)": f"{pct(x['obs_acc_mean'])} ({pct(x['obs_acc_q025'])}–{pct(x['obs_acc_q975'])})",
+                         "P(pred ∈ 95% CI)": pct(x["acc_consistent_rate"]),
+                         "obs. in-library (pred.)": f"{pct(x['obs_in_mean'])} ({pct(x['pred_in_mean'])})"})
+    return md(pd.DataFrame(rows))
+
+
+# ----------------------------------------------------------------------------- scalar accessors
+def sw(s, pi, key, mode="em"):
+    return J["eval_sweep"]["sweep"][s][str(pi)][mode][key]
+
+
+def tier(s, pi, t, key, mode="em"):
+    return J["eval_sweep"]["sweep"][s][str(pi)][mode]["tiers"][t].get(key)
+
+
+def wl(pi, t, key, sysmode=None):
+    return J["eval_wetlab"]["wetlab"][str(pi)][sysmode or f"{P}|em"][t].get(key)
+
+
+def bd(pi, a, c, key):
+    return J["eval_bootstrap"]["boot"][str(pi)]["diffs"][f"{a} - {c}"][key]
+
+
+def inc(pair, key):
+    return J["eval_incremental"]["component_comparisons"][pair][key]
+
+
+def mh(c, key):
+    return J["eval_incremental"]["mantel_haenszel_error_vs_crowding"][c][key]
+
+
+def grp(s, pi, g, key):
+    return J["eval_groups"]["groups"][s][str(pi)][g][key]
+
+
+def nb(n, pi, key, mode="em"):
+    return J["eval_new_baselines"]["sweep"][n][str(pi)][mode][key]
+
+
+def nbd(pi, n, key):
+    return J["eval_new_baselines"]["bootstrap"][str(pi)][f"{P} - {n}"][key]
+
+
+def tda(pi, key, stat="mean"):
+    v = J["eval_new_baselines"]["tda_set_level"][str(pi)][key]
+    return v[stat] if isinstance(v, dict) else v
+
+
+def ax(s, scen, pi, key, mode="em"):
+    return J["eval_cross_instrument_library"]["systems"][s][scen][str(pi)][mode][key]
+
+
+def ext(s, pi, key, mode="em"):
+    return J["eval_external"]["systems"][s][str(pi)][mode][key]
+
+
+def shift(test_on, s, which, pi, key, mode="em"):
+    return J["eval_shift_instrument"][f"test_on_{test_on}"][s][which][str(pi)][mode][key]
+
+
+def dev(v, comp, key="valA_logloss"):
+    return J["dev_feature_variants"][v][comp][key]
+
+
 # ----------------------------------------------------------------------------- render
 NS = {k: v for k, v in globals().items() if not k.startswith("_")}
 PAT = re.compile(r"\{\{\s*(.+?)\s*(?::\s*([^}]+?))?\s*\}\}")

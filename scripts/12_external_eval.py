@@ -17,7 +17,10 @@ from msconf.evaluation import assign_tiers, wilson  # noqa: E402
 
 cfg = load_config()
 der = path(cfg, "derived")
-ext = der / "ext"
+import os  # noqa: E402
+
+VARIANT = os.environ.get("MSCONF_EXT_VARIANT", "v1")
+ext = der / ("ext" if VARIANT == "v1" else f"ext_{VARIANT}")
 sel = json.load(open(path(cfg, "results") / "selection.json"))
 PRIMARY = sel["primary_system"]
 evalutil.set_thresholds(cfg["tiers"]["trusted_min_p_correct"], cfg["tiers"]["absent_max_p_in"])
@@ -52,5 +55,6 @@ for name in [PRIMARY, "M_full", "M_base", "B_lr_dec", "B_lr_direct", "B_s1_direc
             per[src] = {"n_mol": int(g.mol.nunique()), **{str(pi): evaluate_weighted(c, g, pi, "oracle") for pi in [0.5]}}
         out["_per_source_primary"] = per
 res["systems"] = out
-write_result(cfg, "eval_external", res)
+res["variant"] = VARIANT
+write_result(cfg, "eval_external" + ("" if VARIANT == "v1" else "_" + VARIANT), res)
 print(json.dumps({k: v for k, v in res.items() if k != "systems"}, indent=1))

@@ -32,7 +32,12 @@ from msconf.spectra import process, spectral_entropy  # noqa: E402
 
 cfg = load_config()
 der = path(cfg, "derived")
-ext = der / "ext"
+import os  # noqa: E402
+
+VARIANT = os.environ.get("MSCONF_EXT_VARIANT", "v1")  # v1: InChIKey-block dedup; v2: + canonical-tautomer dedup;
+# v3: + removal of external molecules having an (almost) identical spectrum (entropy >= 0.99, same precursor
+# window) of a DIFFERENT MassSpecGym molecule (cross-library duplicate deposits / indistinguishable isomers)
+ext = der / ("ext" if VARIANT == "v1" else f"ext_{VARIANT}")
 ext.mkdir(exist_ok=True)
 zf = zipfile.ZipFile(path(cfg, "raw") / "massbank" / "MassBank-data-2026.03.zip")
 
@@ -126,6 +131,27 @@ train_fps = unpack_to_bitvects(np.load(der / "fps.npy")[msg_mols.fold.values == 
 maxt = np.array([max(DataStructs.BulkTanimotoSimilarity(fp, train_fps)) for fp in fps_new])
 new["max_tani_train"] = maxt
 far = new[new.max_tani_train < 0.7]
+if VARIANT in ("v2", "v3"):
+    tk = pd.read_parquet(der / "ext" / "tautomer_keys.parquet")  # computed by 20_tautomer_keys.py on the v1 set
+    msg_t = set(tk[tk.fold != "ext"].tkey)
+    et = tk[tk.fold == "ext"].set_index("ik14").tkey
+    dup_ext = et[et.duplicated(keep=False)].index
+    bad = set(et[et.isin(msg_t)].index) | set(dup_ext)
+    audit["n_removed_tautomer_equal_to_massspecgym_or_other_external"] = int(far.ik14.isin(bad).sum())
+    far = far[~far.ik14.isin(bad)]
+if VARIANT == "v3":
+    q1 = pd.read_parquet(der / "ext" / "queries.parquet")
+    L1 = np.load(der / "ext" / "qlists.npz")
+    m1 = pd.read_parquet(der / "ext" / "molecules.parquet")
+    msg_mol = set(m1[m1.fold != "ext"].mol_idx)
+    dup = set()
+    for i in range(len(q1)):
+        a, b = L1["W_ptr"][i], L1["W_ptr"][i + 1]
+        wm, ws = L1["W_mol"][a:b], L1["W_s"][a:b]
+        if any((m in msg_mol) and (s_ >= 0.99) for m, s_ in zip(wm, ws)):
+            dup.add(m1.ik14.values[q1.mol_idx.values[i]])
+    audit["n_removed_spectral_duplicate_of_massspecgym"] = int(far.ik14.isin(dup).sum())
+    far = far[~far.ik14.isin(dup)]
 audit["n_new_molecules"] = int(len(new))
 audit["n_new_molecules_tanimoto_lt0.7_to_train"] = int(len(far))
 df = df[df.ik14.isin(set(far.ik14))].copy()
@@ -174,7 +200,8 @@ mcomb = pd.concat([msg_mols, far.assign(fold="ext", smiles=far.std_smiles, formu
                                        n_spectra=far.ik14.map(df.ik14.value_counts()))[list(msg_mols.columns)]],
                   ignore_index=True)
 mcomb.to_parquet(ext / "molecules.parquet")
-fps_far = [fps_new[i] for i in np.nonzero(new.max_tani_train.values < 0.7)[0]]
+keep_ik = set(far.ik14)
+fps_far = [fps_new[i] for i in range(len(new)) if new.ik14.values[i] in keep_ik]
 np.save(ext / "fps.npy", np.concatenate([np.load(der / "fps.npy"), pack_fps(fps_far, cfg["structure"]["fingerprint"]["nbits"])]))
-write_result(cfg, "external_prepare", audit)
+write_result(cfg, "external_prepare" + ("" if VARIANT == "v1" else "_" + VARIANT), audit)
 print(audit)

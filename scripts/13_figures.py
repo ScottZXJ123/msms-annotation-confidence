@@ -28,7 +28,7 @@ plt.rcParams.update({"font.size": 9, "axes.edgecolor": INK2, "axes.labelcolor": 
                      "ytick.color": INK2, "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.6,
                      "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False,
                      "lines.linewidth": 2, "savefig.dpi": 200, "savefig.bbox": "tight"})
-LABEL = {PRIMARY: "Proposed (full, decomposed + label shift)", "B_s1_direct": "Score threshold (s1)",
+LABEL = {PRIMARY: "Proposed (decomposed + label shift, EM π)", "B_s1_direct": "Score threshold (s1)",
          "B_gap_direct": "Top1-top2 gap", "B_lr_direct": "Logistic(s1, gap)", "B_lr_dec": "Logistic(s1, gap), decomposed",
          "M_base": "No-crowding model (base)", "F_meta": "Metadata-only floor", "F_sim": "Similarity-only floor",
          "M_full_direct": "Full features, direct (no absence model)", "M_full": "Full (decomposed)"}
@@ -97,7 +97,8 @@ for ax, t in zip(axes, tiers):
     ax.set_title(t.capitalize(), fontsize=9)
 axes[0].set_ylabel("Top-1 accuracy in tier")
 axes[0].set_ylim(-0.02, 1.02)
-axes[2].legend(fontsize=7, loc="center right")
+h, l = axes[0].get_legend_handles_labels()
+fig.legend(h, l, loc="lower center", ncol=2, fontsize=7, bbox_to_anchor=(0.5, -0.08))
 fig.savefig(figd / "fig3_wetlab_simulation.png")
 plt.close(fig)
 
@@ -159,4 +160,29 @@ for ax, pi in zip(axes, cfg["evaluation"]["prevalence_headline"]):
     ax.set_ylabel("Observed accuracy")
 fig.savefig(figd / "fig6_reliability.png")
 plt.close(fig)
+# ---------------------------------------------------------------- 7. wet-lab simulation: (a) vs (a_x)
+fa = res / "eval_wetlab_ax.json"
+if fa.exists():
+    wx = json.load(open(fa))["wetlab"]
+    fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharey=True)
+    for ax, t in zip(axes, tiers):
+        for k, (lab, getv) in enumerate([("(a) same-instrument library", lambda p: wl[p][f"{PRIMARY}|em"][t]),
+                                         ("(a_x) other-instrument library", lambda p: wx[p][t])]):
+            ps = [p for p in ["0.1", "0.2", "0.3", "0.5"] if p in wx and p in wl]
+            x = np.arange(len(ps)) + (k - 0.5) * 0.18
+            obs = np.array([getv(p).get("obs_acc_mean", np.nan) for p in ps])
+            lo = np.array([getv(p).get("obs_acc_q025", np.nan) for p in ps])
+            hi = np.array([getv(p).get("obs_acc_q975", np.nan) for p in ps])
+            pr = np.array([getv(p).get("pred_acc_mean", np.nan) for p in ps])
+            ax.errorbar(x, obs, yerr=[obs - lo, hi - obs], fmt="o", color=C[k * 2], ms=4, capsize=2, lw=1.2, label=f"Observed, {lab}")
+            ax.plot(x, pr, "D", mfc="white", mec=C[k * 2], ms=5, label=f"Predicted, {lab}")
+        ax.set_xticks(np.arange(len(ps)), ps)
+        ax.set_xlabel("Batch prevalence π")
+        ax.set_title(t.capitalize(), fontsize=9)
+    axes[0].set_ylabel("Top-1 accuracy in tier")
+    axes[0].set_ylim(-0.02, 1.02)
+    h, l = axes[0].get_legend_handles_labels()
+    fig.legend(h, l, loc="lower center", ncol=2, fontsize=7, bbox_to_anchor=(0.5, -0.14))
+    fig.savefig(figd / "fig7_wetlab_a_vs_ax.png")
+    plt.close(fig)
 print("figures written to", figd)

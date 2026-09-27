@@ -67,6 +67,6 @@ if __name__ == "__main__":
                                    # engine accuracy is not summarized for the test fold here (test is read only by 09_evaluate)
                                    "top1_acc_unweighted": (float(gg.correct.mean()) if len(gg) else None) if f != "test" else "withheld"}
     if not lim:
-        write_result(cfg, "features_summary" + ("_ext" if os.environ.get("MSCONF_DERIVED") else ""), summ)
+        write_result(cfg, "features_summary" + ("_" + der.name if os.environ.get("MSCONF_DERIVED") else ""), summ)
     import json
     print(json.dumps(summ, indent=1))

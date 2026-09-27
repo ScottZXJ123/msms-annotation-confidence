@@ -161,6 +161,23 @@ class Iso:
 
 
 
+def choose_calibrator(model, d, target):
+    """Validation-only calibrator choice: isotonic vs Platt by 2-fold cross-fit (val-A <-> val-B, column
+    `vsplit`), then refit the winner on all rows of `d` (the whole validation fold)."""
+    on_logit = not isinstance(model, ScoreModel)
+    scores = {"isotonic": [], "platt": []}
+    for fh, eh in [("A", "B"), ("B", "A")]:
+        F, E = d[d.vsplit == fh], d[d.vsplit == eh]
+        for name, C in [("isotonic", Iso()), ("platt", Platt(on_logit))]:
+            c = C.fit(model.raw(F), F[target].values, F.w.values)
+            scores[name].append(logloss(c(model.raw(E)), E[target].values, E.w.values))
+    best = min(scores, key=lambda k: np.mean(scores[k]))
+    C = Iso() if best == "isotonic" else Platt(on_logit)
+    C.fit(model.raw(d), d[target].values, d.w.values)
+    return C, {"choice": best, "crossfit_logloss": {k: float(np.mean(v)) for k, v in scores.items()}}
+
+
+
 class GroupOffset:
     """Per-group logit offsets on top of a global calibrator, shrunk toward 0 (ridge), fitted only for
     groups with at least `min_n` calibration rows; smaller groups share offset 0 (merged)."""
