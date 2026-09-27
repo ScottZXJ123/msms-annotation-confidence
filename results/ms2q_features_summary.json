@@ -3,11 +3,11 @@
   "script": "17_ms2query_features.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "2a5d27abd0d6637020aa946ce9fc6113f9a2414f",
-  "dirty": true,
-  "utc": "2026-09-27T02:15:07Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T06:33:26Z"
  },
  "n_rows": 2682253,
- "seconds": 902.5979294776917,
+ "seconds": 853.3527250289917,
  "mean_candidates_per_query_scenario": 15.68559832983433
 }

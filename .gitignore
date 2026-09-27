@@ -20,3 +20,6 @@ external/
 # SIRIUS projects (large); summaries are kept
 cosmic/results/*.sirius
 cosmic/run_console.txt
+cosmic/customdb/results/*.sirius
+cosmic/customdb/dbs/
+cosmic/customdb/results/.done_*

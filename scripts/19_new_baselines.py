@@ -80,6 +80,10 @@ rows = rows.merge(T, on=["qid", "scenario"], how="left")
 rows["tda_margin"] = rows.s1 - rows.d1
 
 val = rows[rows.fold == "val"]
+# persisted for scripts/24_baselines_em.py (same rows, no refit there)
+rows[rows.fold.isin(["val", "test"])][["qid", "scenario", "fold", "mol", "w", "vsplit", "correct", "in_lib", "correct_own", "ms2q_score",
+                                       "ms2q_top_score", "tda_margin", "s1", "precursor_mz", "nbr_sim", "nbr_tani"]].reset_index(drop=True) \
+    .to_parquet(der / "rows_new_baselines.parquet")
 systems = {}
 # direct systems calibrated with the shared rule (cross-fit val-A <-> val-B, refit on all val)
 for name, col, target in [("B_ms2q_conf_direct", "ms2q_score", "correct"), ("B_tda_margin_direct", "tda_margin", "correct"),

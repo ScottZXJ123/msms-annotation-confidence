@@ -1,0 +1,65 @@
+{
+ "_provenance": {
+  "script": "audit_customdb.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": true,
+  "utc": "2026-09-27T05:36:06Z"
+ },
+ "identity_key_used_for_removal": "InChIKey first block after RDKit standardization (Cleanup -> LargestFragment -> Uncharge); not tautomer-insensitive",
+ "tautomer_key": "RDKit TautomerEnumerator canonical tautomer -> InChIKey first block (scripts/20_tautomer_keys.py)",
+ "db_pair_test": {
+  "n_a": 6721,
+  "n_b": 6421,
+  "a_minus_b": 300,
+  "b_minus_a": 0,
+  "n_query_spectra": 300,
+  "n_distinct_query_molecules": 300,
+  "a_minus_b_equals_query_molecules": true
+ },
+ "db_pair_val": {
+  "n_a": 4160,
+  "n_b": 3960,
+  "a_minus_b": 200,
+  "b_minus_a": 0,
+  "n_query_spectra": 200,
+  "n_distinct_query_molecules": 200,
+  "a_minus_b_equals_query_molecules": true
+ },
+ "test_b_molecules_tautomer_equal_to_a_query_molecule": {
+  "n": 0,
+  "ik14": []
+ },
+ "val_b_molecules_tautomer_equal_to_a_query_molecule": {
+  "n": 2,
+  "ik14": [
+   "KHQMXKRETWUVJU",
+   "YDZPKVMVMXBCHP"
+  ]
+ },
+ "top1_vs_truth_tautomer_key": {
+  "a": {
+   "cosmic_top1_tautomer_of_truth_but_not_identical": 0,
+   "proposed_top1_tautomer_of_truth_but_not_identical": 0,
+   "identifiers": []
+  },
+  "b": {
+   "cosmic_top1_tautomer_of_truth_but_not_identical": 0,
+   "proposed_top1_tautomer_of_truth_but_not_identical": 0,
+   "identifiers": []
+  }
+ },
+ "validation_cosmic_top1_vs_truth_tautomer_key": {
+  "a": {
+   "cosmic_top1_tautomer_of_truth_but_not_identical": 0,
+   "identifiers": []
+  },
+  "b": {
+   "cosmic_top1_tautomer_of_truth_but_not_identical": 1,
+   "identifiers": [
+    "MassSpecGymID0089707"
+   ]
+  }
+ }
+}

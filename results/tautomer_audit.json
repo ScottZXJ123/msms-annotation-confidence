@@ -3,11 +3,11 @@
   "script": "20_tautomer_keys.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "2a5d27abd0d6637020aa946ce9fc6113f9a2414f",
-  "dirty": true,
-  "utc": "2026-09-27T02:30:04Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T05:41:26Z"
  },
- "seconds": 462.24897050857544,
+ "seconds": 548.8086864948273,
  "massspecgym_tkeys_with_multiple_ik14": 28,
  "massspecgym_molecules_in_such_groups": 56,
  "massspecgym_tautomer_groups_spanning_folds": 0,

@@ -1,14 +1,14 @@
 {
  "_provenance": {
   "script": "04_struct_neighbors.py",
-  "config_hash": "c46a2e1dcdbe",
+  "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
-  "dirty": true,
-  "utc": "2026-09-27T00:02:01Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T03:49:10Z"
  },
  "n_molecules": 28921,
- "seconds": 57.71697211265564,
+ "seconds": 44.078150272369385,
  "mean_deg_ge0.4": 78.05075896407455,
  "mean_deg_ge0.7": 7.296843124373293,
  "max_tani_to_train_by_fold": {

@@ -1,0 +1,29 @@
+[00:15:27] building database msg_test_a from db_test_a.tsv (6721 structures; takes a few minutes)
+    msg_test_a: 6721 structures (expected 6721)
+[00:21:02] building database msg_test_b from db_test_b.tsv (6421 structures; takes a few minutes)
+    msg_test_b: 6421 structures (expected 6421)
+[00:25:38] building database msg_val_a from db_val_a.tsv (4160 structures; takes a few minutes)
+    msg_val_a: 4160 structures (expected 4160)
+[00:29:39] building database msg_val_b from db_val_b.tsv (3960 structures; takes a few minutes)
+    msg_val_b: 3960 structures (expected 3960)
+[00:33:22] test/orbitrap: formulas + fingerprints + classes for 247 spectra
+[00:38:21] test/orbitrap/(a): structure search in msg_test_a
+    ok
+[00:40:11] test/orbitrap/(b): structure search in msg_test_b
+    ok
+[00:41:58] test/qtof: formulas + fingerprints + classes for 53 spectra
+[00:42:50] test/qtof/(a): structure search in msg_test_a
+    ok
+[00:43:17] test/qtof/(b): structure search in msg_test_b
+    ok
+[00:43:45] val/orbitrap: formulas + fingerprints + classes for 187 spectra
+[00:45:05] val/orbitrap/(a): structure search in msg_val_a
+    ok
+[00:46:34] val/orbitrap/(b): structure search in msg_val_b
+    ok
+[00:48:01] val/qtof: formulas + fingerprints + classes for 13 spectra
+[00:48:19] val/qtof/(a): structure search in msg_val_a
+    ok
+[00:48:34] val/qtof/(b): structure search in msg_val_b
+    ok
+[00:48:47] done. Results for import: cosmic/customdb/results/summaries_* and dbinfo_* (the .sirius projects can stay local).

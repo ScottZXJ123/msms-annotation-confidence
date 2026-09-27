@@ -1,11 +1,11 @@
 {
  "_provenance": {
   "script": "02_prepare.py",
-  "config_hash": "f004c26ebad8",
+  "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
-  "dirty": true,
-  "utc": "2026-09-27T00:00:03Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T03:48:24Z"
  },
  "n_spectra_raw": 231104,
  "adducts": {
@@ -115,6 +115,6 @@
    22.266089214339505,
    63.82757071619801
   ],
-  "frac_within_tol": 0.9330301509277209
+  "frac_within_tol": 0.985928413181944
  }
 }

@@ -3,9 +3,9 @@
   "script": "05_search.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
-  "dirty": true,
-  "utc": "2026-09-27T02:50:52Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T06:18:39Z"
  },
  "n_library_spectra": 206923,
  "n_eligible_by_fold": {
@@ -27,5 +27,5 @@
   "ext": 319
  },
  "mean_window_molecules": 3.058712121212121,
- "seconds": 283.98172307014465
+ "seconds": 1125.3562424182892
 }

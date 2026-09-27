@@ -1,5 +1,7 @@
 # COSMIC baseline (SIRIUS 6: CSI:FingerID + COSMIC)
 
+> This folder's PubChem run is the **supplementary background** comparison. The main comparison is in `customdb/`: SIRIUS searches the molecules of our spectral library, so both systems face the same candidate set. See `customdb/README.md`.
+
 Runs **locally on the project owner's Mac** with the installed, logged-in SIRIUS 6.5.4 (academic licence).
 No password or token is needed or stored here. Only public MassSpecGym spectra are processed. Never run this
 on laboratory data.

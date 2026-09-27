@@ -7,26 +7,28 @@ Calibrated trust tiers for MS/MS spectral-library annotations. The system sorts 
 - `LOG.md` — chronological record of every decision, variant and abandoned direction.
 - `WETLAB_PREREG.md` — the pre-registration handed to the collaborating laboratory.
 - `config.yaml` — every setting. Each result JSON records the config hash, seed, script and commit.
-- `cosmic/` — the SIRIUS 6 / COSMIC baseline package. It runs on the owner's machine; see `cosmic/README.md`.
+- `cosmic/` — the SIRIUS 6 / COSMIC baseline package. It runs on the owner's machine.
+  - `cosmic/customdb/` is the main comparison: SIRIUS searches our own library's molecules, so both systems face the same candidate set.
+  - `cosmic/README.md` describes the supplementary PubChem run.
 
 ## Reproduce
 
 ```bash
 pip install -r requirements.txt
 make all        # download -> prepare -> search -> features -> train -> calibrate -> evaluate -> shifts
-                # -> external source -> added baselines -> COSMIC package -> figures -> report -> audits
+                # -> external source -> added baselines -> post-hoc analyses -> COSMIC package -> figures -> report -> audits
 ```
 
-Approximate time: ~2.5 h on 2 CPU cores, ~8 GB RAM. Individual stages are available as Make targets (`make train`, `make evaluate`, …).
+Approximate time: ~3 h on 2 CPU cores, ~8 GB RAM. Individual stages are available as Make targets (`make train`, `make evaluate`, …).
 
 ## Layout
 
 | path | content |
 |---|---|
 | `src/msconf/` | library: chemistry, spectra, features, models, evaluation, engine-agnostic interfaces |
-| `scripts/01–22` | pipeline stages (numbered in execution order; see `Makefile`) |
+| `scripts/01–24` | pipeline stages (numbered in execution order; see `Makefile`; 17–24 were added after the main test evaluation) |
 | `scripts/dev/` | validation-only diagnostics cited in `LOG.md` |
-| `scripts/cosmic/` | COSMIC subset construction and result import |
+| `scripts/cosmic/` | COSMIC subset, custom structure databases, result import |
 | `results/` | every number in the reports, with provenance |
 | `reports/tables/`, `figures/` | generated tables and figures |
 | `models/` | frozen primary model (for the pre-registration) |

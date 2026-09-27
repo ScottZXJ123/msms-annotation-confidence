@@ -16,7 +16,7 @@ The claim under test: **in each tier, the observed accuracy of a random sample o
 
 | item | value |
 |---|---|
-| code commit | `b35b43e8952a` (repository `msms-annotation-confidence`) |
+| code commit | `d1745d09f08a` (repository `msms-annotation-confidence`) |
 | configuration hash | `eecc176f8476` (`config.yaml`) |
 | model | `M_full_minus_family` (file `models/M_full_minus_family.pkl`, SHA-256 prefix `4dfaf6802205648f`) |
 | engine | Flash entropy library search, precursor tolerance 20.0 ppm, fragment tolerance 0.02 Da |
@@ -141,4 +141,4 @@ Any departure from this document (data, procedure, analysis) is listed with its 
 
 
 ---
-<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit b35b43e895 (dirty).</sub>
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit d1745d09f0 (dirty).</sub>

@@ -3,9 +3,9 @@
   "script": "06_families.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
   "dirty": false,
-  "utc": "2026-09-27T02:36:54Z"
+  "utc": "2026-09-27T05:44:34Z"
  },
  "n_molecules": 29642,
  "cf_status": {

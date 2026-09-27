@@ -1,0 +1,600 @@
+{
+ "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+ "when": "2026-09-26 23:47 \u2013 2026-09-27 02:54 EDT, fresh clone, raw downloads reused",
+ "compared_to": "results/*.json as committed at d1745d0",
+ "excluded": "dryrun_valA_* (harness debug runs, not part of make all)",
+ "files": {
+  "calibration_cosine.json": {
+   "status": "identical",
+   "n_numbers": 46,
+   "n_exact": 46,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "calibration_entropy.json": {
+   "status": "identical",
+   "n_numbers": 103,
+   "n_exact": 103,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "checks.json": {
+   "status": "identical",
+   "n_numbers": 4,
+   "n_exact": 4,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "csi_training_keys.json": {
+   "status": "identical",
+   "n_numbers": 6,
+   "n_exact": 6,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "dev_calibrators.json": {
+   "status": "identical",
+   "n_numbers": 88,
+   "n_exact": 88,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "dev_feature_variants.json": {
+   "status": "differs",
+   "n_numbers": 69,
+   "n_exact": 40,
+   "n_close": 0,
+   "n_diff": 29,
+   "diff_examples": [
+    [
+     "/full/I/valA_logloss",
+     0.0766847032964641,
+     0.13187978780262863
+    ],
+    [
+     "/full/I/train_logloss",
+     0.058943026285358954,
+     0.02558469798691601
+    ],
+    [
+     "/full/I/top_gain/precursor_mz",
+     0.0314,
+     0.0217
+    ],
+    [
+     "/full/I/top_gain/gap13",
+     0.0205,
+     0.0185
+    ],
+    [
+     "/full/I/top_gain/s1",
+     0.3881,
+     0.3878
+    ],
+    [
+     "/full/I/top_gain/collision_energy",
+     0.0332,
+     0.0256
+    ],
+    [
+     "/full/I/top_gain/x1_minus_s1",
+     0.0513,
+     0.0525
+    ],
+    [
+     "/full/I/top_gain/n_top1_spec",
+     0.0608,
+     0.0497
+    ],
+    [
+     "/full/I/top_gain/s1_mean",
+     0.0329,
+     0.0282
+    ],
+    [
+     "/full/I/top_gain/n_win_ge05",
+     0.0958,
+     0.0751
+    ]
+   ],
+   "missing_keys": [
+    "/full/I/top_gain/instrument",
+    "/full/I/top_gain/top1_struct_nbrs",
+    "/full/I/top_gain/n_win_spec",
+    "/full/I/top_gain/fam_lib_size",
+    "/full/C/top_gain/tani_mean_top5",
+    "/full/C/top_gain/x1_minus_s1"
+   ],
+   "n_missing": 6,
+   "note": "committed file came from an older code state (commit 7188f13) in which 'all family features' included fam_lib_size; script fixed and re-run (LOG 02:25)"
+  },
+  "eval_bootstrap.json": {
+   "status": "identical",
+   "n_numbers": 398,
+   "n_exact": 398,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_cosmic_subset.json": {
+   "status": "identical",
+   "n_numbers": 244,
+   "n_exact": 244,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_cross_instrument_library.json": {
+   "status": "identical",
+   "n_numbers": 1808,
+   "n_exact": 1808,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_external.json": {
+   "status": "identical",
+   "n_numbers": 1660,
+   "n_exact": 1660,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_external_v2.json": {
+   "status": "identical",
+   "n_numbers": 1611,
+   "n_exact": 1611,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_external_v3.json": {
+   "status": "identical",
+   "n_numbers": 1607,
+   "n_exact": 1607,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_extra.json": {
+   "status": "identical",
+   "n_numbers": 2674,
+   "n_exact": 2674,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_groups.json": {
+   "status": "identical",
+   "n_numbers": 855,
+   "n_exact": 855,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_incremental.json": {
+   "status": "identical",
+   "n_numbers": 772,
+   "n_exact": 772,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_neighbourhood_comparison.json": {
+   "status": "identical",
+   "n_numbers": 80,
+   "n_exact": 80,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_new_baselines.json": {
+   "status": "differs",
+   "n_numbers": 4881,
+   "n_exact": 3963,
+   "n_close": 657,
+   "n_diff": 261,
+   "diff_examples": [
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/risk@cov0.7",
+     0.9302025259928631,
+     0.9302001173906818
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/auroc_correct",
+     0.980933019190297,
+     0.9809298606657996
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/aurc",
+     0.8197516691096841,
+     0.8197513351103022
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/auroc_in",
+     0.977637131045874,
+     0.9776281701073783
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/risk@cov0.5",
+     0.9023787917460114,
+     0.9023740759825803
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/none/e_aurc",
+     0.01631639189885603,
+     0.0163160578994741
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/em/risk@cov0.7",
+     0.9302025259928631,
+     0.9302001173906818
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/em/auroc_correct",
+     0.980933019190297,
+     0.9809298606657996
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/em/aurc",
+     0.8197516691096841,
+     0.8197513351103022
+    ],
+    [
+     "/sweep/B_ms2q_conf_direct/0.05/em/auroc_in",
+     0.977637131045874,
+     0.9776281701073783
+    ]
+   ],
+   "missing_keys": [],
+   "n_missing": 0,
+   "note": "random-forest predictions summed by parallel threads in varying order; differences in the 6th-7th significant digit"
+  },
+  "eval_shift_instrument.json": {
+   "status": "identical",
+   "n_numbers": 2164,
+   "n_exact": 2164,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_sweep.json": {
+   "status": "identical",
+   "n_numbers": 17714,
+   "n_exact": 17714,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_wetlab.json": {
+   "status": "identical",
+   "n_numbers": 1159,
+   "n_exact": 1159,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "eval_wetlab_ax.json": {
+   "status": "identical",
+   "n_numbers": 158,
+   "n_exact": 158,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "external_prepare.json": {
+   "status": "identical",
+   "n_numbers": 35,
+   "n_exact": 35,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "external_prepare_v2.json": {
+   "status": "identical",
+   "n_numbers": 34,
+   "n_exact": 34,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "external_prepare_v3.json": {
+   "status": "identical",
+   "n_numbers": 35,
+   "n_exact": 35,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "families_summary.json": {
+   "status": "identical",
+   "n_numbers": 36,
+   "n_exact": 36,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "families_summary_ext.json": {
+   "status": "identical",
+   "n_numbers": 37,
+   "n_exact": 37,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "families_summary_ext_v2.json": {
+   "status": "identical",
+   "n_numbers": 37,
+   "n_exact": 37,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "families_summary_ext_v3.json": {
+   "status": "identical",
+   "n_numbers": 37,
+   "n_exact": 37,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "features_summary.json": {
+   "status": "identical",
+   "n_numbers": 59,
+   "n_exact": 59,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "features_summary_ext.json": {
+   "status": "identical",
+   "n_numbers": 17,
+   "n_exact": 17,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "features_summary_ext_v2.json": {
+   "status": "identical",
+   "n_numbers": 17,
+   "n_exact": 17,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "features_summary_ext_v3.json": {
+   "status": "identical",
+   "n_numbers": 17,
+   "n_exact": 17,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "ms2q_features_summary.json": {
+   "status": "identical",
+   "n_numbers": 2,
+   "n_exact": 2,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "prepare_audit.json": {
+   "status": "differs",
+   "n_numbers": 30,
+   "n_exact": 29,
+   "n_close": 0,
+   "n_diff": 1,
+   "diff_examples": [
+    [
+     "/precursor_ppm_error/frac_within_tol",
+     0.985928413181944,
+     0.9330301509277209
+    ]
+   ],
+   "missing_keys": [],
+   "n_missing": 0,
+   "note": "committed field frac_within_tol was computed under the earlier 10-ppm setting; not used in the report"
+  },
+  "search_summary.json": {
+   "status": "differs",
+   "n_numbers": 14,
+   "n_exact": 14,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [
+    "/n_kept_by_fold/ext",
+    "/n_eligible_by_fold/ext"
+   ],
+   "n_missing": 2,
+   "note": "committed file had extra 'ext' keys from an earlier run; all shared numbers identical"
+  },
+  "search_summary_ext.json": {
+   "status": "identical",
+   "n_numbers": 12,
+   "n_exact": 12,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "search_summary_ext_v2.json": {
+   "status": "identical",
+   "n_numbers": 12,
+   "n_exact": 12,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "search_summary_ext_v3.json": {
+   "status": "identical",
+   "n_numbers": 12,
+   "n_exact": 12,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "selection.json": {
+   "status": "identical",
+   "n_numbers": 82,
+   "n_exact": 82,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "struct_neighbors_summary.json": {
+   "status": "identical",
+   "n_numbers": 13,
+   "n_exact": 13,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "struct_neighbors_summary_ext.json": {
+   "status": "identical",
+   "n_numbers": 13,
+   "n_exact": 13,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "struct_neighbors_summary_ext_v2.json": {
+   "status": "identical",
+   "n_numbers": 13,
+   "n_exact": 13,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "struct_neighbors_summary_ext_v3.json": {
+   "status": "identical",
+   "n_numbers": 13,
+   "n_exact": 13,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "tautomer_audit.json": {
+   "status": "identical",
+   "n_numbers": 6,
+   "n_exact": 6,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "tda_summary.json": {
+   "status": "identical",
+   "n_numbers": 3,
+   "n_exact": 3,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "train_cosine.json": {
+   "status": "identical",
+   "n_numbers": 2034,
+   "n_exact": 2034,
+   "n_close": 0,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  },
+  "train_entropy.json": {
+   "status": "identical",
+   "n_numbers": 4389,
+   "n_exact": 4388,
+   "n_close": 1,
+   "n_diff": 0,
+   "diff_examples": [],
+   "missing_keys": [],
+   "n_missing": 0
+  }
+ }
+}

@@ -3,11 +3,11 @@
   "script": "07_features.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
-  "dirty": true,
-  "utc": "2026-09-27T02:44:26Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T05:56:57Z"
  },
- "seconds": 2.095811128616333,
+ "seconds": 5.347817420959473,
  "n_rows": 10876,
  "cosine/ext/a": {
   "n_queries": 2719,

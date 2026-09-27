@@ -3,9 +3,9 @@
   "script": "08_train.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
-  "dirty": true,
-  "utc": "2026-09-27T01:38:52Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T04:41:24Z"
  },
  "primary_candidates_valA": {
   "M_full": {

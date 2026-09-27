@@ -8,22 +8,38 @@ Every number in this report is produced by the code in this repository and inser
 
 **Task.** A query MS/MS spectrum is annotated by an engine (here, spectral-library search with entropy similarity). The system returns a calibrated probability that the engine's top-1 is correct (identity = first block of the InChIKey, i.e. 2-D skeleton) and sorts each query into one of three tiers: **trusted** (p_correct ≥ 0.9), **likely absent from library** (P(in library) ≤ 0.2), or **suspicious** (everything else).
 
-**Method (primary system, selected on validation).** p_correct(x; π) = P(in | x; π) · P(correct | x, in). Two gradient-boosted models provide the two factors. P(in) is moved to the batch's in-library prevalence π by Bayes prior shift, and π is estimated on the unlabeled batch by EM. Features are observable only: metadata, similarity scores, analogue hits, and **query-level crowding**. Query-level crowding means near-ties among candidates, structural neighbours of the top-1 in the library and in the precursor window, and the spectral neighbourhood density of the query and of the top-1. Family-level features did not add validation value and are not in the primary system.
+**Method (primary system, selected on validation).** p_correct(x; π) = P(in | x; π) · P(correct | x, in). Two gradient-boosted models provide the two factors. P(in) is moved to the batch's in-library prevalence π by Bayes prior shift, and π is estimated on the unlabeled batch by EM. Features are observable only: metadata, similarity scores, the top-1's support in the library (matched peaks, its other library spectra), analogue hits, and **query-level crowding**. Query-level crowding means near-ties among candidates, structural neighbours of the top-1 in the library and in the precursor window, and the spectral neighbourhood density of the query and of the top-1. Family-level features did not add validation value and are not in the primary system.
 
 **Main results on the structure-disjoint test fold** (2,490 molecules; 14706 query spectra, each evaluated with its truth in the library (a) and removed (b)). π is the batch's in-library prevalence, estimated by EM unless stated.
 
-1. **Risk–coverage (claim 1): better than every baseline.** At π = 0.2: e-AURC 0.0041 for the proposed system vs 0.0272 for logistic(s1, gap), 0.0314 for the same logistic model inside our decomposed framework, and 0.0324 for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = -0.0273, 95% CI [-0.0335, -0.0204]. Coverage at ≤ 5% risk: 18.5% vs 0.5% (the oracle maximum at π = 0.2 equals the fraction of correct top-1 annotations, 19.6%). The two additional baselines added after the main test do not change this; see §6.9–6.10. COSMIC (SIRIUS 6, 150 test molecules outside CSI:FingerID's published training set) ranks its own PubChem annotations with AUROC 0.882 vs 0.995 for the proposed system on its own library annotations. This is a comparison of confidence quality only (§6.11).
-2. **Calibration per family and per crowding group (claim 2): holds where it can be tested.** In every top-1 ClassyFire class with enough data (20 of 212 classes at π = 0.2, covering 75.2% of queries), the predicted accuracy lies inside the 95% CI of the observed accuracy (100.0% of groups). The same holds for superclass, subclass and every crowding quartile. The logistic(s1, gap) baseline without an absence model reaches only 40.0% for classes, and 0% for every crowding grouping. The 192 small classes are not claimed.
-3. **Crowding adds information beyond similarity (claim 3): yes at the query level, no at the family level.**
-   - Within similarity-score strata, top-1 errors are more likely when the top-1 has structural neighbours in the library (Mantel–Haenszel OR 2.15, 95% CI [1.60, 2.88]) and when the top-2 candidate is structurally similar (OR 6.4).
-   - Adding the crowding features to a rich no-crowding model improves the log loss of p_correct significantly: Δ = -0.0028, CI [-0.0052, -0.0004]. Ranking does not improve (ΔAURC CI [-0.0006, 0.0002]).
-   - Added to similarity scores alone, crowding improves both ranking and log loss (§6.3).
-   - The collaborator's **family-level** version of the prior is **not** supported under the strict split. The correlation between family spectral crowding (train library) and family error rate (test) is Spearman ρ = 0.19, CI [-0.20, 0.53].
+1. **Risk–coverage on the test fold (claim 1): better than every baseline.** At π = 0.2: e-AURC 0.0041 for the proposed system vs 0.0272 for logistic(s1, gap), 0.0314 for the same logistic model inside our decomposed framework, and 0.0324 for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = -0.0273, 95% CI [-0.0335, -0.0204]. Coverage at ≤ 5% risk: 18.5% vs 0.5% (the oracle maximum at π = 0.2 equals the fraction of correct top-1 annotations, 19.6%). The two additional baselines added after the main test do not change this; see §6.9–6.10.
+   - **Every baseline also under the same EM prior correction** (§6.1, added after the main test). The correction is applied to each direct baseline's P(correct). It is monotone, so ranking (e-AURC) is unchanged; calibration improves.
+     - Logistic(s1, gap): log loss 0.185 → 0.150 at π = 0.2, still far above the proposed system's 0.071.
+     - **The direct model with the full feature set, once EM-corrected, is as good as the proposed system.** At π = 0.2 its e-AURC is 0.0043 vs 0.0041, log loss 0.0701 vs 0.0706, and ECE 0.0029 vs 0.0043. It is also calibrated in every sufficient family and crowding group.
+     - **So the lead over the score baselines comes from the features, and prevalence robustness comes from the EM prior correction.** The decomposition into P(in) · P(correct | in) is not what produces either on this benchmark. What the decomposition adds is an explicit P(in) for the "absent" tier (§6.1, §7).
+   - **Which features carry the lead** (post hoc, §6.3). Features are added one group at a time, starting from logistic(s1, gap) in the decomposed framework, and the AURC lead at π = 0.2 is split across the steps:
+     - a non-linear model of the similarity scores: 27%;
+     - **support of the top-1 in the library** (matched peaks, mean score over the top-1's library spectra, number of its spectra in the window): **52%**;
+     - analogue hits: 2% (not significant);
+     - metadata including window counts: 19%;
+     - query-level crowding: 1% (not significant).
+
+     For log loss the shares are 55% (top-1 support), 38% (metadata) and 4% (crowding; significant, Δ -0.0028 [-0.0054, -0.0004]).
+   - **COSMIC.** On the same candidate set, the proposed pipeline (spectral-library search + confidence model) gives better confidence ranking and calibration than CSI:FingerID + COSMIC. Setting: SIRIUS restricted to our library's molecules; 150 molecules outside CSI:FingerID's published training set; (a) and (b) mixed at π = 0.2. e-AURC is 0.0015 vs 0.0577 (Δ -0.0563 [-0.0802, -0.0326]). ECE is 0.015 vs 0.063. The engines differ, so this cannot be attributed to the confidence estimation alone. In scenario (a) alone the proposed system makes only 3 errors, so its (a)-only metrics are marked unstable and not compared (§6.11). When our library holds each compound only as measured on another instrument type (a_x; 66 eligible queries, mostly inside CSI:FingerID's training set), the ranking advantage shrinks: Δe-AURC -0.0173 [-0.0425, 0.0012], not significant.
+2. **Calibration per family and per crowding group (claim 2): holds where it can be tested.** In every top-1 ClassyFire class with enough data (20 of 212 classes at π = 0.2, covering 75.2% of queries), the predicted accuracy lies inside the 95% CI of the observed accuracy (100.0% of groups). The same holds for superclass, subclass and every crowding quartile.
+   - **Size of the group calibration errors** (|observed − predicted accuracy| in the sufficient groups, π = 0.2): classes mean 0.011, max 0.026; superclasses mean 0.016, max 0.047; subclasses max 0.031; crowding groups max 0.019. At π = 0.5 the largest class gap is 0.040.
+   - **The score baselines are not calibrated per group.** Without prevalence correction, the logistic(s1, gap) baseline is consistent for only 40.0% of classes (mean gap 0.055, max 0.164) and for 0% of crowding groups (max gap 0.125). With the same EM prior correction it is consistent for 80.0% of classes (max gap 0.083) and on average 25.0% of crowding groups (max gap 0.035); §6.2. The direct full-feature model with the same EM correction is consistent in 100.0% of classes and 100.0% of crowding groups. Per-group calibration therefore comes with the feature set, not with the decomposition.
+   - The 192 small classes are not claimed.
+3. **Crowding adds information beyond similarity (claim 3): supported in a narrower form than the prior.** Crowding measured around each annotation's own candidates is supported; crowding measured as a property of a chemical family is not.
+   - **Query-level crowding adds to the similarity scores in both ranking and probability quality.** The added crowding terms are near-ties, similar runner-ups, structural neighbours of the top-1, and spectral neighbourhood density. Similarity + crowding vs similarity alone: ΔAURC -0.0055 [-0.0096, -0.0018], Δ log loss -0.0153 [-0.0208, -0.0094] (π = 0.2).
+   - **Within similarity-score strata, errors are more likely under crowding.** Top-1 errors rise when the top-1 has structural neighbours in the library (Mantel–Haenszel OR 2.15, 95% CI [1.60, 2.88]) and when the top-2 candidate is structurally similar (OR 6.4).
+   - **Over the full no-crowding model only log loss improves, not ranking.** That model also contains analogue hits, score structure and metadata. Adding crowding gives Δ log loss -0.0028, CI [-0.0052, -0.0004]. The ranking change is not significant (ΔAURC CI [-0.0006, 0.0002]). Crowding accounts for 1% of the AURC lead and 4% of the log-loss lead over logistic(s1, gap) (§6.3). The rest comes from the top-1's library support, metadata and a non-linear score model.
+   - **The family-level form of the prior is not supported under the strict split.** This is the collaborator's version: the correlation between family spectral crowding (train library) and family error rate (test) is Spearman ρ = 0.19, CI [-0.20, 0.53]. Within similarity strata, the family crowding odds ratio is 0.93, CI [0.68, 1.28].
 4. **Shifts (claim 4): holds for prevalence; partial for instrument; fails for a new data source.**
-   - **Prevalence: holds.** With EM-estimated π the proposed system stays calibrated from π = 0.05 to 0.9. The same model without the correction over-states trusted-tier accuracy at π = 0.1: 98.2% predicted vs 90.0% observed.
+   - **Prevalence: holds.** With EM-estimated π the proposed system stays calibrated from π = 0.05 to 0.9. The same model without the correction over-states trusted-tier accuracy at π = 0.1: 98.2% predicted vs 90.0% observed. A direct model with the same features stays calibrated too, once the same EM correction is applied to its P(correct) (§6.1). The robustness comes from the EM prior correction.
    - **Instrument: partial** (§6.6). A model trained on Orbitrap and tested on QTOF stays roughly calibrated (ECE 0.013). Trained on QTOF, where there is much less training data, and tested on Orbitrap, it is not: predicted accuracy 0.123 vs observed 0.196 at π = 0.2.
-   - **Library measured on another instrument type** (scenario a_x, §6.1): overall calibration holds (predicted 0.190 vs observed 0.190 at π = 0.2). The trusted tier, however, is over-confident: 94.4% observed vs 98.0% predicted.
-   - **New data source (MassBank 2026.03, §6.7): fails.** Even after tautomer and duplicate de-duplication (v3), the trusted tier is badly over-confident at π = 0.2: 51.8% observed vs 95.5% predicted. Most confident errors are indistinguishable isomers (100.0% share the truth's formula).
+   - **Library measured on another instrument type** (scenario a_x, §6.1): overall calibration holds (predicted 0.190 vs observed 0.190 at π = 0.2). The trusted tier, however, is over-confident: 94.4% observed vs 98.0% predicted. In the simulated 40-per-tier wet-lab check under a_x, the prediction falls inside the trusted tier's 95% interval in only 65.4% of batches (π = 0.2; §6.5). This is the planning value for the lab and is pre-stated as a deviation in the pre-registration.
+   - **New data source (MassBank 2026.03, §6.7): fails.** The tautomer audit found 25 of the 748 external molecules to be tautomers of MassSpecGym molecules and 4 to be tautomers of other external molecules; inside MassSpecGym, no tautomer group spans folds. Even after tautomer and duplicate de-duplication (v3), the trusted tier is badly over-confident at π = 0.2: 51.8% observed vs 95.5% predicted. Most confident errors are indistinguishable isomers (100.0% share the truth's formula).
    - **On this external source a baseline ranks better than the proposed system.** The direct logistic(s1, gap) has a lower e-AURC (Δ proposed − baseline = +0.0420, CI [0.0093, 0.0569]), although its log loss is worse. This is reported as a negative result; the method was not changed.
 5. **Wet-lab simulation (the final form).** At π = 0.2, in each tier (40 queries sampled per tier, 1,000 repeats), the predicted mean accuracy falls inside the observed 95% Wilson interval in 99.5% (trusted), 96.6% (suspicious) and 92.7% (absent) of repeats.
 
@@ -39,7 +55,8 @@ Every number in this report is produced by the code in this repository and inser
   - Positive mode only; adducts {'[M+H]+': 195237, '[M+Na]+': 35867}.
 - **Spectrum processing** (identical for queries and library, fixed in `config.yaml`): drop peaks above precursor − 1.6 Da; drop peaks < 1% of the base peak; merge peaks closer than 0.05 Da; sum-normalize; ≥ 3 peaks. This drops 11.8% of spectra everywhere.
 - **Engine.** Flash entropy search.
-  - Precursor tolerance 20.0 ppm, chosen on the train fold: ≥ 99% coverage of same-molecule, same-adduct pairs.
+  - Precursor tolerance 20.0 ppm. It was set on the train fold by the rule "smallest of 5/10/15/20/30 ppm covering ≥ 99% of m/z differences between spectra of the same molecule and adduct".
+  - **Traceability gap.** The computation behind that decision (LOG 2026-09-26 19:58) was ad hoc, and its code was not kept. The saved re-computation (`scripts/dev/diag_precursor_tolerance.py`) covers 98.8% of all same-molecule pairs at 20 ppm; under that definition the rule would give 30 ppm. For each spectrum's nearest same-molecule spectrum, which is what retrieval in scenario (a) needs, coverage is 99.9%. The tolerance was not changed after the fact.
   - Candidates are aggregated to molecules (maximum score per molecule). The top-1 is the highest-scoring molecule; ties are broken deterministically without labels.
   - A second engine (greedy cosine on the same processed peaks) is used for an engine-swap check.
 - **Correct.** Top-1 InChIKey first block = truth first block (fixed, §4 of the task). Supplementary "near-correct": top-1 Tanimoto to truth ≥ 0.8, fixed before testing.
@@ -94,7 +111,7 @@ Per-family calibration offsets were **not** adopted: the cross-fitted per-family
 - **Score baselines.** Raw score threshold (s1); top-1 − top-2 gap; logistic(s1, gap). Each is used both "direct" (a single calibrated P(correct), as practitioners use it) and "decomposed" (our absence model and label shift wrapped around the same inputs).
 - **Floors.** Metadata-only and similarity-only.
 - **Added after the main test.** MS2Query-style neighbourhood consistency and target–decoy FDR (§6.9–6.10).
-- **COSMIC (SIRIUS 6 CSI:FingerID + COSMIC).** It runs on the project owner's machine under an academic licence (`cosmic/README.md`): 300 test molecules stratified by membership in the published CSI:FingerID training structures, plus 200 validation molecules for calibration. Results: §6.11.
+- **COSMIC (SIRIUS 6 CSI:FingerID + COSMIC).** It runs on the project owner's machine under an academic licence (`cosmic/README.md`): 300 test molecules stratified by membership in the published CSI:FingerID training structures, plus 200 validation molecules for calibration. Results: §6.11. The main comparison restricts SIRIUS to our library's molecules (same candidate set, (a) and (b)); a first run against PubChem is kept as background.
 
 ## 5. Population and engine
 
@@ -110,6 +127,8 @@ Per-family calibration offsets were **not** adopted: the cross-fitted per-family
 ### 6.1 Main table: (a) and (a_x) side by side
 
 Test fold, EM-estimated prevalence. **(a)** is the MassSpecGym leave-one-spectrum-out condition. **(a_x)** is the expected behaviour when a lab queries a public library whose entry for the compound was measured on a different instrument type; it is evaluated on the 4312 test queries (420 molecules) for which it is possible, paired with their (b) versions. The a_x rows use exactly the same frozen models.
+
+In these two tables, decomposed systems use EM-estimated π. Direct systems (one calibrated P(correct), no absence model) are shown without any prevalence correction, which is how they are normally used. The same table with the EM correction applied to every direct baseline follows the bootstrap table below.
 
 **π = 0.2, all systems, scenario (a):**
 
@@ -229,6 +248,127 @@ What a_x means for the lab:
 | Similarity + crowding − Floor: similarity only | -0.0055 | [-0.0096, -0.0018] | -0.0153 | [-0.0208, -0.0094] |
 | Full + fam_lib_size (shortcut demo) − **Proposed** (full − family features) | +0.0016 | [0.0006, 0.0027] | +0.0147 | [0.0101, 0.0196] |
 
+**All baselines under the same EM prior correction** (`scripts/24_baselines_em.py`; added after the main test, no refit, method unchanged).
+
+In the tables above, a *direct* baseline is used as practitioners use it: one calibrated P(correct), with no prevalence correction. Here every direct baseline additionally receives the same Saerens EM prior correction as the proposed system. EM estimates the batch prior of "correct" on the unlabeled test batch, starting from the calibration prior (0.526, the weighted fraction of correct top-1 in the validation (a)+(b) rows). Probabilities are then moved to that prior by Bayes' rule. Decomposed systems keep their usual EM on P(in).
+
+Because the correction is monotone within a batch, it cannot change ranking (e-AURC, AUROC); it changes calibration and the tiers.
+
+π = 0.2:
+
+| System | type | e-AURC ↓ | Log loss: none → EM | ECE: none → EM | Mean pred (EM) / obs | Trusted (EM): share, obs / pred |
+|---|---|---|---|---|---|---|
+| **Proposed** (full − family features) | decomposed | 0.0041 | 0.087 → 0.071 | 0.027 → 0.004 | 0.192 / 0.196 | 14.4%, 98.2% / 97.2% |
+| Logistic(s1, gap), decomposed | decomposed | 0.0314 | 0.184 → 0.147 | 0.055 → 0.012 | 0.191 / 0.196 | 9.7%, 87.3% / 90.6% |
+| s1, decomposed | decomposed | 0.0377 | 0.205 → 0.162 | 0.063 → 0.011 | 0.194 / 0.196 | 0.7%, 82.6% / 93.8% |
+| gap, decomposed | decomposed | 0.0338 | 0.205 → 0.161 | 0.065 → 0.011 | 0.190 / 0.196 | 10.2%, 88.3% / 91.0% |
+| MS2Query features in our decomposed framework | decomposed | 0.0204 | 0.178 → 0.141 | 0.058 → 0.010 | 0.190 / 0.196 | 9.9%, 93.8% / 95.2% |
+| Logistic(s1, gap) | direct | 0.0272 | 0.185 → 0.150 | 0.055 → 0.017 | 0.185 / 0.196 | 0.0%, 100.0% / 100.0% |
+| Score threshold s1 | direct | 0.0324 | 0.204 → 0.163 | 0.062 → 0.015 | 0.182 / 0.196 | 0.2%, 100.0% / 100.0% |
+| Gap s1−s2 | direct | 0.0283 | 0.204 → 0.161 | 0.065 → 0.013 | 0.188 / 0.196 | 10.2%, 88.3% / 90.6% |
+| Full features, direct P(correct) | direct | 0.0043 | 0.089 → 0.070 | 0.027 → 0.003 | 0.193 / 0.196 | 14.9%, 97.9% / 97.3% |
+| MS2Query-style score of our top-1 | direct | 0.0181 | 0.170 → 0.138 | 0.055 → 0.015 | 0.181 / 0.196 | 7.5%, 96.0% / 94.5% |
+| MS2Query-style, own top-1 | direct | 0.0218 | 0.181 → 0.148 | 0.062 → 0.016 | 0.174 / 0.189 | 7.5%, 96.0% / 94.0% |
+| Target−decoy margin (s1 − d1) | direct | 0.0325 | 0.202 → 0.164 | 0.061 → 0.016 | 0.181 / 0.196 | 0.0%, 100.0% / 99.9% |
+| Floor: similarity only | decomposed | 0.0242 | 0.180 → 0.145 | 0.052 → 0.008 | 0.190 / 0.196 | 4.5%, 93.3% / 94.3% |
+| Floor: metadata only | decomposed | 0.2727 | 0.709 → 0.547 | 0.320 → 0.111 | 0.085 / 0.196 | empty |
+
+π = 0.5:
+
+| System | type | e-AURC ↓ | Log loss: none → EM | ECE: none → EM | Mean pred (EM) / obs | Trusted (EM): share, obs / pred |
+|---|---|---|---|---|---|---|
+| **Proposed** (full − family features) | decomposed | 0.0028 | 0.087 → 0.087 | 0.003 → 0.005 | 0.485 / 0.490 | 43.5%, 99.0% / 98.4% |
+| Logistic(s1, gap), decomposed | decomposed | 0.0219 | 0.177 → 0.177 | 0.013 → 0.012 | 0.483 / 0.490 | 38.3%, 96.1% / 96.3% |
+| s1, decomposed | decomposed | 0.0324 | 0.202 → 0.202 | 0.013 → 0.012 | 0.487 / 0.490 | 36.1%, 94.7% / 94.9% |
+| gap, decomposed | decomposed | 0.0238 | 0.200 → 0.200 | 0.011 → 0.013 | 0.482 / 0.490 | 34.9%, 96.4% / 96.7% |
+| MS2Query features in our decomposed framework | decomposed | 0.0158 | 0.179 → 0.179 | 0.011 → 0.012 | 0.484 / 0.490 | 35.1%, 96.8% / 96.9% |
+| Logistic(s1, gap) | direct | 0.0192 | 0.180 → 0.180 | 0.010 → 0.012 | 0.483 / 0.490 | 37.8%, 96.0% / 96.3% |
+| Score threshold s1 | direct | 0.0279 | 0.201 → 0.201 | 0.007 → 0.008 | 0.485 / 0.490 | 36.1%, 94.7% / 94.4% |
+| Gap s1−s2 | direct | 0.0202 | 0.200 → 0.200 | 0.011 → 0.013 | 0.482 / 0.490 | 34.9%, 96.4% / 96.6% |
+| Full features, direct P(correct) | direct | 0.0029 | 0.085 → 0.085 | 0.003 → 0.002 | 0.488 / 0.490 | 44.1%, 98.7% / 98.5% |
+| MS2Query-style score of our top-1 | direct | 0.0146 | 0.175 → 0.176 | 0.009 → 0.013 | 0.481 / 0.490 | 42.8%, 96.5% / 95.3% |
+| MS2Query-style, own top-1 | direct | 0.0186 | 0.206 → 0.206 | 0.010 → 0.014 | 0.464 / 0.472 | 29.8%, 97.0% / 97.1% |
+| Target−decoy margin (s1 − d1) | direct | 0.0274 | 0.201 → 0.201 | 0.010 → 0.013 | 0.483 / 0.490 | 36.1%, 94.6% / 94.3% |
+| Floor: similarity only | decomposed | 0.0170 | 0.174 → 0.174 | 0.011 → 0.013 | 0.482 / 0.490 | 39.6%, 95.8% / 96.1% |
+| Floor: metadata only | decomposed | 0.2829 | 0.682 → 0.707 | 0.033 → 0.113 | 0.377 / 0.490 | empty |
+
+Simulated wet-lab check (40 per tier, 1,000 batches, per-batch EM for every system), π = 0.1 and 0.2:
+
+| System | correction | Tier | size / batch | Pred. acc | Obs. acc (mean) | P(pred ∈ 95% CI) |
+|---|---|---|---|---|---|---|
+| **Proposed** (full − family features) | EM | trusted | 71 | 96.3% | 98.2% | 99.9% |
+| **Proposed** (full − family features) | EM | suspicious | 74 | 59.0% | 61.7% | 97.9% |
+| **Proposed** (full − family features) | EM | absent | 1086 | 0.4% | 0.4% | 93.7% |
+| Logistic(s1, gap), decomposed | EM | trusted | 1 | 99.9% | 100.0% | 100.0% |
+| Logistic(s1, gap), decomposed | EM | suspicious | 172 | 64.1% | 64.0% | 96.4% |
+| Logistic(s1, gap), decomposed | EM | absent | 1059 | 0.7% | 0.9% | 94.2% |
+| Logistic(s1, gap) | EM | trusted | 1 | 99.9% | 100.0% | 100.0% |
+| Logistic(s1, gap) | EM | suspicious | 158 | 64.4% | 68.3% | 92.7% |
+| Logistic(s1, gap) | EM | absent | 1073 | 0.8% | 1.1% | 92.3% |
+| Logistic(s1, gap) | none | trusted | 121 | 96.8% | 74.0% | 0.1% |
+| Logistic(s1, gap) | none | suspicious | 120 | 57.2% | 24.1% | 0.1% |
+| Logistic(s1, gap) | none | absent | 990 | 2.5% | 0.2% | 100.0% |
+| Full features, direct P(correct) | EM | trusted | 74 | 96.3% | 97.5% | 99.7% |
+| Full features, direct P(correct) | EM | suspicious | 68 | 61.9% | 63.1% | 98.3% |
+| Full features, direct P(correct) | EM | absent | 1089 | 0.4% | 0.5% | 92.6% |
+| Full features, direct P(correct) | none | trusted | 122 | 98.4% | 88.7% | 11.2% |
+| Full features, direct P(correct) | none | suspicious | 65 | 54.9% | 16.8% | 0.0% |
+| Full features, direct P(correct) | none | absent | 1044 | 0.8% | 0.1% | 99.8% |
+| Score threshold s1 | EM | trusted | 2 | 99.9% | 100.0% | 100.0% |
+| Score threshold s1 | EM | suspicious | 174 | 53.8% | 62.9% | 79.8% |
+| Score threshold s1 | EM | absent | 1057 | 0.7% | 1.0% | 92.7% |
+| Gap s1−s2 | EM | trusted | 1 | 99.9% | 100.0% | 100.0% |
+| Gap s1−s2 | EM | suspicious | 157 | 66.1% | 67.8% | 95.0% |
+| Gap s1−s2 | EM | absent | 1074 | 1.0% | 1.2% | 93.5% |
+
+| System | correction | Tier | size / batch | Pred. acc | Obs. acc (mean) | P(pred ∈ 95% CI) |
+|---|---|---|---|---|---|---|
+| **Proposed** (full − family features) | EM | trusted | 200 | 97.1% | 98.1% | 99.5% |
+| **Proposed** (full − family features) | EM | suspicious | 110 | 60.1% | 62.2% | 96.6% |
+| **Proposed** (full − family features) | EM | absent | 1075 | 0.6% | 0.6% | 92.7% |
+| Logistic(s1, gap), decomposed | EM | trusted | 131 | 90.7% | 86.9% | 84.0% |
+| Logistic(s1, gap), decomposed | EM | suspicious | 215 | 64.0% | 68.9% | 94.1% |
+| Logistic(s1, gap), decomposed | EM | absent | 1041 | 1.0% | 1.0% | 95.2% |
+| Logistic(s1, gap) | EM | trusted | 99 | 93.1% | 90.8% | 91.7% |
+| Logistic(s1, gap) | EM | suspicious | 258 | 69.2% | 74.9% | 92.9% |
+| Logistic(s1, gap) | EM | absent | 1057 | 1.2% | 1.5% | 93.8% |
+| Logistic(s1, gap) | none | trusted | 233 | 96.8% | 86.2% | 14.7% |
+| Logistic(s1, gap) | none | suspicious | 157 | 61.4% | 41.1% | 21.6% |
+| Logistic(s1, gap) | none | absent | 994 | 2.5% | 0.5% | 100.0% |
+| Full features, direct P(correct) | EM | trusted | 207 | 97.3% | 98.0% | 98.8% |
+| Full features, direct P(correct) | EM | suspicious | 95 | 63.7% | 64.6% | 95.9% |
+| Full features, direct P(correct) | EM | absent | 1082 | 0.5% | 0.6% | 92.5% |
+| Full features, direct P(correct) | none | trusted | 258 | 98.5% | 94.7% | 53.4% |
+| Full features, direct P(correct) | none | suspicious | 80 | 57.8% | 30.9% | 4.1% |
+| Full features, direct P(correct) | none | absent | 1046 | 0.8% | 0.2% | 99.8% |
+| Score threshold s1 | EM | trusted | 2 | 100.0% | 100.0% | 100.0% |
+| Score threshold s1 | EM | suspicious | 338 | 70.5% | 75.6% | 92.0% |
+| Score threshold s1 | EM | absent | 1045 | 1.2% | 1.3% | 94.1% |
+| Gap s1−s2 | EM | trusted | 140 | 90.9% | 88.2% | 89.0% |
+| Gap s1−s2 | EM | suspicious | 187 | 64.6% | 71.0% | 90.5% |
+| Gap s1−s2 | EM | absent | 1062 | 1.5% | 1.8% | 93.4% |
+
+Under the shifts of §6.1/§6.7 (a_x; external source v3), π = 0.2:
+
+| Shift | System | e-AURC | Log loss: none → EM | ECE: none → EM | Trusted (EM) obs / pred |
+|---|---|---|---|---|---|
+| library on other instrument (a_x) | **Proposed** (full − family features) | 0.0248 | 0.226 → 0.193 | 0.054 → 0.030 | 94.2% / 98.1% |
+| library on other instrument (a_x) | Logistic(s1, gap), decomposed | 0.0470 | 0.377 → 0.283 | 0.117 → 0.071 | 75.3% / 93.4% |
+| library on other instrument (a_x) | Logistic(s1, gap) | 0.0369 | 0.382 → 0.272 | 0.124 → 0.065 | 77.8% / 93.0% |
+| library on other instrument (a_x) | Full features, direct P(correct) | 0.0251 | 0.245 → 0.199 | 0.061 → 0.034 | 92.4% / 98.3% |
+| library on other instrument (a_x) | Score threshold s1 | 0.0387 | 0.426 → 0.306 | 0.137 → 0.092 | 94.0% / 93.6% |
+| external source (MassBank v3) | **Proposed** (full − family features) | 0.1036 | 0.351 → 0.302 | 0.067 → 0.069 | 51.8% / 95.5% |
+| external source (MassBank v3) | Logistic(s1, gap), decomposed | 0.0990 | 0.439 → 0.322 | 0.161 → 0.109 | 74.3% / 94.1% |
+| external source (MassBank v3) | Logistic(s1, gap) | 0.0617 | 0.438 → 0.308 | 0.163 → 0.101 | 73.1% / 93.6% |
+| external source (MassBank v3) | Full features, direct P(correct) | 0.0958 | 0.346 → 0.295 | 0.065 → 0.070 | 53.7% / 95.3% |
+| external source (MassBank v3) | Score threshold s1 | 0.1318 | 0.467 → 0.332 | 0.175 → 0.115 | 23.2% / 93.8% |
+
+Reading:
+- The EM correction lowers the log loss of 7 of 7 direct baselines at π = 0.2 and brings their overall ECE close to that of the proposed system. Ranking is unchanged by construction.
+- **The score-based baselines stay far behind in log loss.** The best of them after EM is MS2Query-style score of our top-1: 0.138 vs 0.071 at π = 0.2. Once calibrated at low π, their trusted tier nearly disappears. In the simulated batches at π = 0.1, logistic(s1, gap) + EM puts 1 query(ies) per batch in the trusted tier, against 71 for the proposed system. The corresponding numbers at π = 0.2 are 99 and 200. So calibration alone does not make them useful: their ranking is too weak.
+- **The direct full-feature model with EM is as good as the proposed system.** Log loss 0.0701 vs 0.0706, ECE 0.0029 vs 0.0043, and a trusted tier of 74 vs 71 queries per batch at π = 0.1. It passes the wet-lab simulation and the group calibration equally well (§6.2). On this benchmark the decomposition is therefore not needed for calibration under prevalence shift.
+- **Under the shifts, the proposed system and the direct full-feature model fail alike.** With EM, their trusted tiers are over-confident: under a_x, proposed 94.2% observed vs 98.1% predicted and direct 92.4% observed vs 98.3% predicted; on the external source, proposed 51.8% observed vs 95.5% predicted and direct 53.7% observed vs 95.3% predicted. On the external source, the EM-corrected logistic(s1, gap) trusted tier is less over-confident (73.1% observed vs 93.6% predicted) but still fails, consistent with its better ranking there (§6.7).
+
 ### 6.2 Calibration by family and by crowding group (claim 2)
 
 Groups need ≥ 100 effective rows and ≥ 20 molecules; smaller groups are reported as insufficient and never claimed. Grouping by the **observable** top-1 family is the method's guarantee; grouping by the true family (`ana_true_class`) is analysis only.
@@ -336,6 +476,53 @@ Component level for the proposed system (P(correct | in) on (a) rows is prevalen
 | P(in), π=0.5 | top1_superclass | 11/14 | 100.0% | 0.020 | 0.075 |
 | P(in), π=0.5 | top1_subclass | 30/469 | 100.0% | 0.015 | 0.044 |
 
+The tables above apply the known π (decomposed systems) and no correction (direct systems), as in the main evaluation. With the **same EM prior correction for every system** (direct baselines: EM on P(correct); `results/eval_baselines_em.json`), π = 0.2:
+
+| System (EM for all) | Grouping | Groups (sufficient/all) | Pred ∈ 95% CI | Mean \|obs−pred\| | Max \|obs−pred\| |
+|---|---|---|---|---|---|
+| **Proposed** (full − family features) | top1_class | 20/212 | 100.0% | 0.011 | 0.026 |
+| **Proposed** (full − family features) | top1_superclass | 10/14 | 100.0% | 0.016 | 0.046 |
+| **Proposed** (full − family features) | bin_top1_struct_nbrs | 3/3 | 100.0% | 0.004 | 0.008 |
+| **Proposed** (full − family features) | bin_fam_spec_crowd_train | 4/4 | 100.0% | 0.006 | 0.010 |
+| **Proposed** (full − family features) | bin_n_open_hi | 3/3 | 100.0% | 0.007 | 0.011 |
+| **Proposed** (full − family features) | bin_top1_specdens | 3/3 | 100.0% | 0.006 | 0.012 |
+| **Proposed** (full − family features) | bin_n_win_mol | 4/4 | 100.0% | 0.009 | 0.019 |
+| Logistic(s1, gap), decomposed | top1_class | 20/212 | 85.0% | 0.032 | 0.072 |
+| Logistic(s1, gap), decomposed | top1_superclass | 10/14 | 50.0% | 0.036 | 0.082 |
+| Logistic(s1, gap), decomposed | bin_top1_struct_nbrs | 3/3 | 0.0% | 0.031 | 0.037 |
+| Logistic(s1, gap), decomposed | bin_fam_spec_crowd_train | 4/4 | 75.0% | 0.010 | 0.016 |
+| Logistic(s1, gap), decomposed | bin_n_open_hi | 3/3 | 33.3% | 0.019 | 0.034 |
+| Logistic(s1, gap), decomposed | bin_top1_specdens | 3/3 | 0.0% | 0.023 | 0.027 |
+| Logistic(s1, gap), decomposed | bin_n_win_mol | 4/4 | 75.0% | 0.007 | 0.012 |
+| Logistic(s1, gap) | top1_class | 20/212 | 80.0% | 0.034 | 0.083 |
+| Logistic(s1, gap) | top1_superclass | 10/14 | 50.0% | 0.039 | 0.083 |
+| Logistic(s1, gap) | bin_top1_struct_nbrs | 3/3 | 0.0% | 0.031 | 0.035 |
+| Logistic(s1, gap) | bin_fam_spec_crowd_train | 4/4 | 50.0% | 0.013 | 0.021 |
+| Logistic(s1, gap) | bin_n_open_hi | 3/3 | 0.0% | 0.022 | 0.028 |
+| Logistic(s1, gap) | bin_top1_specdens | 3/3 | 0.0% | 0.022 | 0.024 |
+| Logistic(s1, gap) | bin_n_win_mol | 4/4 | 75.0% | 0.008 | 0.021 |
+| Full features, direct P(correct) | top1_class | 20/212 | 100.0% | 0.010 | 0.026 |
+| Full features, direct P(correct) | top1_superclass | 10/14 | 100.0% | 0.015 | 0.053 |
+| Full features, direct P(correct) | bin_top1_struct_nbrs | 3/3 | 100.0% | 0.005 | 0.007 |
+| Full features, direct P(correct) | bin_fam_spec_crowd_train | 4/4 | 100.0% | 0.009 | 0.012 |
+| Full features, direct P(correct) | bin_n_open_hi | 3/3 | 100.0% | 0.003 | 0.005 |
+| Full features, direct P(correct) | bin_top1_specdens | 3/3 | 100.0% | 0.005 | 0.011 |
+| Full features, direct P(correct) | bin_n_win_mol | 4/4 | 100.0% | 0.007 | 0.014 |
+| Score threshold s1 | top1_class | 20/212 | 60.0% | 0.045 | 0.135 |
+| Score threshold s1 | top1_superclass | 10/14 | 30.0% | 0.047 | 0.091 |
+| Score threshold s1 | bin_top1_struct_nbrs | 3/3 | 0.0% | 0.043 | 0.059 |
+| Score threshold s1 | bin_fam_spec_crowd_train | 4/4 | 50.0% | 0.017 | 0.025 |
+| Score threshold s1 | bin_n_open_hi | 3/3 | 0.0% | 0.040 | 0.067 |
+| Score threshold s1 | bin_top1_specdens | 3/3 | 0.0% | 0.028 | 0.030 |
+| Score threshold s1 | bin_n_win_mol | 4/4 | 25.0% | 0.016 | 0.024 |
+| Gap s1−s2 | top1_class | 20/212 | 80.0% | 0.030 | 0.076 |
+| Gap s1−s2 | top1_superclass | 10/14 | 60.0% | 0.033 | 0.076 |
+| Gap s1−s2 | bin_top1_struct_nbrs | 3/3 | 33.3% | 0.024 | 0.026 |
+| Gap s1−s2 | bin_fam_spec_crowd_train | 4/4 | 75.0% | 0.011 | 0.019 |
+| Gap s1−s2 | bin_n_open_hi | 3/3 | 66.7% | 0.011 | 0.030 |
+| Gap s1−s2 | bin_top1_specdens | 3/3 | 33.3% | 0.019 | 0.022 |
+| Gap s1−s2 | bin_n_win_mol | 4/4 | 75.0% | 0.009 | 0.021 |
+
 Per-family tables: `reports/tables/groups_top1_class_pi0.2.csv`, `…_pi0.5.csv`; figure `figures/fig4_family_calibration.png`.
 
 ### 6.3 Does crowding add information beyond the similarity score? (claim 3)
@@ -368,6 +555,52 @@ Reading:
 - At the family level, the correlation between train-library family crowding and test family error is ρ = 0.19 for the top-1 family (33 families, CI [-0.20, 0.53]) and ρ = -0.05 for the true family.
 - **The collaborator's prior therefore holds in a narrower form than stated.** Crowding predicts errors at the level of each annotation's own candidate neighbourhood, not as a transferable property of a chemical family.
 
+**Where the lead over the score baselines comes from, by feature group** (post hoc; `scripts/23_lead_attribution.py`).
+
+This analysis was added after the main test evaluation at the owner's request. Nothing in it feeds back into the method. The ablation systems are trained, tuned (same 16-configuration budget) and calibrated exactly like every other system.
+
+*Path view.* Starting from logistic(s1, gap) in the decomposed framework, feature groups are added one at a time until the proposed system is reached. The step differences add up to the total lead. Molecule bootstrap, known π:
+
+π = 0.2:
+
+| step | ΔAURC (step) | 95% CI | share of AURC lead | Δ log loss (step) | 95% CI  | share of log-loss lead |
+|---|---|---|---|---|---|---|
+| + non-linear score model (LightGBM on s1, s2, s3, gaps) | -0.0072 | [-0.0118, -0.0029] | 27% | -0.0024 | [-0.0051, 0.0007] | 3% |
+| + top-1 library support (sim_extra: matched peaks, mean score over the top-1's spectra, # its spectra in window) | -0.0141 | [-0.0184, -0.0101] | 52% | -0.0421 | [-0.0506, -0.0344] | 55% |
+| + analogue hits (analog) | -0.0006 | [-0.0019, 0.0006] | 2% | -0.0001 | [-0.0035, 0.0033] | 0% |
+| + metadata incl. window counts (= no-crowding model) | -0.0052 | [-0.0068, -0.0036] | 19% | -0.0293 | [-0.0357, -0.0231] | 38% |
+| + query-level crowding (= proposed) | -0.0002 | [-0.0006, 0.0002] | 1% | -0.0028 | [-0.0054, -0.0004] | 4% |
+| **total lead** (proposed − logistic(s1, gap), decomposed) | -0.0273 | [-0.0344, -0.0201] | 100% | -0.0767 | [-0.0877, -0.0669] | 100% |
+
+π = 0.5:
+
+| step | ΔAURC (step) | 95% CI | share of AURC lead | Δ log loss (step) | 95% CI  | share of log-loss lead |
+|---|---|---|---|---|---|---|
+| + non-linear score model (LightGBM on s1, s2, s3, gaps) | -0.0048 | [-0.0079, -0.0017] | 25% | -0.0031 | [-0.0059, -0.0004] | 3% |
+| + top-1 library support (sim_extra: matched peaks, mean score over the top-1's spectra, # its spectra in window) | -0.0100 | [-0.0131, -0.0071] | 53% | -0.0494 | [-0.0579, -0.0413] | 55% |
+| + analogue hits (analog) | -0.0005 | [-0.0013, 0.0004] | 3% | -0.0004 | [-0.0037, 0.0032] | 0% |
+| + metadata incl. window counts (= no-crowding model) | -0.0035 | [-0.0047, -0.0025] | 18% | -0.0331 | [-0.0396, -0.0271] | 37% |
+| + query-level crowding (= proposed) | -0.0002 | [-0.0004, 0.0001] | 1% | -0.0045 | [-0.0075, -0.0017] | 5% |
+| **total lead** (proposed − logistic(s1, gap), decomposed) | -0.0190 | [-0.0239, -0.0140] | 100% | -0.0905 | [-0.1016, -0.0798] | 100% |
+
+*Drop-one view* (order-free): the cost of removing one group from the proposed system. Positive = worse without it.
+
+π = 0.2:
+
+| proposed system … | AURC cost of removing (Δ = removed − proposed) | 95% CI | log-loss cost | 95% CI  |
+|---|---|---|---|---|
+| − meta | +0.0033 | [0.0022, 0.0044] | +0.0237 | [0.0186, 0.0291] |
+| − sim | +0.0006 | [0.0001, 0.0011] | +0.0063 | [0.0036, 0.0091] |
+| − sim_extra | +0.0041 | [0.0026, 0.0059] | +0.0253 | [0.0196, 0.0317] |
+| − analog | -0.0002 | [-0.0004, 0.0000] | -0.0008 | [-0.0021, 0.0005] |
+| − crowd_spec | +0.0003 | [0.0000, 0.0007] | +0.0020 | [0.0003, 0.0039] |
+| − crowd_struct | +0.0002 | [-0.0005, 0.0009] | -0.0005 | [-0.0031, 0.0020] |
+| − crowd_spec − crowd_struct (= no crowding) | +0.0002 | [-0.0002, 0.0006] | +0.0028 | [0.0004, 0.0054] |
+
+Reading (post hoc):
+- π = 0.2: the largest share of the AURC lead comes from '+ top-1 library support (sim_extra: matched peaks, mean score over the top-1's spectra, # its spectra in window)' (52%). The last step, adding query-level crowding, contributes 1% of the AURC lead (step ΔAURC -0.0002 [-0.0006, 0.0002]) and 4% of the log-loss lead.
+- π = 0.5: the largest share of the AURC lead comes from '+ top-1 library support (sim_extra: matched peaks, mean score over the top-1's spectra, # its spectra in window)' (53%). The last step, adding query-level crowding, contributes 1% of the AURC lead (step ΔAURC -0.0002 [-0.0004, 0.0001]) and 5% of the log-loss lead.
+
 Hardest top-1 families (scenario a, ≥ 50 queries and ≥ 10 molecules):
 
 | Top-1 family (class) | Queries | Molecules | error (95% CI) |
@@ -385,7 +618,7 @@ Hardest top-1 families (scenario a, ≥ 50 queries and ≥ 10 molecules):
 
 ### 6.4 Prevalence shift (claim 4, part 1)
 
-Proposed system at each true π; the last column is the direct full-feature model without an absence model:
+Proposed system at each true π; the last column is the direct full-feature model without an absence model and without prevalence correction (with the EM correction it is calibrated as well; §6.1):
 
 | π | obs. acc | pred (true π) | pred (EM π̂) | π̂ (EM) | pred (no corr.) | ECE true/EM/none | Direct model pred |
 |---|---|---|---|---|---|---|---|
@@ -427,6 +660,28 @@ Proposed system with EM-estimated π, test fold, 40 per tier, 1000 batches.
 | suspicious | 204 | 59.2% (45.0%–72.5%) | 57.4% | 97.8% | 67.3% | 66.9% | 96.5% |
 | absent | 1047 | 0.9% (0.0%–5.0%) | 0.9% | 95.9% | 1.4% | 1.5% | 96.0% |
 
+**Scenario a_x** (library entry for the compound measured on the other instrument type; the planning condition for a lab querying a public library; `results/eval_wetlab_ax.json`), same design:
+
+π = 0.2:
+
+| Tier | Mean tier size / batch | Obs. acc (mean, 2.5–97.5%) | Pred. acc | P(pred ∈ 95% CI) | Obs. in-lib | Pred. in-lib |
+|---|---|---|---|---|---|---|
+| trusted | 23 | 94.5% (84.6%–100.0%) | 98.0% | 65.4% | 94.5% | 98.2% |
+| suspicious | 28 | 46.8% (30.4%–63.2%) | 52.3% | 94.9% | 50.1% | 57.4% |
+| absent | 158 | 2.9% (0.0%–10.0%) | 1.3% | 78.4% | 3.6% | 1.6% |
+
+π = 0.5:
+
+| Tier | Mean tier size / batch | Obs. acc (mean, 2.5–97.5%) | Pred. acc | P(pred ∈ 95% CI) | Obs. in-lib | Pred. in-lib |
+|---|---|---|---|---|---|---|
+| trusted | 111 | 96.6% (90.0%–100.0%) | 98.3% | 82.1% | 96.7% | 98.5% |
+| suspicious | 69 | 60.6% (47.5%–72.5%) | 55.1% | 92.7% | 68.2% | 62.5% |
+| absent | 153 | 6.0% (0.0%–12.5%) | 1.9% | 54.6% | 7.8% | 2.5% |
+
+The trusted tier is over-confident under a_x. Its predicted accuracy is 98.0%, against 94.5% observed on average (π = 0.2). A 40-feature check would therefore confirm the trusted-tier prediction in only about 65.4% of cases, even though the tier's accuracy stays high. Other tiers below 80% consistency under a_x: absent at π = 0.2 (predicted 1.3%, observed 2.9%, consistent in 78.4% of batches); absent at π = 0.3 (predicted 1.5%, observed 3.9%, consistent in 69.7% of batches); absent at π = 0.5 (predicted 1.9%, observed 6.0%, consistent in 54.6% of batches). `figures/fig7_wetlab_a_vs_ax.png` shows (a) and a_x side by side. The pre-registration states these deviations in advance (WETLAB_PREREG §6–7).
+
+![a vs a_x](figures/fig7_wetlab_a_vs_ax.png)
+
 The same simulation without the prevalence correction, at π = 0.1:
 
 | Tier | Mean tier size / batch | Obs. acc (mean, 2.5–97.5%) | Pred. acc | P(pred ∈ 95% CI) | Obs. in-lib | Pred. in-lib | P(pred in-lib ∈ CI) |
@@ -442,6 +697,8 @@ The direct full-feature model (no absence model), at π = 0.1:
 | trusted | 122 | 88.7% (77.5%–97.5%) | 98.4% | 11.2% | 88.7% | 98.4% | 11.3% |
 | suspicious | 65 | 16.8% (5.0%–27.5%) | 54.9% | 0.0% | 18.4% | 54.9% | 0.0% |
 | absent | 1044 | 0.1% (0.0%–0.0%) | 0.8% | 99.8% | 0.2% | 0.8% | 99.4% |
+
+With the same EM correction applied to its P(correct), the direct full-feature model passes this check as well as the proposed system (§6.1, wet-lab table under EM).
 
 ![wetlab](figures/fig3_wetlab_simulation.png)
 
@@ -477,7 +734,7 @@ Construction (`scripts/11_external_massbank.py`):
 - Only molecules with Tanimoto < 0.7 to every train molecule are kept. This is a proxy for MCES distance, which was not computed for this set.
 - The external spectra are added to the library as a new source.
 
-The frozen models were applied without change. **v1** is the set as first constructed. Reading its failure (below) showed that tautomeric duplicates had escaped the InChIKey-based cross-library de-duplication (§5.11 of the task). **v2** additionally removes external molecules whose RDKit canonical-tautomer key equals a MassSpecGym molecule or another external molecule. **v3** additionally removes external molecules having an (almost) identical spectrum (entropy ≥ 0.99) of a different MassSpecGym molecule. All three are reported; none involved any change to the method.
+The frozen models were applied without change. **v1** is the set as first constructed. Reading its failure (below) showed that tautomeric duplicates had escaped the InChIKey-based cross-library de-duplication (§5.11 of the task). **Tautomer audit** (`results/tautomer_audit.json`, RDKit canonical-tautomer keys): of the 748 external molecules in v1, 25 are tautomers of a MassSpecGym molecule and 4 are tautomers of another external molecule. **v2** additionally removes external molecules whose RDKit canonical-tautomer key equals a MassSpecGym molecule or another external molecule. **v3** additionally removes external molecules having an (almost) identical spectrum (entropy ≥ 0.99) of a different MassSpecGym molecule. All three are reported; none involved any change to the method.
 
 | set | molecules | engine top-1 acc (a) | system | AUROC(in-lib) | AURC | ECE | pred/obs acc | π̂ | trusted: obs (pred), share |
 |---|---|---|---|---|---|---|---|---|---|
@@ -565,7 +822,7 @@ Controlled experiment on validation (fixed hyperparameters; `results/dev_feature
 |---|---|---|
 | base | 0.0838 | 0.0828 |
 | base + fam_lib_size only | 0.0333 | 0.1705 |
-| base + all family features | 0.0292 | 0.1531 |
+| base + all family features | 0.0292 | 0.1435 |
 | base + family features without fam_lib_size | 0.0698 | 0.0813 |
 | base + spectral + structural crowding | 0.0665 | 0.0753 |
 
@@ -597,7 +854,7 @@ Test results (π = 0.2, EM):
 | **Proposed** (full − family features) | 0.0041 | 18.5% | 0.995 | 0.071 | 0.004 | 0.192 / 0.196 | 98.2% (97.2%), 14.4% | — | — |
 | MS2Query-style score of our top-1 | 0.0181 | 8.1% | 0.980 | 0.170 | 0.055 | 0.251 / 0.196 | 89.3% (95.9%), 18.5% | -0.0140 [-0.0199, -0.0107] | -0.0999 [-0.1155, -0.0845] |
 | Target−decoy margin (s1 − d1) | 0.0325 | 0.4% | 0.970 | 0.202 | 0.061 | 0.256 / 0.196 | 83.8% (94.9%), 17.3% | -0.0283 [-0.0413, -0.0260] | -0.1317 [-0.1483, -0.1141] |
-| MS2Query-style, own top-1 | 0.0217 | 8.3% | 0.970 | 0.181 | 0.062 | 0.251 / 0.189 | 87.9% (95.4%), 18.9% | -0.0290 [-0.0355, -0.0257] | -0.1108 [-0.1250, -0.0965] |
+| MS2Query-style, own top-1 | 0.0217 | 8.5% | 0.970 | 0.181 | 0.062 | 0.251 / 0.189 | 87.9% (95.4%), 18.9% | -0.0290 [-0.0354, -0.0256] | -0.1108 [-0.1250, -0.0965] |
 | MS2Query features in our decomposed framework | 0.0204 | 6.7% | 0.980 | 0.141 | 0.010 | 0.190 / 0.196 | 93.8% (95.2%), 9.9% | -0.0162 [-0.0218, -0.0116] | -0.0704 [-0.0807, -0.0604] |
 
 π = 0.5:
@@ -607,7 +864,7 @@ Test results (π = 0.2, EM):
 | **Proposed** (full − family features) | 0.0028 | 50.6% | 0.995 | 0.087 | 0.005 | 0.485 / 0.490 | 99.0% (98.4%), 43.5% | — | — |
 | MS2Query-style score of our top-1 | 0.0146 | 46.2% | 0.978 | 0.175 | 0.009 | 0.491 / 0.490 | 96.5% (96.0%), 42.8% | -0.0117 [-0.0164, -0.0089] | -0.0881 [-0.1017, -0.0752] |
 | Target−decoy margin (s1 − d1) | 0.0274 | 35.3% | 0.965 | 0.201 | 0.010 | 0.493 / 0.490 | 94.5% (94.9%), 38.3% | -0.0246 [-0.0352, -0.0212] | -0.1136 [-0.1276, -0.1018] |
-| MS2Query-style, own top-1 | 0.0186 | 45.8% | 0.967 | 0.206 | 0.010 | 0.474 / 0.472 | 95.9% (95.6%), 43.2% | -0.0284 [-0.0337, -0.0252] | -0.1189 [-0.1314, -0.1050] |
+| MS2Query-style, own top-1 | 0.0185 | 45.8% | 0.967 | 0.206 | 0.010 | 0.474 / 0.472 | 95.9% (95.6%), 43.2% | -0.0284 [-0.0336, -0.0252] | -0.1189 [-0.1314, -0.1050] |
 | MS2Query features in our decomposed framework | 0.0158 | 43.7% | 0.978 | 0.179 | 0.012 | 0.484 / 0.490 | 96.8% (96.9%), 35.1% | -0.0129 [-0.0179, -0.0091] | -0.0917 [-0.1040, -0.0801] |
 
 **Like-for-like test of the neighbourhood mechanism** (`results/eval_neighbourhood_comparison.json`). All systems here are inside the same decomposed / label-shift framework, with the same budget and calibration; lower is better, so a negative Δ favours the first system:
@@ -629,7 +886,7 @@ Reading:
 - In the like-for-like comparison, adding our competition-type crowding to the similarity scores improves both ranking and log loss (row 3). Adding MS2Query's consistency features does not significantly improve on similarity alone at either prevalence (row 2).
 - Head-to-head (row 1), competition crowding gives a lower log loss at both prevalences, and a lower e-AURC at π = 0.5; at π = 0.2 the e-AURC difference is not significant.
 - So, for deciding whether an exact top-1 is right, knowing how many plausible alternatives compete with it is more informative than knowing whether its structural neighbourhood agrees with the spectrum.
-- The larger remaining gap between the proposed system and every MS2Query variant comes from the explicit absence model and the non-neighbourhood features (score structure, analogue hits, metadata).
+- The larger remaining gap between the proposed system and every MS2Query variant comes from the non-neighbourhood features (score structure, analogue hits, metadata). The gap remains when every MS2Query variant receives the same EM prior correction (§6.1).
 
 ### 6.10 Baseline added after the main test: target–decoy FDR
 
@@ -651,40 +908,184 @@ The target–decoy estimate stays at its nominal level while the realized error 
 
 ### 6.11 COSMIC (SIRIUS 6: CSI:FingerID + COSMIC)
 
-COSMIC ranks CSI:FingerID hits from a structure database (PubChem); the proposed system ranks spectral-library hits (truth in the library). Each is scored on its own annotations; the comparison is about confidence quality, not about which engine finds more structures. Approximate labels: myopic_mces, threshold 2.
+**Setup.**
+- SIRIUS 6.5.4 (academic licence) ran locally on the project owner's Mac (`cosmic/`, `cosmic/customdb/`).
+- Inputs: 300 public test spectra, one per molecule, plus 200 validation spectra that are used only to calibrate COSMIC scores.
+- Test molecules are stratified by the published CSI:FingerID positive-mode training structures. 150 are not in them: the **primary** stratum. 150 are in them: a **leaky reference**, because CSI:FingerID was trained on those structures.
 
-| stratum | mode | system | n | top-1 acc | AUROC | e-AURC | ECE |
+**Pre-declared evaluation rules.** These were fixed before the head-to-head results existed (`scripts/cosmic/cosmic_common.py`; LOG 2026-09-27 00:05).
+- In-library mixtures at π = 0.2, 0.5: within each stratum, (a) rows get total weight π and (b) rows 1 − π.
+- A metric whose minority class (correct or wrong top-1) has fewer than 20 rows is marked **⚠ unstable**. It is not interpreted.
+- A query without an annotation gets confidence 0 and counts as wrong, for both systems.
+- COSMIC scores are calibrated on the validation subset with the shared calibrator rule and then receive the same EM prior correction as the proposed system.
+- Query bootstrap, 1,000 draws. The two scenario rows of a query stay together.
+- Counts are given as *correct / wrong top-1* for every stratum, condition and system.
+
+#### 6.11.1 Main comparison: the same candidate set
+
+**Design.**
+- **Candidate set.** CSI:FingerID/COSMIC searched custom structure databases built from the molecules of our spectral library (`scripts/cosmic/make_customdb.py`), so both systems choose among the same molecules.
+  - (a): 6,721 test-phase library molecules, including every query molecule. Our side uses the usual leave-one-spectrum-out library.
+  - (b): the same database without the 300 query molecules (6,421). Our side removes all spectra of those molecules at once.
+  - Only molecules within 0.05 Da of a query's neutral mass are kept. CSI:FingerID retrieves formula-matching structures only, so this filter changes no retrieval.
+- **SIRIUS settings.** Expansive search (PubChem fallback) was switched off. Formulas, fingerprints and classes were computed once and shared by (a) and (b).
+- **Checks.** SIRIUS reported msg_test_a: 6,721, msg_test_b: 6,421, msg_val_a: 4,160, msg_val_b: 3,960 structures (expected test_a: 6,721, test_b: 6,421, val_a: 4,160, val_b: 3,960). 0 returned structures lay outside the searched database, and 0 (b) rows were scored correct by COSMIC (both must be 0 by construction).
+- **Task.** Each system ranks and calibrates its own top-1: CSI:FingerID's structure-database hit vs our spectral-library hit. The candidate universe is now the same, but the evidence each system uses differs: predicted fingerprints vs reference spectra.
+
+**not_in_csi_training (primary)** (150 queries; COSMIC without annotation: (a) 30, (b) 71; proposed without any library candidate: (a) 0, (b) 15), exact identity:
+
+| condition | system | n correct / wrong | top-1 acc | e-AURC | ECE | log loss | trusted (p ≥ 0.9): share, obs / pred |
 |---|---|---|---|---|---|---|---|
-| not_in_csi_training (primary) | exact | COSMIC (raw score) | 150 | 8.7% [4.7%, 13.3%] | 0.882 [0.795, 0.961] | 0.0646 [0.0221, 0.1131] | 0.050 [0.036, 0.091] |
-| not_in_csi_training (primary) | exact | COSMIC (val-calibrated) | 150 | 8.7% | 0.882 | 0.0646 | 0.032 |
-| not_in_csi_training (primary) | exact | Proposed (own top-1, scenario a) | 150 | 98.0% [95.3%, 99.3%] | 0.995 [0.980, 1.000] | 0.0001 [0.0000, 0.0004] | 0.006 [0.001, 0.025] |
-| not_in_csi_training (primary) | approximate | COSMIC (raw score) | 150 | 13.3% [8.0%, 19.3%] | 0.863 [0.783, 0.934] | 0.0877 [0.0439, 0.1393] | 0.028 [0.032, 0.088] |
-| not_in_csi_training (primary) | approximate | COSMIC (val-calibrated) | 150 | 13.3% | 0.863 | 0.0877 | 0.049 |
-| not_in_csi_training (primary) | approximate | Proposed (own top-1, scenario a) | 150 | 98.0% [96.0%, 99.3%] | 0.995 [0.980, 1.000] | 0.0001 [0.0000, 0.0005] | 0.006 [0.001, 0.025] |
-| in_csi_training (leaky reference) | exact | COSMIC (raw score) | 150 | 67.3% [60.0%, 75.3%] | 0.953 [0.918, 0.979] | 0.0159 [0.0071, 0.0294] | 0.088 [0.055, 0.136] |
-| in_csi_training (leaky reference) | exact | COSMIC (val-calibrated) | 150 | 67.3% | 0.953 | 0.0159 | 0.103 |
-| in_csi_training (leaky reference) | exact | Proposed (own top-1, scenario a) | 150 | 98.7% [96.7%, 99.3%] | 0.997 [0.985, 1.000] | 0.0000 [0.0000, 0.0003] | 0.002 [0.000, 0.016] |
-| in_csi_training (leaky reference) | approximate | COSMIC (raw score) | 150 | 77.3% [70.0%, 84.0%] | 0.964 [0.931, 0.989] | 0.0086 [0.0026, 0.0175] | 0.188 [0.143, 0.234] |
-| in_csi_training (leaky reference) | approximate | COSMIC (val-calibrated) | 150 | 77.3% | 0.964 | 0.0086 | 0.121 |
-| in_csi_training (leaky reference) | approximate | Proposed (own top-1, scenario a) | 150 | 99.3% [97.3%, 99.3%] | 1.000 [1.000, 1.000] | 0.0000 [0.0000, 0.0000] | 0.009 [0.000, 0.022] |
+| (a) only | COSMIC, val-calibrated | 93 / 57 | 62.0% | 0.0365 [0.0139, 0.0696] | 0.179 [0.131, 0.235] | 0.448 [0.372, 0.530] | 3.3%, 100.0% / 100.0% |
+| (a) only | COSMIC, raw score | 93 / 57 | 62.0% | 0.0365 [0.0145, 0.0707] | 0.503 [0.429, 0.571] | 1.332 [1.129, 1.524] | none |
+| (a) only | Proposed, P(correct \| in) | 147 / 3 ⚠ unstable | 98.0% | 0.0001 [0.0000, 0.0004] | 0.006 [0.001, 0.023] | 0.030 [0.005, 0.063] | 97.3%, 100.0% / 99.9% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 93 / 207 | 12.4% | 0.0577 [0.0350, 0.0831] | 0.063 [0.023, 0.094] | 0.242 [0.209, 0.321] | 0.7%, 100.0% / 99.9% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated, no prior correction | 93 / 207 | 12.4% | 0.0577 | 0.095 | 0.269 | 0.7%, 100.0% / 100.0% |
+| (a)+(b), π = 0.2 | COSMIC, raw score | 93 / 207 | 12.4% | 0.0577 [0.0350, 0.0793] | 0.083 [0.068, 0.100] | 0.288 [0.252, 0.325] | none |
+| (a)+(b), π = 0.2 | Proposed, EM | 147 / 153 | 19.6% | 0.0015 [0.0003, 0.0034] | 0.015 [0.010, 0.024] | 0.050 [0.031, 0.075] | 14.9%, 100.0% / 97.0% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 93 / 207 | 31.0% | 0.0571 [0.0322, 0.0861] | 0.072 [0.041, 0.119] | 0.345 [0.302, 0.405] | 1.7%, 100.0% / 100.0% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated, no prior correction | 93 / 207 | 31.0% | 0.0571 | 0.056 | 0.336 | 1.7%, 100.0% / 100.0% |
+| (a)+(b), π = 0.5 | COSMIC, raw score | 93 / 207 | 31.0% | 0.0571 [0.0320, 0.0860] | 0.238 [0.204, 0.276] | 0.679 [0.585, 0.777] | none |
+| (a)+(b), π = 0.5 | Proposed, EM | 147 / 153 | 49.0% | 0.0012 [0.0002, 0.0027] | 0.013 [0.006, 0.031] | 0.070 [0.037, 0.110] | 44.3%, 100.0% / 98.4% |
 
-| stratum | mode | metric | proposed − COSMIC | 95% CI |
+**in_csi_training (leaky reference)** (150 queries; COSMIC without annotation: (a) 17, (b) 83; proposed without any library candidate: (a) 0, (b) 18), exact identity:
+
+| condition | system | n correct / wrong | top-1 acc | e-AURC | ECE | log loss | trusted (p ≥ 0.9): share, obs / pred |
+|---|---|---|---|---|---|---|---|
+| (a) only | COSMIC, val-calibrated | 129 / 21 | 86.0% | 0.0009 [0.0000, 0.0029] | 0.060 [0.040, 0.083] | 0.097 [0.072, 0.125] | 54.0%, 100.0% / 99.6% |
+| (a) only | COSMIC, raw score | 129 / 21 | 86.0% | 0.0009 [0.0000, 0.0030] | 0.302 [0.259, 0.343] | 0.482 [0.398, 0.566] | 16.7%, 100.0% / 97.5% |
+| (a) only | Proposed, P(correct \| in) | 148 / 2 ⚠ unstable | 98.7% | 0.0000 [0.0000, 0.0003] | 0.002 [0.000, 0.016] | 0.015 [0.001, 0.043] | 98.0%, 100.0% / 99.9% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 129 / 171 | 17.2% | 0.0135 [0.0031, 0.0271] | 0.087 [0.047, 0.129] | 0.212 [0.117, 0.341] | 11.1%, 95.2% / 99.8% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated, no prior correction | 129 / 171 | 17.2% | 0.0135 | 0.112 | 0.248 | 11.3%, 95.3% / 99.6% |
+| (a)+(b), π = 0.2 | COSMIC, raw score | 129 / 171 | 17.2% | 0.0135 [0.0038, 0.0283] | 0.043 [0.030, 0.066] | 0.136 [0.111, 0.166] | 3.3%, 100.0% / 97.5% |
+| (a)+(b), π = 0.2 | Proposed, EM | 148 / 152 | 19.7% | 0.0015 [0.0000, 0.0035] | 0.020 [0.012, 0.031] | 0.055 [0.034, 0.081] | 13.5%, 100.0% / 97.1% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 129 / 171 | 43.0% | 0.0090 [0.0024, 0.0191] | 0.101 [0.074, 0.141] | 0.252 [0.167, 0.366] | 28.0%, 98.8% / 99.7% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated, no prior correction | 129 / 171 | 43.0% | 0.0090 | 0.058 | 0.191 | 27.3%, 98.8% / 99.6% |
+| (a)+(b), π = 0.5 | COSMIC, raw score | 129 / 171 | 43.0% | 0.0090 [0.0026, 0.0190] | 0.142 [0.117, 0.164] | 0.266 [0.224, 0.314] | 8.3%, 100.0% / 97.5% |
+| (a)+(b), π = 0.5 | Proposed, EM | 148 / 152 | 49.3% | 0.0011 [0.0000, 0.0030] | 0.022 [0.011, 0.035] | 0.068 [0.032, 0.115] | 41.7%, 100.0% / 98.4% |
+
+In the (a)-only rows, calibrated COSMIC probabilities refer to the validation mixture (no prior correction is possible for a population that is 100% in-library with a direct model), so their ECE and log loss are not comparable; e-AURC is. The proposed system's (a)-only probability is P(correct | in).
+
+Paired differences, proposed − COSMIC (val-calibrated + EM), exact identity; negative favours the proposed system:
+
+| stratum | π | Δ e_aurc | Δ aurc | Δ ece | Δ logloss |
+|---|---|---|---|---|---|
+| not_in_csi_training (primary) | 0.2 | -0.0563 [-0.0802, -0.0326] | -0.1889 [-0.2313, -0.1465] | -0.0380 [-0.0779, -0.0088] | -0.1922 [-0.2656, -0.1515] |
+| not_in_csi_training (primary) | 0.5 | -0.0564 [-0.0908, -0.0312] | -0.2232 [-0.2799, -0.1681] | -0.0459 [-0.0978, -0.0211] | -0.2759 [-0.3463, -0.2121] |
+| in_csi_training (leaky reference) | 0.2 | -0.0119 [-0.0247, -0.0025] | -0.0547 [-0.0761, -0.0344] | -0.0665 [-0.1205, -0.0264] | -0.1571 [-0.2873, -0.0686] |
+| in_csi_training (leaky reference) | 0.5 | -0.0080 [-0.0166, -0.0017] | -0.0571 [-0.0817, -0.0366] | -0.0810 [-0.1208, -0.0486] | -0.1842 [-0.2789, -0.0991] |
+
+**a_x version** (added at the owner's request after the main import; same 300 queries, same SIRIUS results, no SIRIUS re-run). On our side the library keeps the truth only through spectra measured on the **other** instrument type. The candidate molecules are unchanged, so COSMIC's (a) database is still the matching candidate set. **66 of the 300 queries are a_x-eligible** (in_csi_training (leaky reference): 61, not_in_csi_training (primary): 5): the truth must have at least one other-instrument spectrum in the precursor window. The 'default (a)' rows are the usual leave-one-spectrum-out condition on the same eligible queries, and COSMIC is evaluated on the same queries. The primary stratum has too few eligible queries to be interpreted; the pooled rows are dominated by the leaky stratum.
+
+| stratum | condition | system | n correct / wrong | top-1 acc | e-AURC | ECE |
+|---|---|---|---|---|---|---|
+| all eligible (66) | (a) only | COSMIC, val-calibrated | 55 / 11 ⚠ unstable | 83.3% | 0.0020 [0.0000, 0.0083] | 0.047 [0.026, 0.083] |
+| all eligible (66) | (a) only | Proposed, default (a) | 65 / 1 ⚠ unstable | 98.5% | 0.0002 [0.0000, 0.0019] | 0.004 [0.004, 0.031] |
+| all eligible (66) | (a) only | Proposed, a_x | 64 / 2 ⚠ unstable | 97.0% | 0.0005 [0.0000, 0.0025] | 0.002 [0.001, 0.039] |
+| all eligible (66) | (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 55 / 77 | 16.7% | 0.0251 [0.0036, 0.0565] | 0.103 [0.041, 0.184] |
+| all eligible (66) | (a)+(b), π = 0.2 | Proposed, default (a), EM | 65 / 67 | 19.7% | 0.0023 [-0.0000, 0.0072] | 0.017 [0.008, 0.037] |
+| all eligible (66) | (a)+(b), π = 0.2 | Proposed, a_x, EM | 64 / 68 | 19.4% | 0.0073 [0.0007, 0.0163] | 0.029 [0.015, 0.053] |
+| all eligible (66) | (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 55 / 77 | 41.7% | 0.0170 [0.0025, 0.0401] | 0.100 [0.056, 0.156] |
+| all eligible (66) | (a)+(b), π = 0.5 | Proposed, default (a), EM | 65 / 67 | 49.2% | 0.0017 [0.0000, 0.0068] | 0.019 [0.010, 0.057] |
+| all eligible (66) | (a)+(b), π = 0.5 | Proposed, a_x, EM | 64 / 68 | 48.5% | 0.0055 [0.0007, 0.0136] | 0.047 [0.022, 0.094] |
+| not_in_csi_training (primary) (5) | (a) only | COSMIC, val-calibrated | 4 / 1 ⚠ unstable | 80.0% | 0.0000 [0.0000, 0.0000] | 0.184 [0.099, 0.255] |
+| not_in_csi_training (primary) (5) | (a) only | Proposed, default (a) | 5 / 0 ⚠ unstable | 100.0% | – | – |
+| not_in_csi_training (primary) (5) | (a) only | Proposed, a_x | 5 / 0 ⚠ unstable | 100.0% | – | – |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 4 / 6 ⚠ unstable | 16.0% | 0.0000 [-0.0139, 0.0000] | 0.059 [0.016, 0.115] |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.2 | Proposed, default (a), EM | 5 / 5 ⚠ unstable | 20.0% | 0.0000 [0.0000, 0.0000] | 0.018 [0.003, 0.034] |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.2 | Proposed, a_x, EM | 5 / 5 ⚠ unstable | 20.0% | 0.0417 [0.0000, 0.1115] | 0.043 [0.002, 0.122] |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 4 / 6 ⚠ unstable | 40.0% | 0.0000 [0.0000, 0.0000] | 0.117 [0.046, 0.153] |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.5 | Proposed, default (a), EM | 5 / 5 ⚠ unstable | 50.0% | 0.0000 [0.0000, 0.0000] | 0.023 [0.010, 0.037] |
+| not_in_csi_training (primary) (5) | (a)+(b), π = 0.5 | Proposed, a_x, EM | 5 / 5 ⚠ unstable | 50.0% | 0.0367 [0.0000, 0.1283] | 0.108 [0.004, 0.303] |
+| in_csi_training (leaky reference) (61) | (a) only | COSMIC, val-calibrated | 51 / 10 ⚠ unstable | 83.6% | 0.0017 [0.0000, 0.0070] | 0.045 [0.021, 0.077] |
+| in_csi_training (leaky reference) (61) | (a) only | Proposed, default (a) | 60 / 1 ⚠ unstable | 98.4% | 0.0003 [0.0000, 0.0017] | 0.004 [0.004, 0.033] |
+| in_csi_training (leaky reference) (61) | (a) only | Proposed, a_x | 59 / 2 ⚠ unstable | 96.7% | 0.0003 [0.0000, 0.0017] | 0.007 [0.001, 0.039] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 51 / 71 | 16.7% | 0.0254 [0.0036, 0.0547] | 0.114 [0.050, 0.206] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.2 | Proposed, default (a), EM | 60 / 62 | 19.7% | 0.0027 [-0.0000, 0.0094] | 0.017 [0.007, 0.042] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.2 | Proposed, a_x, EM | 59 / 63 | 19.3% | 0.0056 [0.0003, 0.0156] | 0.029 [0.015, 0.056] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 51 / 71 | 41.8% | 0.0171 [0.0024, 0.0406] | 0.107 [0.055, 0.168] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.5 | Proposed, default (a), EM | 60 / 62 | 49.2% | 0.0020 [0.0000, 0.0068] | 0.020 [0.009, 0.057] |
+| in_csi_training (leaky reference) (61) | (a)+(b), π = 0.5 | Proposed, a_x, EM | 59 / 63 | 48.4% | 0.0039 [0.0003, 0.0109] | 0.044 [0.019, 0.084] |
+
+Paired differences (negative favours the proposed pipeline; strata with fewer than 20 eligible queries are omitted):
+
+| stratum | π | comparison | Δ e-AURC | Δ ECE |
 |---|---|---|---|---|
-| not_in_csi_training (primary) | exact | auroc | +0.1134 | [0.0346, 0.2095] |
-| not_in_csi_training (primary) | exact | e_aurc | -0.0645 | [-0.1133, -0.0233] |
-| not_in_csi_training (primary) | approximate | auroc | +0.1330 | [0.0578, 0.2147] |
-| not_in_csi_training (primary) | approximate | e_aurc | -0.0876 | [-0.1412, -0.0433] |
-| in_csi_training (leaky reference) | exact | auroc | +0.0439 | [0.0168, 0.0780] |
-| in_csi_training (leaky reference) | exact | e_aurc | -0.0159 | [-0.0275, -0.0070] |
-| in_csi_training (leaky reference) | approximate | auroc | +0.0356 | [0.0114, 0.0654] |
-| in_csi_training (leaky reference) | approximate | e_aurc | -0.0086 | [-0.0165, -0.0022] |
+| all eligible | 0.2 | a_x − COSMIC | -0.0173 [-0.0425, 0.0012] | -0.073 [-0.155, -0.001] |
+| all eligible | 0.2 | default (a) − COSMIC | -0.0222 [-0.0487, -0.0037] | -0.086 [-0.165, -0.016] |
+| all eligible | 0.5 | a_x − COSMIC | -0.0115 [-0.0313, 0.0011] | -0.053 [-0.123, 0.011] |
+| all eligible | 0.5 | default (a) − COSMIC | -0.0153 [-0.0343, -0.0022] | -0.081 [-0.135, -0.022] |
+| in_csi_training (leaky reference) | 0.2 | a_x − COSMIC | -0.0194 [-0.0421, -0.0017] | -0.086 [-0.169, -0.010] |
+| in_csi_training (leaky reference) | 0.2 | default (a) − COSMIC | -0.0221 [-0.0497, -0.0035] | -0.097 [-0.172, -0.026] |
+| in_csi_training (leaky reference) | 0.5 | a_x − COSMIC | -0.0132 [-0.0333, -0.0009] | -0.063 [-0.131, 0.007] |
+| in_csi_training (leaky reference) | 0.5 | default (a) − COSMIC | -0.0151 [-0.0366, -0.0022] | -0.087 [-0.145, -0.026] |
+
+Reading (a_x):
+- All 66 eligible queries, π = 0.2: e-AURC 0.0073 [0.0007, 0.0163] (a_x) and 0.0023 [-0.0000, 0.0072] (default (a)) vs 0.0251 [0.0036, 0.0565] (COSMIC). Paired Δe-AURC: a_x -0.0173 [-0.0425, 0.0012] (not significant); default -0.0222 [-0.0487, -0.0037] (significant). ΔECE: a_x -0.073 [-0.155, -0.001] (significant).
+- All 66 eligible queries, π = 0.5: e-AURC 0.0055 [0.0007, 0.0136] (a_x) and 0.0017 [0.0000, 0.0068] (default (a)) vs 0.0170 [0.0025, 0.0401] (COSMIC). Paired Δe-AURC: a_x -0.0115 [-0.0313, 0.0011] (not significant); default -0.0153 [-0.0343, -0.0022] (significant). ΔECE: a_x -0.053 [-0.123, 0.011] (not significant).
+- **Under a_x the pipeline-level advantage shrinks.** When the library holds the compound only as measured on another instrument type, the proposed pipeline's ranking gets worse (higher e-AURC than under default (a) on the same queries). Its advantage over CSI:FingerID + COSMIC is then smaller and, for ranking in the pooled set, not significant at the 95% level. The eligible queries are mostly molecules inside CSI:FingerID's training set, which favours COSMIC. The primary stratum has only 5 eligible queries and is not interpreted.
+
+**Audits** (`results/cosmic_customdb_audit.json`).
+- **Database pairs.** Test (a) − (b) = exactly the 300 test query molecules. Validation (a) − (b) = exactly the 200 validation query molecules; the validation subset has 200 molecules, hence the smaller difference.
+- **Tautomers.** Removal used our identity key (InChIKey first block after RDKit standardization), which is not tautomer-insensitive. The removal was therefore re-checked with the tautomer-insensitive key.
+  - The test (b) database contains 0 tautomers of test query molecules. No test top-1 of either system is a non-identical tautomer of the truth: (a) 0 / 0, (b) 0 / 0 (COSMIC / proposed).
+  - The validation (b) database contains 2 tautomers of validation query molecules. For 1 validation (b) query, COSMIC's top-1 is such a tautomer and was labelled wrong in COSMIC's calibration data.
+  - Sensitivity: with the 2 affected validation queries removed from COSMIC's calibration, the primary-stratum π = 0.2 comparison gives COSMIC ECE 0.055. The paired Δe-AURC is -0.0563 [-0.0809, -0.0325] and ΔECE -0.029 [-0.073, -0.006]; the conclusion is unchanged.
+
+Approximate mode (supplement; label = correct or MCES distance ≤ 2, myopic_mces, threshold 2), primary stratum:
+
+| condition | system | n correct / wrong | top-1 acc | e-AURC | ECE | log loss | trusted (p ≥ 0.9): share, obs / pred |
+|---|---|---|---|---|---|---|---|
+| (a) only | COSMIC, val-calibrated | 93 / 57 | 62.0% | 0.0365 [0.0136, 0.0650] | 0.162 [0.118, 0.211] | 0.412 [0.352, 0.473] | 12.7%, 94.7% / 97.4% |
+| (a) only | COSMIC, raw score | 93 / 57 | 62.0% | 0.0365 [0.0141, 0.0652] | 0.503 [0.439, 0.575] | 1.332 [1.153, 1.524] | none |
+| (a) only | Proposed, P(correct \| in) | 147 / 3 ⚠ unstable | 98.0% | 0.0001 [0.0000, 0.0004] | 0.006 [0.001, 0.024] | 0.030 [0.005, 0.063] | 97.3%, 100.0% / 99.9% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated + EM | 94 / 206 | 12.9% | 0.0576 [0.0339, 0.0806] | 0.055 [0.037, 0.086] | 0.236 [0.206, 0.284] | 1.3%, 100.0% / 98.0% |
+| (a)+(b), π = 0.2 | COSMIC, val-calibrated, no prior correction | 94 / 206 | 12.9% | 0.0576 | 0.140 | 0.320 | 3.6%, 66.7% / 95.7% |
+| (a)+(b), π = 0.2 | COSMIC, raw score | 94 / 206 | 12.9% | 0.0576 [0.0342, 0.0828] | 0.088 [0.070, 0.108] | 0.301 [0.254, 0.349] | none |
+| (a)+(b), π = 0.2 | Proposed, EM | 148 / 152 | 20.1% | 0.0032 [0.0005, 0.0077] | 0.020 [0.011, 0.034] | 0.075 [0.035, 0.133] | 14.9%, 100.0% / 97.0% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated + EM | 94 / 206 | 31.3% | 0.0560 [0.0319, 0.0862] | 0.093 [0.069, 0.144] | 0.350 [0.312, 0.412] | 6.7%, 90.0% / 96.6% |
+| (a)+(b), π = 0.5 | COSMIC, val-calibrated, no prior correction | 94 / 206 | 31.3% | 0.0560 | 0.092 | 0.355 | 7.0%, 85.7% / 96.9% |
+| (a)+(b), π = 0.5 | COSMIC, raw score | 94 / 206 | 31.3% | 0.0560 [0.0325, 0.0868] | 0.242 [0.207, 0.276] | 0.688 [0.594, 0.783] | none |
+| (a)+(b), π = 0.5 | Proposed, EM | 148 / 152 | 49.3% | 0.0015 [0.0003, 0.0035] | 0.017 [0.007, 0.037] | 0.080 [0.043, 0.128] | 44.3%, 100.0% / 98.4% |
 
 Reading:
-- **Leakage is visible in COSMIC's own numbers.** CSI:FingerID's exact top-1 accuracy is 67.3% for molecules in its published training structures, vs 8.7% for molecules not in them. Only the second stratum is a fair reference.
-- **The tasks differ in difficulty; the comparison is about confidence quality.** COSMIC ranks candidates from all of PubChem, while the proposed system ranks a spectral library that contains the compound. Top-1 accuracies are therefore not comparable. AUROC, which does not depend on the base rate, is: COSMIC 0.882 [0.795, 0.961] vs proposed 0.995 [0.980, 1.000]; difference +0.113 [0.035, 0.209].
-- **Calibration.** COSMIC's raw exact-mode score has ECE 0.050, and 0.032 after validation calibration. The SIRIUS documentation states that these scores are not probabilities.
-- **Sample size.** With 150 molecules per stratum and only 13 correct COSMIC top-1 hits in the primary stratum, all COSMIC estimates are imprecise; the confidence intervals are percentile bootstrap intervals (ECE is biased upward under resampling, so its interval can sit above the point estimate).
-- **What this does and does not show.** This does not show that the proposed system beats SIRIUS at structure annotation. It shows that the proposed confidence ranks its own library-search annotations far more reliably than COSMIC ranks its database-search annotations on the same spectra.
+- **Same candidates, very different top-1 accuracy.** Restricted to our library's molecules, CSI:FingerID's top-1 is correct for 62.0% of the primary-stratum queries in (a) (vs 8.7% when it searched PubChem). The spectral-library top-1 is correct for 98.0%. The candidate universe is identical, but the evidence is not. A spectral library that contains other spectra of the compound gives far stronger evidence than a fingerprint predicted from the spectrum.
+- **Scenario (a) alone.** COSMIC now has enough of both classes (93 / 57): e-AURC 0.0365 [0.0139, 0.0696], AUROC 0.926 [0.880, 0.965]. The proposed system has only 3 wrong top-1 annotations, below the pre-declared minimum of 20. Its (a)-only e-AURC, AUROC and ECE are therefore unstable and are not compared.
+- **Main result: mixtures with enough negatives on both sides.** In the primary stratum at π = 0.2 (EM for both systems), the proposed system has e-AURC 0.0015 [0.0003, 0.0034] and COSMIC 0.0577 [0.0350, 0.0831]. The paired difference is -0.0563 [-0.0802, -0.0326]. For calibration, ECE is 0.015 [0.010, 0.024] vs 0.063 [0.023, 0.094] (difference -0.038 [-0.078, -0.009]), and log loss differs by -0.192 [-0.266, -0.152]. At π = 0.5 the picture is the same: Δe-AURC -0.0564 [-0.0908, -0.0312], ΔECE -0.046 [-0.098, -0.021].
+- **Trusted tier.** Queries with p ≥ 0.9: the proposed system placed 112 rows there at π = 0.2, all correct (100.0%; predicted 97.0%). Calibrated COSMIC placed 5 there.
+- **Leaky stratum (reference only).** Here CSI:FingerID has seen the structures in training. COSMIC ranks its (a) annotations almost perfectly (e-AURC 0.0009 [0.0000, 0.0029], 129 / 21). In the mixtures the proposed system is still ahead at π = 0.2 (Δe-AURC -0.0119 [-0.0247, -0.0025]). COSMIC's trusted tier, however, is over-confident: 95.2% observed vs 99.8% predicted (80 rows).
+- **Approximate mode (supplement).** Correct means MCES distance ≤ 2. In the primary stratum at π = 0.2, e-AURC is 0.0032 [0.0005, 0.0077] (proposed) vs 0.0576 [0.0339, 0.0806] (COSMIC). **In the leaky stratum, COSMIC's approximate-mode e-AURC is lower than the proposed system's** (0.0047 [0.0011, 0.0099] vs 0.0077 [0.0000, 0.0216] at π = 0.2; paired Δ +0.0032 [-0.0078, 0.0184], not significant). The proposed system was never trained for near-miss correctness. This is reported as observed.
+- **Conclusion (pipeline level).** On the same candidate set, the proposed pipeline (spectral-library search + confidence model) gives better confidence ranking and calibration than CSI:FingerID + COSMIC, for molecules outside CSI:FingerID's published training set and with enough negatives on both sides. **Because the two pipelines use different annotation engines, this result cannot be attributed to the confidence estimation alone.** Part or all of the advantage may come from the library-search engine, which has reference spectra of the compounds. The comparison does not show that the proposed confidence model would beat COSMIC if both scored the same annotations. Sample size is 150 molecules per stratum, and the intervals are wide.
+
+#### 6.11.2 Supplementary background: COSMIC searching PubChem
+
+This is the first COSMIC run, kept as background. CSI:FingerID searched **PubChem**, which contains almost every test molecule, so COSMIC has only a scenario-(a) version here. The proposed system is shown both on (a) alone and on (a)+(b) mixtures of the same 300 queries. In the mixtures both sides have enough wrong annotations for the metrics to be stable. The candidate sets differ (PubChem vs our library), so these rows describe each system on its own task. They are not a head-to-head comparison.
+
+**not_in_csi_training (primary)**, exact identity (COSMIC without any annotation: 6):
+
+| condition | system | n correct / wrong | top-1 acc | e-AURC | ECE | log loss | trusted (p ≥ 0.9): share, obs / pred |
+|---|---|---|---|---|---|---|---|
+| COSMIC: PubChem search | COSMIC, raw score | 13 / 137 ⚠ unstable | 8.7% | 0.0646 [0.0235, 0.1170] | 0.050 [0.036, 0.094] | 0.205 [0.146, 0.272] | 1.3%, 100.0% / 95.2% |
+| COSMIC: PubChem search | COSMIC, val-calibrated | 13 / 137 ⚠ unstable | 8.7% | 0.0646 [0.0265, 0.1154] | 0.032 [0.025, 0.083] | 0.200 [0.117, 0.306] | 2.0%, 100.0% / 94.3% |
+| Proposed: (a) only | Proposed, P(correct \| in) | 147 / 3 ⚠ unstable | 98.0% | 0.0001 [0.0000, 0.0005] | 0.006 [0.001, 0.025] | 0.030 [0.005, 0.066] | 97.3%, 100.0% / 99.9% |
+| Proposed: (a)+(b), π = 0.2 | Proposed, EM | 147 / 153 | 19.6% | 0.0015 [0.0002, 0.0033] | 0.015 [0.010, 0.024] | 0.050 [0.030, 0.074] | 14.9%, 100.0% / 97.0% |
+| Proposed: (a)+(b), π = 0.5 | Proposed, EM | 147 / 153 | 49.0% | 0.0012 [0.0002, 0.0030] | 0.013 [0.007, 0.031] | 0.070 [0.036, 0.114] | 44.3%, 100.0% / 98.4% |
+
+**in_csi_training (leaky reference)**, exact identity (COSMIC without any annotation: 0):
+
+| condition | system | n correct / wrong | top-1 acc | e-AURC | ECE | log loss | trusted (p ≥ 0.9): share, obs / pred |
+|---|---|---|---|---|---|---|---|
+| COSMIC: PubChem search | COSMIC, raw score | 101 / 49 | 67.3% | 0.0159 [0.0070, 0.0286] | 0.088 [0.055, 0.140] | 0.301 [0.227, 0.391] | 32.7%, 100.0% / 97.4% |
+| COSMIC: PubChem search | COSMIC, val-calibrated | 101 / 49 | 67.3% | 0.0159 [0.0062, 0.0290] | 0.103 [0.068, 0.161] | 0.345 [0.234, 0.466] | 40.7%, 100.0% / 95.2% |
+| Proposed: (a) only | Proposed, P(correct \| in) | 148 / 2 ⚠ unstable | 98.7% | 0.0000 [0.0000, 0.0003] | 0.002 [0.000, 0.014] | 0.015 [0.001, 0.039] | 98.0%, 100.0% / 99.9% |
+| Proposed: (a)+(b), π = 0.2 | Proposed, EM | 148 / 152 | 19.7% | 0.0015 [0.0000, 0.0037] | 0.020 [0.011, 0.031] | 0.055 [0.034, 0.082] | 13.5%, 100.0% / 97.1% |
+| Proposed: (a)+(b), π = 0.5 | Proposed, EM | 148 / 152 | 49.3% | 0.0011 [0.0000, 0.0030] | 0.022 [0.010, 0.036] | 0.068 [0.032, 0.120] | 41.7%, 100.0% / 98.4% |
+
+Reading:
+- **Primary stratum, (a) alone: too few negatives or positives to rank-compare.** COSMIC has 13 correct top-1 annotations out of 150 (accuracy 8.7%). The proposed system has only 3 wrong ones. Both fall below the pre-declared minimum of 20 per class. Their AUROC, e-AURC and ECE are therefore marked unstable and are not interpreted. The earlier AUROC difference (proposed − COSMIC +0.113, CI [0.036, 0.214]) is **not** a conclusion of this report.
+- **Proposed system with enough negatives.** Mixing (a) and (b) of the same 150 molecules gives 147 correct and 153 wrong rows. At π = 0.2 (EM): e-AURC 0.0015 [0.0002, 0.0033], ECE 0.015 [0.010, 0.024]. Its trusted tier held 112 rows with observed accuracy 100.0% (predicted 97.0%).
+- **Leakage is visible in COSMIC's own numbers.** CSI:FingerID's exact top-1 accuracy is 67.3% for molecules in its published training structures, vs 8.7% for the others. In the leaky stratum COSMIC has enough of both classes (101 / 49): AUROC 0.953 [0.920, 0.978], e-AURC 0.0159 [0.0070, 0.0286], ECE 0.088 [0.055, 0.140] raw and 0.103 [0.068, 0.161] after validation calibration. This stratum is a reference only.
+- **What this supplement can and cannot show.** The two systems search different candidate sets: PubChem, which contains nearly every test molecule, versus our library. The rows therefore describe each system on its own task. The like-for-like comparison is §6.11.1.
 
 ### 6.12 Other checks
 
@@ -706,7 +1107,11 @@ Reading:
 | Floor: metadata only | 0.759 | 0.581 | 0.543 | 0.110 |
 
 - **Near-correct** (Tanimoto ≥ 0.8), π = 0.2: AURC proposed 0.4652 vs logistic(s1, gap) decomposed 0.4834.
-- **Tautomer audit** (`results/tautomer_audit.json`). 0 groups of tautomer-equivalent MassSpecGym molecules span folds, so there is no fold contamination. 56 molecules sit in such groups within folds.
+- **Tautomer audit inside MassSpecGym** (`results/tautomer_audit.json`).
+  - After RDKit standardization, 28 canonical-tautomer keys map to more than one InChIKey first block. These groups contain 56 molecules.
+  - 0 of these groups span folds, so there is no fold contamination through tautomers.
+  - Within a fold, such pairs can make a correct spectrum match count as "wrong". This affects at most 56 of 28921 molecules.
+  - The external-set audit is in §6.7.
 - **Integrity audits** (`scripts/15_checks.py`):
 
 | Check | Result | Detail |
@@ -731,6 +1136,8 @@ Reading:
 - **In-library errors are rare under the benchmark's (a) condition** (2.1%). So "untrustworthy" is dominated by library absence in any realistic batch, and the crowding effect, although significant, acts on a small slice.
 - **Library crowding differs between folds.** The engine's in-library top-1 accuracy (scenario a, unweighted) was 93.5% on the train fold (train-only library) vs 98.6% on validation. Structure-disjoint folds make held-out molecules less crowded by near-isomers from other clusters. Calibration therefore had to come from validation, not from the training data.
 - **The middle of P(in) is heterogeneous across structurally disjoint sets.** Cross-fitting the calibrator between the two structure-cluster halves of validation moved the mid-range (0.2–0.9) calibration of P(in) (observed − predicted) by -0.11 and +0.10 depending on direction (`results/dev_calibrators.json`). On test, the suspicious tier was nonetheless consistent (§6.5). For a new sample set the suspicious-tier accuracy should be treated as uncertain by about ±0.11 **in addition to** sampling error. This is carried into the pre-registration.
+- **Crowding is a small part of the lead.** Of the proposed system's lead over logistic(s1, gap), query-level crowding accounts for 1% in AURC (not significant) and 4% in log loss (significant) at π = 0.2. Most of the lead comes from the top-1's support in the library (52%), a non-linear score model (27%) and metadata (19%) (§6.3; post hoc).
+- **The decomposition is not what buys prevalence robustness on this benchmark.** A direct P(correct) model with the same features plus a Saerens EM prior correction on P(correct) matches the proposed system in ranking, log loss, ECE, group calibration and the wet-lab simulation (§6.1, added after the main test). This is reported as found; the method was not changed. What the decomposition still provides is an explicit, separately calibrated P(in), so the "likely absent" tier is defined by the probability of absence rather than by a low probability of correctness. Under a_x and on the external source, the two variants fail in the same way.
 - **A new data source breaks the trusted tier.** First through structure-representation mismatches (tautomers, duplicates), then through MS/MS-indistinguishable isomers. There, a simple score baseline ranks better than the proposed system (§6.7).
 - Two reporting bugs (e-AURC oracle ordering; a boolean-dtype average in the wet-lab summary) were found after the first test pass and fixed. The frozen evaluation was re-run unchanged (`LOG.md`).
 
@@ -741,11 +1148,16 @@ Reading:
 - The absent scenario is simulated by deleting molecules from a public library. A real sample's absent compounds may differ from MassSpecGym molecules that happen to have several spectra (the paired design uses only such molecules).
 - External-source calibration failed (§6.7). The method needs the lab's own library and annotation conventions — tautomer and stereo handling — to match the ones calibrated here. Otherwise it must be re-calibrated on a small labelled set from the lab (pre-registration §7).
 - MCES was not computed for the external set (Tanimoto proxy). The official MS2Query models were not run (they leak). COSMIC: see §6.11.
+- **COSMIC comparison.** It is pipeline-level: library search + confidence model vs CSI:FingerID + COSMIC. It cannot be attributed to the confidence estimation alone. It covers 150 molecules per stratum, and under a_x only 66 eligible queries.
+- **Added after the main test.** These analyses do not change the method: the MS2Query-style and target–decoy baselines (§6.9–6.10), the EM correction for all baselines (§6.1), the lead breakdown (§6.3), and the COSMIC comparisons (§6.11).
+- **Precursor-tolerance traceability.** The train-fold computation behind the 20-ppm tolerance was not kept, and the saved re-computation does not reproduce its figure (§2).
 
 ## 9. Reproducibility
 
-`make all` runs download → preparation → ClassyFire lookup → search → features → training → calibration → evaluation → shifts → external set → figures → report → checks. All settings are in `config.yaml`. Every JSON under `results/` records the script, config hash, seed, commit and time. The lab-data directory `data/lab/` is git-ignored, and no lab file may be sent to any web service (`src/msconf/interfaces.py`).
+**Independent re-run.** The whole pipeline was re-run from scratch from the frozen commit `d1745d09f0` in a fresh directory (`make all`, 2026-09-26 23:47 – 2026-09-27 02:54 EDT, fresh clone, raw downloads reused). Of 47 result files produced by both runs, 43 are identical in every number. Over all files, 44,819 of 45,110 numbers are equal. Differences: `dev_feature_variants.json` (29 values; committed file came from an older code state (commit 7188f13) in which 'all family features' included fam_lib_size; script fixed and re-run (LOG 02:25)); `eval_new_baselines.json` (261 values; random-forest predictions summed by parallel threads in varying order; differences in the 6th-7th significant digit); `prepare_audit.json` (1 values; committed field frac_within_tol was computed under the earlier 10-ppm setting; not used in the report); `search_summary.json` (0 values; committed file had extra 'ext' keys from an earlier run; all shared numbers identical).
+
+`make all` runs download → preparation → ClassyFire lookup → search → features → training → calibration → evaluation → shifts → external set → added baselines → post-hoc analyses → COSMIC package and import → figures → report → checks. SIRIUS itself runs outside the pipeline, on the owner's machine (`cosmic/README.md`, `cosmic/customdb/README.md`); its summary tables are in the repository. All settings are in `config.yaml`. Every JSON under `results/` records the script, config hash, seed, commit and time. The lab-data directory `data/lab/` is git-ignored, and no lab file may be sent to any web service (`src/msconf/interfaces.py`).
 
 
 ---
-<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit b35b43e895 (dirty).</sub>
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit d1745d09f0 (dirty).</sub>

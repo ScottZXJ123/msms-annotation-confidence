@@ -1,22 +1,24 @@
 {
  "_provenance": {
   "script": "05_search.py",
-  "config_hash": "c46a2e1dcdbe",
+  "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
-  "dirty": true,
-  "utc": "2026-09-27T00:10:42Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T03:54:20Z"
  },
  "n_library_spectra": 203935,
  "n_eligible_by_fold": {
   "train": 165897,
   "val": 15999,
-  "test": 14706
+  "test": 14706,
+  "ext": 0
  },
  "n_kept_by_fold": {
   "train": 172047,
   "val": 16613,
-  "test": 15275
+  "test": 15275,
+  "ext": 0
  },
  "n_queries_by_fold": {
   "train": 61724,
@@ -29,5 +31,5 @@
   "val": 2626
  },
  "mean_window_molecules": 5.761752263899858,
- "seconds": 371.5294122695923
+ "seconds": 295.87623858451843
 }

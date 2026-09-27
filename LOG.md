@@ -324,3 +324,148 @@ a set, not individual queries.
   accuracy 8.7%; COSMIC AUROC 0.882 vs proposed 0.995 (difference +0.113, CI [0.035, 0.209]). Leaky stratum:
   top-1 accuracy 67.3% — the leakage effect is large. The comparison concerns confidence quality on each
   system's own annotations (PubChem search vs spectral library containing the compound), not annotation power.
+
+## 2026-09-27
+
+### 00:05 Owner's review of the COSMIC import; plan (nothing about the method changes)
+- Requested after the reproduction check: (1) report positive/negative counts per stratum and system, mark the
+  proposed system's (a)-only AUROC / e-AURC / ECE as unstable (only a handful of wrong top-1 annotations),
+  drop the AUROC difference as a main conclusion, and evaluate the proposed system on the same 300 queries in
+  (a) and (b) mixed at pre-declared in-library fractions; (2) a head-to-head on the SAME candidate set using
+  SIRIUS custom structure databases; (3) a completeness check of the report.
+- **Pre-declared rules for both COSMIC comparisons** (written into `scripts/cosmic/cosmic_common.py` before the
+  custom-database results existed): mixtures at π = 0.2 and 0.5 (the headline prevalences of the whole
+  report); (a) rows total weight π, (b) rows 1 − π within each stratum; a metric is "unstable" when its
+  minority class has < 20 rows (the minimum already used for group calibration); no annotation = confidence 0
+  and not correct, for both systems; query bootstrap with both scenario rows of a query kept together.
+  For COSMIC: validation calibration on (a)+(b) at the proposed system's calibration prevalence, then the same
+  Saerens EM prior correction that the proposed system uses.
+- (b) for the COSMIC comparisons removes all spectra of all 300 subset molecules at once ("bset" in
+  `features.py`), so that our library and the SIRIUS (b) database lack exactly the same molecules. (a) rows are
+  bit-identical to the stored scenario-(a) rows (checked).
+
+### 00:10 Custom structure databases for the head-to-head (`scripts/cosmic/make_customdb.py`)
+- `msg_test_a`: 6,721 test-phase library molecules within 0.05 Da of some test query's neutral mass (CSI:FingerID
+  retrieves only formula-matching structures, so the mass filter changes no retrieval); `msg_test_b`: minus
+  the 300 query molecules (6,421). Validation: 4,160 / 3,960.
+- One validation query's recorded precursor m/z is 82 ppm off its structure (MassSpecGym metadata); its
+  molecule is added to `msg_val_a` explicitly (first build asserted and stopped on it).
+- SIRIUS 6.5.4 CLI read from the source of the stable branch: `custom-db create/import/show`, and
+  `structures --database <name> --exp OFF`. Expansive search defaults to APPROXIMATE in 6.5 and would fall back
+  to PubChem for low-confidence compounds, returning structures outside our library; it is switched off, and
+  the import checks every returned structure against the searched database.
+- Formulas, fingerprints and classes are computed once per split/instrument; the project is copied and
+  searched once per database, so (a) and (b) share identical fingerprints.
+
+### 00:30 Post-hoc analyses added for report completeness (test fold; no feedback into the method)
+- `scripts/23_lead_attribution.py`: where the lead over logistic(s1, gap) comes from, by feature group.
+  Eight extra ablation systems (drop-one from the primary; two intermediate steps of the path
+  sim → +sim_extra → +analog → +meta → +crowding), trained and calibrated exactly like every other system.
+- `scripts/24_baselines_em.py`: every direct baseline (incl. MS2Query-style and TDA margin) additionally with
+  the same Saerens EM prior correction applied to its P(correct). `scripts/19_new_baselines.py` now also
+  writes the rows it evaluates (`rows_new_baselines.parquet`) so that 24 needs no refit.
+
+### 00:50 Same-candidate-set COSMIC run imported (`results/eval_cosmic_customdb.json`) — main COSMIC comparison
+- SIRIUS 6.5.4 on the owner's Mac, 00:15–00:49 (`cosmic/customdb/run_console.txt`). The four databases hold
+  exactly the expected numbers of structures (6,721 / 6,421 / 4,160 / 3,960). Only the eight
+  `structure_identifications.tsv` summaries, the database info and the console log were copied back.
+- Checks: 0 returned structures outside the searched database (every hit's InChIKey 2-D block is a database key;
+  every `links` entry names the searched database); 0 (b) rows correct. Test queries with a structure:
+  (a) 253/300, (b) 146/300 (in (b), fewer formulas have any candidate).
+- Primary stratum (150 molecules not in CSI:FingerID's published training structures): CSI:FingerID top-1
+  accuracy 62% on our library's molecules (8.7% against PubChem). (a) alone: COSMIC 93 correct / 57 wrong
+  (e-AURC 0.037); proposed 147 / 3 → unstable by the pre-declared rule, not compared.
+  (a)+(b) at π = 0.2 (EM for both): e-AURC 0.0015 vs 0.0577, paired Δ −0.056 [−0.080, −0.033]; ECE 0.015 vs
+  0.063, Δ −0.038 [−0.078, −0.009]. π = 0.5: Δe-AURC −0.056 [−0.091, −0.031].
+- Leaky stratum (reference): COSMIC ranks its (a) annotations almost perfectly (e-AURC 0.0009); mixtures still
+  favour the proposed system in exact mode (π = 0.2: Δ −0.012 [−0.025, −0.003]); in approximate mode COSMIC's
+  e-AURC is lower at π = 0.2 (Δ +0.003 [−0.008, +0.018], n.s.). Reported as observed.
+- COSMIC calibrator (validation, shared rule): isotonic (exact), Platt (approximate).
+- The PubChem run is re-presented as supplementary background with counts and instability flags; the AUROC
+  difference from 23:45 is no longer reported as a conclusion (COSMIC had only 13 correct and the proposed
+  system only 3 wrong annotations in that comparison, both below the pre-declared minimum of 20).
+
+### 01:45 Owner's follow-up questions on the same-candidate-set comparison (answered; `results/cosmic_customdb_audit.json`)
+- **Why the validation database pair differs by only 200.** (b) = (a) minus exactly the subset's query molecules
+  of that split: 300 test molecules, 200 validation molecules (one spectrum per molecule). Verified: test (a) − (b)
+  = the 300 query molecules, validation (a) − (b) = the 200 query molecules, (b) − (a) empty in both.
+- **Was the removal tautomer-insensitive?** No. Molecules were removed by our identity key (InChIKey first block
+  after RDKit Cleanup → LargestFragment → Uncharge), for SIRIUS's (b) databases and for our (b) library alike.
+  Re-checked with the tautomer-insensitive key of `scripts/20_tautomer_keys.py`:
+  - test (b) database: 0 molecules are tautomers of a test query molecule; no test top-1 of either system, in
+    (a) or (b), is a non-identical tautomer of the truth;
+  - validation (b) database: 2 molecules are tautomers of validation query molecules (queries
+    MassSpecGymID0193145, MassSpecGymID0089707); for 0089707 COSMIC's (b) top-1 is that tautomer and was labelled
+    wrong in COSMIC's calibration data. Main analysis unchanged; a sensitivity analysis removes both queries from
+    COSMIC's calibration (`sensitivity_val_tautomer` in `results/eval_cosmic_customdb.json`).
+- **When were the main metric and π of the head-to-head fixed?** Honest record:
+  - π = 0.2 and 0.5 and the metrics (e-AURC as the ranking metric, ECE / log loss for calibration, trusted tier)
+    are the report's headline choices, fixed in `config.yaml` / the main evaluation on 2026-09-26, long before any
+    COSMIC result.
+  - The instability rule (minority class < 20 rows) and the EM correction for COSMIC were written into
+    `scripts/cosmic/cosmic_common.py` at ~00:10–00:30, **after** the PubChem COSMIC results had been seen (they had
+    13 correct COSMIC and 3 wrong proposed annotations, which prompted the owner's request) but **before** the
+    custom-database run had finished (00:49) or been imported (00:50). The threshold 20 is the existing
+    minimum-molecules rule for group calibration.
+  - Seen before the metrics were computed: the SIRIUS console log, file sizes and the header and first two rows of
+    one summary file (00:40, to check the `links` format). This led to one change before the import: a hit's
+    identity is taken from SIRIUS's InChIKey 2-D block (checked to be a database key) instead of parsing `links`.
+  - Decided after seeing the head-to-head results: showing the "COSMIC, val-calibrated, no prior correction" row
+    in the report table (presentation only), the a_x version (owner's request) and the tautomer sensitivity above.
+- **Wording.** The head-to-head is a pipeline-level result (library search + confidence model vs CSI:FingerID +
+  COSMIC) and cannot be attributed to the confidence model alone, because the engines differ. Report wording
+  changed accordingly.
+- **a_x version** (owner's request): the same 300 queries and SIRIUS results; on our side the library keeps the
+  truth only through other-instrument spectra. Only 66 of the 300 queries are a_x-eligible (5 primary, 61 leaky
+  stratum), so the primary stratum is too small; reported pooled and per stratum with counts.
+
+### 02:00 a_x version of the head-to-head and tautomer sensitivity (`results/eval_cosmic_customdb.json`)
+- Re-import with the two additions; all earlier numbers in the file are unchanged (checked, 1,486 values).
+- a_x: 66 of 300 queries eligible (61 leaky stratum, 5 primary). Pooled, π = 0.2: e-AURC proposed-a_x 0.0073,
+  proposed-default 0.0023, COSMIC 0.0251; Δ(a_x − COSMIC) −0.017 [−0.043, +0.001] (not significant),
+  Δ(default − COSMIC) −0.022 [−0.049, −0.004]; ΔECE(a_x − COSMIC) −0.073 [−0.155, −0.001]. The pipeline-level
+  ranking advantage shrinks under a_x and is not significant in the pooled set; primary stratum (5) not interpreted.
+- Tautomer sensitivity (2 validation queries removed from COSMIC's calibration): primary stratum π = 0.2
+  Δe-AURC −0.056 [−0.081, −0.033], ΔECE −0.029 [−0.073, −0.006]; conclusion unchanged.
+
+### 02:15 Post-hoc results: EM for every baseline (`results/eval_baselines_em.json`) and lead by feature group (`results/eval_lead_attribution.json`)
+- Re-running `scripts/19_new_baselines.py` (to persist its rows) reproduced `eval_new_baselines.json` up to
+  floating-point noise (1,121 of 4,881 values differ in the 7th significant digit; multi-threaded random-forest
+  prediction sums trees in a non-deterministic order). No conclusion depends on it.
+- **EM on every direct baseline.** Log loss and ECE improve for all 7 direct baselines at π = 0.2 (ranking is
+  unchanged by construction). Score baselines stay far behind (best: MS2Query-style score 0.138 vs 0.071), and at
+  π = 0.1 their calibrated trusted tier nearly empties (logistic(s1, gap): ~1 query per simulated batch vs 71 for the proposed system).
+  **Finding (negative for the decomposition):** the direct full-feature model + EM matches the proposed system
+  (π = 0.2: e-AURC 0.0043 vs 0.0041, log loss 0.0701 vs 0.0706, ECE 0.0029 vs 0.0043; 100% of sufficient
+  classes and crowding groups consistent; wet-lab simulation equally consistent). Prevalence robustness comes from
+  the EM prior correction, not from the P(in)·P(correct|in) decomposition. Reported in the summary and §7; the
+  method is not changed.
+- **Lead by feature group** (logistic(s1, gap) decomposed → proposed, π = 0.2, AURC lead 0.0273): non-linear
+  score model 27%, top-1 library support (sim_extra) 52%, analogue hits 2% (n.s.), metadata 19%, crowding 1%
+  (n.s.); log-loss lead 0.0767: 3% / 55% / 0% / 38% / 4% (crowding step significant). Drop-one agrees:
+  removing sim_extra or meta costs most; removing crowd_struct or analog costs nothing measurable.
+- Operational: at 02:03 the reproduction run was paused (SIGSTOP, during its external-set search) so that the
+  lead-attribution training could run without CPU contention (LightGBM slowed ~15× when sharing 2 cores); it
+  was resumed at 02:14. This does not affect any result of either run.
+
+### 02:25 Reproduction check, first findings (run from commit d1745d0 in a fresh clone)
+- Every result file of the re-run so far is identical to the committed one in every number, except:
+  - `dev_feature_variants.json`: the committed file was produced at commit 7188f13, before `fam_lib_size` was
+    moved out of the `crowd_family` group (2a5d27a). The diagnostic script built "all family features" from
+    that group, so on re-run the variants `base+family_all` and `full` silently lost `fam_lib_size`
+    (P(in) val-A log loss 0.081 instead of 0.153). Fixed in the script ("all family features" now explicitly
+    includes `fam_lib_size`, the original meaning) and re-run in the main repository (02:50); the report's
+    §6.8 table reads from it. With the column now appended last, LightGBM's column subsampling draws different
+    subsets, so the two affected values move slightly (P(in) val-A log loss `base+family_all` 0.153 → 0.144,
+    `full` 0.132 → 0.125); every other variant is identical and the conclusion (the count feature is a
+    shortcut) is unchanged.
+  - `prepare_audit.json`: `frac_within_tol` was computed under the earlier 10-ppm setting (0.933) and is 0.986
+    at the final 20 ppm; the value is not used in the report. `search_summary.json`: the committed file had
+    extra `ext` keys from an earlier run; all shared numbers are identical.
+  - Result files produced by the frozen commit are replaced by the re-run's copies (clean provenance: commit
+    d1745d0, not dirty). Files changed deliberately after that commit keep their new versions.
+- **Traceability gap found:** the 19:58 precursor-tolerance numbers (99.2% at 20 ppm) came from an ad hoc
+  computation whose code was not kept; no reconstruction reproduced them. The saved re-computation
+  (`scripts/dev/diag_precursor_tolerance.py`) gives 98.8% at 20 ppm over all same-molecule/adduct pairs (the
+  stated rule would then have chosen 30 ppm) and 99.9% for each spectrum's nearest same-molecule spectrum. The
+  engine tolerance is not changed after the fact; the report states the gap.

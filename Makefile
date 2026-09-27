@@ -1,11 +1,11 @@
 # One command: `make all` (public data download -> every table and figure -> report -> audits).
-# CPU only. Approximate time on 2 cores: ~2.5 h (training ~45 min; external-source variants ~30 min).
+# CPU only. Approximate time on 2 cores: ~3 h (training ~45 min; external-source variants ~30 min; post-hoc ablations ~20 min).
 PY ?= python3
 EXT = data/derived/ext
 
-.PHONY: all data search features train dev evaluate shift external newbaselines cosmic figures report check clean-derived
+.PHONY: all data search features train dev evaluate shift external newbaselines posthoc cosmic figures report check clean-derived
 
-all: data search features train dev evaluate shift external newbaselines cosmic figures report check
+all: data search features train dev evaluate shift external newbaselines posthoc cosmic figures report check
 
 data:
 	$(PY) scripts/01_download.py
@@ -27,6 +27,7 @@ train:
 dev:   # validation-only diagnostics referenced in LOG.md
 	$(PY) scripts/dev/diag_feature_variants.py
 	$(PY) scripts/dev/diag_calibrators.py
+	$(PY) scripts/dev/diag_precursor_tolerance.py
 
 evaluate:   # the single final test evaluation of the frozen systems
 	$(PY) scripts/09_evaluate.py
@@ -60,10 +61,17 @@ newbaselines:   # added after the main test evaluation (see LOG.md); the propose
 	$(PY) scripts/19_new_baselines.py
 	$(PY) scripts/22_neighbourhood_comparison.py
 
+posthoc:   # added after the main test evaluation for report completeness (LOG 2026-09-27); nothing feeds back into the method
+	$(PY) scripts/24_baselines_em.py
+	$(PY) scripts/23_lead_attribution.py
+
 cosmic:   # builds the SIRIUS input package; COSMIC itself runs on the project owner's machine (cosmic/README.md)
 	$(PY) scripts/cosmic/csi_training_keys.py
 	$(PY) scripts/cosmic/make_subset.py
+	$(PY) scripts/cosmic/make_customdb.py
 	if ls cosmic/results/summaries_*/structure_identifications.* >/dev/null 2>&1; then $(PY) scripts/cosmic/ingest_cosmic.py cosmic/results; fi
+	if ls cosmic/customdb/results/summaries_*_[ab]/structure_identifications.* >/dev/null 2>&1; then \
+	  $(PY) scripts/cosmic/ingest_cosmic_customdb.py cosmic/customdb/results && $(PY) scripts/cosmic/audit_customdb.py; fi
 
 figures:
 	$(PY) scripts/13_figures.py

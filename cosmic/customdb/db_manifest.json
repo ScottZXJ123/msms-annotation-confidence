@@ -1,0 +1,44 @@
+{
+ "test_a": {
+  "n_molecules": 6721,
+  "n_query_molecules_included": 300,
+  "phase_folds": [
+   "train",
+   "val",
+   "test"
+  ],
+  "mass_window_da": 0.05,
+  "query_molecules_outside_window_added": 0
+ },
+ "test_b": {
+  "n_molecules": 6421,
+  "n_query_molecules_included": 0,
+  "phase_folds": [
+   "train",
+   "val",
+   "test"
+  ],
+  "mass_window_da": 0.05,
+  "query_molecules_outside_window_added": 0
+ },
+ "val_a": {
+  "n_molecules": 4160,
+  "n_query_molecules_included": 200,
+  "phase_folds": [
+   "train",
+   "val"
+  ],
+  "mass_window_da": 0.05,
+  "query_molecules_outside_window_added": 1
+ },
+ "val_b": {
+  "n_molecules": 3960,
+  "n_query_molecules_included": 0,
+  "phase_folds": [
+   "train",
+   "val"
+  ],
+  "mass_window_da": 0.05,
+  "query_molecules_outside_window_added": 0
+ }
+}

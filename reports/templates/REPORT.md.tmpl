@@ -8,22 +8,38 @@ Every number in this report is produced by the code in this repository and inser
 
 **Task.** A query MS/MS spectrum is annotated by an engine (here, spectral-library search with entropy similarity). The system returns a calibrated probability that the engine's top-1 is correct (identity = first block of the InChIKey, i.e. 2-D skeleton) and sorts each query into one of three tiers: **trusted** (p_correct ≥ {{ cfg['tiers']['trusted_min_p_correct'] }}), **likely absent from library** (P(in library) ≤ {{ cfg['tiers']['absent_max_p_in'] }}), or **suspicious** (everything else).
 
-**Method (primary system, selected on validation).** p_correct(x; π) = P(in | x; π) · P(correct | x, in). Two gradient-boosted models provide the two factors. P(in) is moved to the batch's in-library prevalence π by Bayes prior shift, and π is estimated on the unlabeled batch by EM. Features are observable only: metadata, similarity scores, analogue hits, and **query-level crowding**. Query-level crowding means near-ties among candidates, structural neighbours of the top-1 in the library and in the precursor window, and the spectral neighbourhood density of the query and of the top-1. Family-level features did not add validation value and are not in the primary system.
+**Method (primary system, selected on validation).** p_correct(x; π) = P(in | x; π) · P(correct | x, in). Two gradient-boosted models provide the two factors. P(in) is moved to the batch's in-library prevalence π by Bayes prior shift, and π is estimated on the unlabeled batch by EM. Features are observable only: metadata, similarity scores, the top-1's support in the library (matched peaks, its other library spectra), analogue hits, and **query-level crowding**. Query-level crowding means near-ties among candidates, structural neighbours of the top-1 in the library and in the precursor window, and the spectral neighbourhood density of the query and of the top-1. Family-level features did not add validation value and are not in the primary system.
 
 **Main results on the structure-disjoint test fold** (2,490 molecules; {{ J['eval_sweep']['population_test']['a']['n_rows'] }} query spectra, each evaluated with its truth in the library (a) and removed (b)). π is the batch's in-library prevalence, estimated by EM unless stated.
 
-1. **Risk–coverage on the test fold (claim 1): better than every baseline.** At π = 0.2: e-AURC {{ sw(P,0.2,'e_aurc') :.4f }} for the proposed system vs {{ sw('B_lr_direct',0.2,'e_aurc') :.4f }} for logistic(s1, gap), {{ sw('B_lr_dec',0.2,'e_aurc') :.4f }} for the same logistic model inside our decomposed framework, and {{ sw('B_s1_direct',0.2,'e_aurc') :.4f }} for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = {{ bd(0.2,P,'B_lr_dec','d_aurc') :+.4f }}, 95% CI {{ ci(bd(0.2,P,'B_lr_dec','d_aurc_ci'),4) }}. Coverage at ≤ 5% risk: {{ pct(sw(P,0.2,'cov@risk0.05')) }} vs {{ pct(sw('B_lr_direct',0.2,'cov@risk0.05')) }} (the oracle maximum at π = 0.2 equals the fraction of correct top-1 annotations, {{ pct(sw(P,0.2,'cal_mean_y')) }}). The two additional baselines added after the main test do not change this; see §6.9–6.10.{{ cosmic_summary() }}
-2. **Calibration per family and per crowding group (claim 2): holds where it can be tested.** In every top-1 ClassyFire class with enough data ({{ grp(P,0.2,'top1_class','n_sufficient') }} of {{ grp(P,0.2,'top1_class','n_groups') }} classes at π = 0.2, covering {{ pct(grp(P,0.2,'top1_class','frac_rows_in_sufficient')) }} of queries), the predicted accuracy lies inside the 95% CI of the observed accuracy ({{ pct(grp(P,0.2,'top1_class','frac_consistent_sufficient')) }} of groups). The same holds for superclass, subclass and every crowding quartile. The logistic(s1, gap) baseline without an absence model reaches only {{ pct(grp('B_lr_direct',0.2,'top1_class','frac_consistent_sufficient')) }} for classes, and 0% for every crowding grouping. The {{ grp(P,0.2,'top1_class','n_groups') - grp(P,0.2,'top1_class','n_sufficient') }} small classes are not claimed.
-3. **Crowding adds information beyond similarity (claim 3): yes at the query level, no at the family level.**
-   - Within similarity-score strata, top-1 errors are more likely when the top-1 has structural neighbours in the library (Mantel–Haenszel OR {{ mh('top1_struct_nbrs','mh_odds_ratio_error') :.2f }}, 95% CI {{ ci(mh('top1_struct_nbrs','ci95'),2) }}) and when the top-2 candidate is structurally similar (OR {{ mh('tani12','mh_odds_ratio_error') :.1f }}).
-   - Adding the crowding features to a rich no-crowding model improves the log loss of p_correct significantly: Δ = {{ bd(0.2,P,'M_base','d_logloss') :+.4f }}, CI {{ ci(bd(0.2,P,'M_base','d_logloss_ci'),4) }}. Ranking does not improve (ΔAURC CI {{ ci(bd(0.2,P,'M_base','d_aurc_ci'),4) }}).
-   - Added to similarity scores alone, crowding improves both ranking and log loss (§6.3).
-   - The collaborator's **family-level** version of the prior is **not** supported under the strict split. The correlation between family spectral crowding (train library) and family error rate (test) is Spearman ρ = {{ J['eval_incremental']['family_level_prior']['top1_class']['spearman_rho'] :.2f }}, CI {{ ci(J['eval_incremental']['family_level_prior']['top1_class']['rho_ci95_family_bootstrap'],2) }}.
+1. **Risk–coverage on the test fold (claim 1): better than every baseline.** At π = 0.2: e-AURC {{ sw(P,0.2,'e_aurc') :.4f }} for the proposed system vs {{ sw('B_lr_direct',0.2,'e_aurc') :.4f }} for logistic(s1, gap), {{ sw('B_lr_dec',0.2,'e_aurc') :.4f }} for the same logistic model inside our decomposed framework, and {{ sw('B_s1_direct',0.2,'e_aurc') :.4f }} for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = {{ bd(0.2,P,'B_lr_dec','d_aurc') :+.4f }}, 95% CI {{ ci(bd(0.2,P,'B_lr_dec','d_aurc_ci'),4) }}. Coverage at ≤ 5% risk: {{ pct(sw(P,0.2,'cov@risk0.05')) }} vs {{ pct(sw('B_lr_direct',0.2,'cov@risk0.05')) }} (the oracle maximum at π = 0.2 equals the fraction of correct top-1 annotations, {{ pct(sw(P,0.2,'cal_mean_y')) }}). The two additional baselines added after the main test do not change this; see §6.9–6.10.
+   - **Every baseline also under the same EM prior correction** (§6.1, added after the main test). The correction is applied to each direct baseline's P(correct). It is monotone, so ranking (e-AURC) is unchanged; calibration improves.
+     - Logistic(s1, gap): log loss {{ bem('B_lr_direct',0.2,'logloss','none') :.3f }} → {{ bem('B_lr_direct',0.2,'logloss') :.3f }} at π = 0.2, still far above the proposed system's {{ bem(P,0.2,'logloss') :.3f }}.
+     - **The direct model with the full feature set, once EM-corrected, is as good as the proposed system.** At π = 0.2 its e-AURC is {{ bem('M_full_direct',0.2,'e_aurc') :.4f }} vs {{ bem(P,0.2,'e_aurc') :.4f }}, log loss {{ bem('M_full_direct',0.2,'logloss') :.4f }} vs {{ bem(P,0.2,'logloss') :.4f }}, and ECE {{ bem('M_full_direct',0.2,'ece') :.4f }} vs {{ bem(P,0.2,'ece') :.4f }}. It is also calibrated in every sufficient family and crowding group.
+     - **So the lead over the score baselines comes from the features, and prevalence robustness comes from the EM prior correction.** The decomposition into P(in) · P(correct | in) is not what produces either on this benchmark. What the decomposition adds is an explicit P(in) for the "absent" tier (§6.1, §7).
+   - **Which features carry the lead** (post hoc, §6.3). Features are added one group at a time, starting from logistic(s1, gap) in the decomposed framework, and the AURC lead at π = 0.2 is split across the steps:
+     - a non-linear model of the similarity scores: {{ pct(lstep(0.2,0,'share_of_lead_aurc'),0) }};
+     - **support of the top-1 in the library** (matched peaks, mean score over the top-1's library spectra, number of its spectra in the window): **{{ pct(lstep(0.2,1,'share_of_lead_aurc'),0) }}**;
+     - analogue hits: {{ pct(lstep(0.2,2,'share_of_lead_aurc'),0) }} (not significant);
+     - metadata including window counts: {{ pct(lstep(0.2,3,'share_of_lead_aurc'),0) }};
+     - query-level crowding: {{ pct(lstep(0.2,4,'share_of_lead_aurc'),0) }} (not significant).
+
+     For log loss the shares are {{ pct(lstep(0.2,1,'share_of_lead_logloss'),0) }} (top-1 support), {{ pct(lstep(0.2,3,'share_of_lead_logloss'),0) }} (metadata) and {{ pct(lstep(0.2,4,'share_of_lead_logloss'),0) }} (crowding; significant, Δ {{ lstep(0.2,4,'d_logloss') :+.4f }} {{ ci(lstep(0.2,4,'d_logloss_ci'),4) }}).
+   - **COSMIC.** {{ cosmic_summary() }}
+2. **Calibration per family and per crowding group (claim 2): holds where it can be tested.** In every top-1 ClassyFire class with enough data ({{ grp(P,0.2,'top1_class','n_sufficient') }} of {{ grp(P,0.2,'top1_class','n_groups') }} classes at π = 0.2, covering {{ pct(grp(P,0.2,'top1_class','frac_rows_in_sufficient')) }} of queries), the predicted accuracy lies inside the 95% CI of the observed accuracy ({{ pct(grp(P,0.2,'top1_class','frac_consistent_sufficient')) }} of groups). The same holds for superclass, subclass and every crowding quartile.
+   - **Size of the group calibration errors** (|observed − predicted accuracy| in the sufficient groups, π = 0.2): classes mean {{ grp(P,0.2,'top1_class','mean_abs_gap_sufficient') :.3f }}, max {{ grp(P,0.2,'top1_class','max_abs_gap_sufficient') :.3f }}; superclasses mean {{ grp(P,0.2,'top1_superclass','mean_abs_gap_sufficient') :.3f }}, max {{ grp(P,0.2,'top1_superclass','max_abs_gap_sufficient') :.3f }}; subclasses max {{ grp(P,0.2,'top1_subclass','max_abs_gap_sufficient') :.3f }}; crowding groups max {{ grp_max_crowd(P,0.2) :.3f }}. At π = 0.5 the largest class gap is {{ grp(P,0.5,'top1_class','max_abs_gap_sufficient') :.3f }}.
+   - **The score baselines are not calibrated per group.** Without prevalence correction, the logistic(s1, gap) baseline is consistent for only {{ pct(grp('B_lr_direct',0.2,'top1_class','frac_consistent_sufficient')) }} of classes (mean gap {{ grp('B_lr_direct',0.2,'top1_class','mean_abs_gap_sufficient') :.3f }}, max {{ grp('B_lr_direct',0.2,'top1_class','max_abs_gap_sufficient') :.3f }}) and for 0% of crowding groups (max gap {{ grp_max_crowd('B_lr_direct',0.2) :.3f }}). With the same EM prior correction it is consistent for {{ pct(gem('B_lr_direct',0.2,'top1_class','frac_consistent_sufficient')) }} of classes (max gap {{ gem('B_lr_direct',0.2,'top1_class','max_abs_gap_sufficient') :.3f }}) and on average {{ pct(gem_frac_crowd('B_lr_direct',0.2)) }} of crowding groups (max gap {{ gem_max_crowd('B_lr_direct',0.2) :.3f }}); §6.2. The direct full-feature model with the same EM correction is consistent in {{ pct(gem('M_full_direct',0.2,'top1_class','frac_consistent_sufficient')) }} of classes and {{ pct(gem_frac_crowd('M_full_direct',0.2)) }} of crowding groups. Per-group calibration therefore comes with the feature set, not with the decomposition.
+   - The {{ grp(P,0.2,'top1_class','n_groups') - grp(P,0.2,'top1_class','n_sufficient') }} small classes are not claimed.
+3. **Crowding adds information beyond similarity (claim 3): supported in a narrower form than the prior.** Crowding measured around each annotation's own candidates is supported; crowding measured as a property of a chemical family is not.
+   - **Query-level crowding adds to the similarity scores in both ranking and probability quality.** The added crowding terms are near-ties, similar runner-ups, structural neighbours of the top-1, and spectral neighbourhood density. Similarity + crowding vs similarity alone: ΔAURC {{ bd(0.2,'M_sim_plus_crowd','F_sim','d_aurc') :+.4f }} {{ ci(bd(0.2,'M_sim_plus_crowd','F_sim','d_aurc_ci'),4) }}, Δ log loss {{ bd(0.2,'M_sim_plus_crowd','F_sim','d_logloss') :+.4f }} {{ ci(bd(0.2,'M_sim_plus_crowd','F_sim','d_logloss_ci'),4) }} (π = 0.2).
+   - **Within similarity-score strata, errors are more likely under crowding.** Top-1 errors rise when the top-1 has structural neighbours in the library (Mantel–Haenszel OR {{ mh('top1_struct_nbrs','mh_odds_ratio_error') :.2f }}, 95% CI {{ ci(mh('top1_struct_nbrs','ci95'),2) }}) and when the top-2 candidate is structurally similar (OR {{ mh('tani12','mh_odds_ratio_error') :.1f }}).
+   - **Over the full no-crowding model only log loss improves, not ranking.** That model also contains analogue hits, score structure and metadata. Adding crowding gives Δ log loss {{ bd(0.2,P,'M_base','d_logloss') :+.4f }}, CI {{ ci(bd(0.2,P,'M_base','d_logloss_ci'),4) }}. The ranking change is not significant (ΔAURC CI {{ ci(bd(0.2,P,'M_base','d_aurc_ci'),4) }}). Crowding accounts for {{ pct(lstep(0.2,4,'share_of_lead_aurc'),0) }} of the AURC lead and {{ pct(lstep(0.2,4,'share_of_lead_logloss'),0) }} of the log-loss lead over logistic(s1, gap) (§6.3). The rest comes from the top-1's library support, metadata and a non-linear score model.
+   - **The family-level form of the prior is not supported under the strict split.** This is the collaborator's version: the correlation between family spectral crowding (train library) and family error rate (test) is Spearman ρ = {{ J['eval_incremental']['family_level_prior']['top1_class']['spearman_rho'] :.2f }}, CI {{ ci(J['eval_incremental']['family_level_prior']['top1_class']['rho_ci95_family_bootstrap'],2) }}. Within similarity strata, the family crowding odds ratio is {{ mh('fam_spec_crowd_train','mh_odds_ratio_error') :.2f }}, CI {{ ci(mh('fam_spec_crowd_train','ci95'),2) }}.
 4. **Shifts (claim 4): holds for prevalence; partial for instrument; fails for a new data source.**
-   - **Prevalence: holds.** With EM-estimated π the proposed system stays calibrated from π = 0.05 to 0.9. The same model without the correction over-states trusted-tier accuracy at π = 0.1: {{ pct(wl(0.1,'trusted','pred_acc_mean',P+'|none')) }} predicted vs {{ pct(wl(0.1,'trusted','obs_acc_mean',P+'|none')) }} observed.
+   - **Prevalence: holds.** With EM-estimated π the proposed system stays calibrated from π = 0.05 to 0.9. The same model without the correction over-states trusted-tier accuracy at π = 0.1: {{ pct(wl(0.1,'trusted','pred_acc_mean',P+'|none')) }} predicted vs {{ pct(wl(0.1,'trusted','obs_acc_mean',P+'|none')) }} observed. A direct model with the same features stays calibrated too, once the same EM correction is applied to its P(correct) (§6.1). The robustness comes from the EM prior correction.
    - **Instrument: partial** (§6.6). A model trained on Orbitrap and tested on QTOF stays roughly calibrated (ECE {{ shift('QTOF',P,'cross_instrument',0.2,'cal_ece') :.3f }}). Trained on QTOF, where there is much less training data, and tested on Orbitrap, it is not: predicted accuracy {{ shift('Orbitrap',P,'cross_instrument',0.2,'cal_mean_p') :.3f }} vs observed {{ shift('Orbitrap',P,'cross_instrument',0.2,'cal_mean_y') :.3f }} at π = 0.2.
-   - **Library measured on another instrument type** (scenario a_x, §6.1): overall calibration holds (predicted {{ ax(P,'a_x',0.2,'cal_mean_p') :.3f }} vs observed {{ ax(P,'a_x',0.2,'cal_mean_y') :.3f }} at π = 0.2). The trusted tier, however, is over-confident: {{ pct(ax(P,'a_x',0.2,'tiers')['trusted']['acc']) }} observed vs {{ pct(ax(P,'a_x',0.2,'tiers')['trusted']['pred_acc']) }} predicted.
-   - **New data source (MassBank 2026.03, §6.7): fails.** Even after tautomer and duplicate de-duplication (v3), the trusted tier is badly over-confident at π = 0.2: {{ pct(ext3(P,0.2)['tiers']['trusted']['acc']) }} observed vs {{ pct(ext3(P,0.2)['tiers']['trusted']['pred_acc']) }} predicted. Most confident errors are indistinguishable isomers ({{ pct(J['eval_external_v3']['confident_errors_pi0.5']['frac_same_formula_as_truth']) }} share the truth's formula).
+   - **Library measured on another instrument type** (scenario a_x, §6.1): overall calibration holds (predicted {{ ax(P,'a_x',0.2,'cal_mean_p') :.3f }} vs observed {{ ax(P,'a_x',0.2,'cal_mean_y') :.3f }} at π = 0.2). The trusted tier, however, is over-confident: {{ pct(ax(P,'a_x',0.2,'tiers')['trusted']['acc']) }} observed vs {{ pct(ax(P,'a_x',0.2,'tiers')['trusted']['pred_acc']) }} predicted. In the simulated 40-per-tier wet-lab check under a_x, the prediction falls inside the trusted tier's 95% interval in only {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['trusted']['acc_consistent_rate']) }} of batches (π = 0.2; §6.5). This is the planning value for the lab and is pre-stated as a deviation in the pre-registration.
+   - **New data source (MassBank 2026.03, §6.7): fails.** The tautomer audit found {{ J['tautomer_audit']['external_molecules_tautomer_equal_to_massspecgym'] }} of the {{ J['tautomer_audit']['n_external_molecules'] }} external molecules to be tautomers of MassSpecGym molecules and {{ J['tautomer_audit']['external_molecules_tautomer_equal_to_other_external'] }} to be tautomers of other external molecules; inside MassSpecGym, no tautomer group spans folds. Even after tautomer and duplicate de-duplication (v3), the trusted tier is badly over-confident at π = 0.2: {{ pct(ext3(P,0.2)['tiers']['trusted']['acc']) }} observed vs {{ pct(ext3(P,0.2)['tiers']['trusted']['pred_acc']) }} predicted. Most confident errors are indistinguishable isomers ({{ pct(J['eval_external_v3']['confident_errors_pi0.5']['frac_same_formula_as_truth']) }} share the truth's formula).
    - **On this external source a baseline ranks better than the proposed system.** The direct logistic(s1, gap) has a lower e-AURC (Δ proposed − baseline = {{ J['eval_external_v3']['bootstrap']['0.2'][P+' - B_lr_direct']['d_e_aurc'] :+.4f }}, CI {{ ci(J['eval_external_v3']['bootstrap']['0.2'][P+' - B_lr_direct']['d_e_aurc_ci'],4) }}), although its log loss is worse. This is reported as a negative result; the method was not changed.
 5. **Wet-lab simulation (the final form).** At π = 0.2, in each tier (40 queries sampled per tier, 1,000 repeats), the predicted mean accuracy falls inside the observed 95% Wilson interval in {{ pct(wl(0.2,'trusted','acc_consistent_rate')) }} (trusted), {{ pct(wl(0.2,'suspicious','acc_consistent_rate')) }} (suspicious) and {{ pct(wl(0.2,'absent','acc_consistent_rate')) }} (absent) of repeats.
 
@@ -39,7 +55,8 @@ Every number in this report is produced by the code in this repository and inser
   - Positive mode only; adducts {{ J['prepare_audit']['adducts'] }}.
 - **Spectrum processing** (identical for queries and library, fixed in `config.yaml`): drop peaks above precursor − 1.6 Da; drop peaks < 1% of the base peak; merge peaks closer than 0.05 Da; sum-normalize; ≥ 3 peaks. This drops {{ pct(J['prepare_audit']['spectra']['frac_dropped_min_peaks']) }} of spectra everywhere.
 - **Engine.** Flash entropy search.
-  - Precursor tolerance {{ cfg['engine']['precursor_tol_ppm'] }} ppm, chosen on the train fold: ≥ 99% coverage of same-molecule, same-adduct pairs.
+  - Precursor tolerance {{ cfg['engine']['precursor_tol_ppm'] }} ppm. It was set on the train fold by the rule "smallest of 5/10/15/20/30 ppm covering ≥ 99% of m/z differences between spectra of the same molecule and adduct".
+  - **Traceability gap.** The computation behind that decision (LOG 2026-09-26 19:58) was ad hoc, and its code was not kept. The saved re-computation (`scripts/dev/diag_precursor_tolerance.py`) covers {{ pct(J['dev_precursor_tolerance']['coverage_all_pairs']['20']) }} of all same-molecule pairs at 20 ppm; under that definition the rule would give {{ J['dev_precursor_tolerance']['chosen_ppm_all_pairs'] }} ppm. For each spectrum's nearest same-molecule spectrum, which is what retrieval in scenario (a) needs, coverage is {{ pct(J['dev_precursor_tolerance']['coverage_nearest']['20']) }}. The tolerance was not changed after the fact.
   - Candidates are aggregated to molecules (maximum score per molecule). The top-1 is the highest-scoring molecule; ties are broken deterministically without labels.
   - A second engine (greedy cosine on the same processed peaks) is used for an engine-swap check.
 - **Correct.** Top-1 InChIKey first block = truth first block (fixed, §4 of the task). Supplementary "near-correct": top-1 Tanimoto to truth ≥ {{ cfg['evaluation']['approx_correct_tanimoto'] }}, fixed before testing.
@@ -111,6 +128,8 @@ Per-family calibration offsets were **not** adopted: the cross-fitted per-family
 
 Test fold, EM-estimated prevalence. **(a)** is the MassSpecGym leave-one-spectrum-out condition. **(a_x)** is the expected behaviour when a lab queries a public library whose entry for the compound was measured on a different instrument type; it is evaluated on the {{ J['eval_cross_instrument_library']['n_queries_ax'] }} test queries ({{ J['eval_cross_instrument_library']['n_mol_ax'] }} molecules) for which it is possible, paired with their (b) versions. The a_x rows use exactly the same frozen models.
 
+In these two tables, decomposed systems use EM-estimated π. Direct systems (one calibrated P(correct), no absence model) are shown without any prevalence correction, which is how they are normally used. The same table with the EM correction applied to every direct baseline follows the bootstrap table below.
+
 **π = 0.2, all systems, scenario (a):**
 
 {{ table_main(0.2) }}
@@ -136,6 +155,33 @@ What a_x means for the lab:
 
 {{ table_boot(0.2) }}
 
+**All baselines under the same EM prior correction** (`scripts/24_baselines_em.py`; added after the main test, no refit, method unchanged).
+
+In the tables above, a *direct* baseline is used as practitioners use it: one calibrated P(correct), with no prevalence correction. Here every direct baseline additionally receives the same Saerens EM prior correction as the proposed system. EM estimates the batch prior of "correct" on the unlabeled test batch, starting from the calibration prior ({{ J['eval_baselines_em']['prior_correct_calibration_main'] :.3f }}, the weighted fraction of correct top-1 in the validation (a)+(b) rows). Probabilities are then moved to that prior by Bayes' rule. Decomposed systems keep their usual EM on P(in).
+
+Because the correction is monotone within a batch, it cannot change ranking (e-AURC, AUROC); it changes calibration and the tiers.
+
+π = 0.2:
+
+{{ table_baselines_em(0.2) }}
+
+π = 0.5:
+
+{{ table_baselines_em(0.5) }}
+
+Simulated wet-lab check (40 per tier, 1,000 batches, per-batch EM for every system), π = 0.1 and 0.2:
+
+{{ table_wetlab_em(0.1) }}
+
+{{ table_wetlab_em(0.2) }}
+
+Under the shifts of §6.1/§6.7 (a_x; external source v3), π = 0.2:
+
+{{ table_baselines_em_shifted(0.2) }}
+
+Reading:
+{{ em_reading() }}
+
 ### 6.2 Calibration by family and by crowding group (claim 2)
 
 Groups need ≥ {{ cfg['evaluation']['min_group_n_test'] }} effective rows and ≥ {{ cfg['evaluation']['min_group_mol_test'] }} molecules; smaller groups are reported as insufficient and never claimed. Grouping by the **observable** top-1 family is the method's guarantee; grouping by the true family (`ana_true_class`) is analysis only.
@@ -152,6 +198,10 @@ Component level for the proposed system (P(correct | in) on (a) rows is prevalen
 
 {{ table_component_groups() }}
 
+The tables above apply the known π (decomposed systems) and no correction (direct systems), as in the main evaluation. With the **same EM prior correction for every system** (direct baselines: EM on P(correct); `results/eval_baselines_em.json`), π = 0.2:
+
+{{ table_groups_em(0.2) }}
+
 Per-family tables: `reports/tables/groups_top1_class_pi0.2.csv`, `…_pi0.5.csv`; figure `figures/fig4_family_calibration.png`.
 
 ### 6.3 Does crowding add information beyond the similarity score? (claim 3)
@@ -166,10 +216,32 @@ Per-family tables: `reports/tables/groups_top1_class_pi0.2.csv`, `…_pi0.5.csv`
 
 Reading:
 - Crowding measured **around the individual candidate** carries information that s1 does not. This holds for near-ties, Tanimoto(top-1, top-2), the top-1's structural neighbours and the query's spectral neighbourhood.
-- Most of the advantage over the baselines, however, comes from the non-crowding features (score structure, analogue hits, metadata). Over that rich base, crowding improves probability quality (log loss) but not ranking.
+- Most of the advantage over the baselines, however, comes from non-crowding features: the top-1's support in the library, a non-linear score model and metadata. Analogue hits add nothing measurable (lead breakdown below). Over that rich base, crowding improves probability quality (log loss) but not ranking.
 - Crowding measured as a **family attribute** does not predict errors once s1 is controlled for: the MH odds ratio for family spectral crowding is {{ mh('fam_spec_crowd_train','mh_odds_ratio_error') :.2f }}, CI {{ ci(mh('fam_spec_crowd_train','ci95'),2) }}.
 - At the family level, the correlation between train-library family crowding and test family error is ρ = {{ J['eval_incremental']['family_level_prior']['top1_class']['spearman_rho'] :.2f }} for the top-1 family ({{ J['eval_incremental']['family_level_prior']['top1_class']['n_families'] }} families, CI {{ ci(J['eval_incremental']['family_level_prior']['top1_class']['rho_ci95_family_bootstrap'],2) }}) and ρ = {{ J['eval_incremental']['family_level_prior']['ana_true_class']['spearman_rho'] :.2f }} for the true family.
 - **The collaborator's prior therefore holds in a narrower form than stated.** Crowding predicts errors at the level of each annotation's own candidate neighbourhood, not as a transferable property of a chemical family.
+
+**Where the lead over the score baselines comes from, by feature group** (post hoc; `scripts/23_lead_attribution.py`).
+
+This analysis was added after the main test evaluation at the owner's request. Nothing in it feeds back into the method. The ablation systems are trained, tuned (same 16-configuration budget) and calibrated exactly like every other system.
+
+*Path view.* Starting from logistic(s1, gap) in the decomposed framework, feature groups are added one at a time until the proposed system is reached. The step differences add up to the total lead. Molecule bootstrap, known π:
+
+π = 0.2:
+
+{{ table_lead_path(0.2) }}
+
+π = 0.5:
+
+{{ table_lead_path(0.5) }}
+
+*Drop-one view* (order-free): the cost of removing one group from the proposed system. Positive = worse without it.
+
+π = 0.2:
+
+{{ table_lead_dropone(0.2) }}
+
+{{ lead_reading() }}
 
 Hardest top-1 families (scenario a, ≥ 50 queries and ≥ 10 molecules):
 
@@ -177,7 +249,7 @@ Hardest top-1 families (scenario a, ≥ 50 queries and ≥ 10 molecules):
 
 ### 6.4 Prevalence shift (claim 4, part 1)
 
-Proposed system at each true π; the last column is the direct full-feature model without an absence model:
+Proposed system at each true π; the last column is the direct full-feature model without an absence model and without prevalence correction (with the EM correction it is calibrated as well; §6.1):
 
 {{ table_prevalence() }}
 
@@ -199,6 +271,20 @@ Proposed system with EM-estimated π, test fold, {{ cfg['evaluation']['wetlab_pe
 
 {{ table_wetlab(0.5) }}
 
+**Scenario a_x** (library entry for the compound measured on the other instrument type; the planning condition for a lab querying a public library; `results/eval_wetlab_ax.json`), same design:
+
+π = 0.2:
+
+{{ table_wetlab_ax(0.2) }}
+
+π = 0.5:
+
+{{ table_wetlab_ax(0.5) }}
+
+The trusted tier is over-confident under a_x. Its predicted accuracy is {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['trusted']['pred_acc_mean']) }}, against {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['trusted']['obs_acc_mean']) }} observed on average (π = 0.2). A 40-feature check would therefore confirm the trusted-tier prediction in only about {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['trusted']['acc_consistent_rate']) }} of cases, even though the tier's accuracy stays high. {{ ax_wetlab_reading() }} `figures/fig7_wetlab_a_vs_ax.png` shows (a) and a_x side by side. The pre-registration states these deviations in advance (WETLAB_PREREG §6–7).
+
+![a vs a_x](figures/fig7_wetlab_a_vs_ax.png)
+
 The same simulation without the prevalence correction, at π = 0.1:
 
 {{ table_wetlab(0.1, P + '|none') }}
@@ -206,6 +292,8 @@ The same simulation without the prevalence correction, at π = 0.1:
 The direct full-feature model (no absence model), at π = 0.1:
 
 {{ table_wetlab(0.1, 'M_full_direct|none') }}
+
+With the same EM correction applied to its P(correct), the direct full-feature model passes this check as well as the proposed system (§6.1, wet-lab table under EM).
 
 ![wetlab](figures/fig3_wetlab_simulation.png)
 
@@ -227,7 +315,7 @@ Construction (`scripts/11_external_massbank.py`):
 - Only molecules with Tanimoto < 0.7 to every train molecule are kept. This is a proxy for MCES distance, which was not computed for this set.
 - The external spectra are added to the library as a new source.
 
-The frozen models were applied without change. **v1** is the set as first constructed. Reading its failure (below) showed that tautomeric duplicates had escaped the InChIKey-based cross-library de-duplication (§5.11 of the task). **v2** additionally removes external molecules whose RDKit canonical-tautomer key equals a MassSpecGym molecule or another external molecule. **v3** additionally removes external molecules having an (almost) identical spectrum (entropy ≥ 0.99) of a different MassSpecGym molecule. All three are reported; none involved any change to the method.
+The frozen models were applied without change. **v1** is the set as first constructed. Reading its failure (below) showed that tautomeric duplicates had escaped the InChIKey-based cross-library de-duplication (§5.11 of the task). **Tautomer audit** (`results/tautomer_audit.json`, RDKit canonical-tautomer keys): of the {{ J['tautomer_audit']['n_external_molecules'] }} external molecules in v1, {{ J['tautomer_audit']['external_molecules_tautomer_equal_to_massspecgym'] }} are tautomers of a MassSpecGym molecule and {{ J['tautomer_audit']['external_molecules_tautomer_equal_to_other_external'] }} are tautomers of another external molecule. **v2** additionally removes external molecules whose RDKit canonical-tautomer key equals a MassSpecGym molecule or another external molecule. **v3** additionally removes external molecules having an (almost) identical spectrum (entropy ≥ 0.99) of a different MassSpecGym molecule. All three are reported; none involved any change to the method.
 
 {{ table_ext_variants('0.2') }}
 
@@ -321,7 +409,7 @@ Reading:
 - In the like-for-like comparison, adding our competition-type crowding to the similarity scores improves both ranking and log loss (row 3). Adding MS2Query's consistency features does not significantly improve on similarity alone at either prevalence (row 2).
 - Head-to-head (row 1), competition crowding gives a lower log loss at both prevalences, and a lower e-AURC at π = 0.5; at π = 0.2 the e-AURC difference is not significant.
 - So, for deciding whether an exact top-1 is right, knowing how many plausible alternatives compete with it is more informative than knowing whether its structural neighbourhood agrees with the spectrum.
-- The larger remaining gap between the proposed system and every MS2Query variant comes from the explicit absence model and the non-neighbourhood features (score structure, analogue hits, metadata).
+- The larger remaining gap between the proposed system and every MS2Query variant comes from non-neighbourhood features: the top-1's support in the library, a non-linear score model and metadata (§6.3, lead breakdown). The gap remains when every MS2Query variant receives the same EM prior correction (§6.1).
 
 ### 6.10 Baseline added after the main test: target–decoy FDR
 
@@ -337,9 +425,28 @@ The target–decoy estimate stays at its nominal level while the realized error 
 
 ### 6.11 COSMIC (SIRIUS 6: CSI:FingerID + COSMIC)
 
-{{ cosmic_section() }}
+**Setup.**
+- SIRIUS 6.5.4 (academic licence) ran locally on the project owner's Mac (`cosmic/`, `cosmic/customdb/`).
+- Inputs: 300 public test spectra, one per molecule, plus 200 validation spectra that are used only to calibrate COSMIC scores.
+- Test molecules are stratified by the published CSI:FingerID positive-mode training structures. 150 are not in them: the **primary** stratum. 150 are in them: a **leaky reference**, because CSI:FingerID was trained on those structures.
 
-{{ cosmic_reading() }}
+**Pre-declared evaluation rules.** These were fixed before the head-to-head results existed (`scripts/cosmic/cosmic_common.py`; LOG 2026-09-27 00:05 and 01:45).
+- The π values and metrics are the report's headline choices, fixed on 2026-09-26.
+- The instability threshold and the EM correction for COSMIC were written after the supplementary PubChem results had been seen. The threshold equals the existing minimum for group calibration.
+- In-library mixtures at π = {{ ', '.join(str(p) for p in cfg['evaluation']['prevalence_headline']) }}: within each stratum, (a) rows get total weight π and (b) rows 1 − π.
+- A metric whose minority class (correct or wrong top-1) has fewer than {{ cfg['evaluation']['min_group_mol_test'] }} rows is marked **⚠ unstable**. It is not interpreted.
+- A query without an annotation gets confidence 0 and counts as wrong, for both systems.
+- COSMIC scores are calibrated on the validation subset with the shared calibrator rule and then receive the same EM prior correction as the proposed system.
+- Query bootstrap, 1,000 draws. The two scenario rows of a query stay together.
+- Counts are given as *correct / wrong top-1* for every stratum, condition and system.
+
+#### 6.11.1 Main comparison: the same candidate set
+
+{{ cosmic_h2h_section() }}
+
+#### 6.11.2 Supplementary background: COSMIC searching PubChem
+
+{{ cosmic_pubchem_section() }}
 
 ### 6.12 Other checks
 
@@ -349,7 +456,11 @@ The target–decoy estimate stays at its nominal level while the realized error 
 {{ table_engine_cosine('0.2') }}
 
 - **Near-correct** (Tanimoto ≥ 0.8), π = 0.2: AURC proposed {{ J['eval_extra']['near_correct'][P]['0.2']['aurc'] :.4f }} vs logistic(s1, gap) decomposed {{ J['eval_extra']['near_correct']['B_lr_dec']['0.2']['aurc'] :.4f }}.
-- **Tautomer audit** (`results/tautomer_audit.json`). {{ J['tautomer_audit']['massspecgym_tautomer_groups_spanning_folds'] }} groups of tautomer-equivalent MassSpecGym molecules span folds, so there is no fold contamination. {{ J['tautomer_audit']['massspecgym_molecules_in_such_groups'] }} molecules sit in such groups within folds.
+- **Tautomer audit inside MassSpecGym** (`results/tautomer_audit.json`).
+  - After RDKit standardization, {{ J['tautomer_audit']['massspecgym_tkeys_with_multiple_ik14'] }} canonical-tautomer keys map to more than one InChIKey first block. These groups contain {{ J['tautomer_audit']['massspecgym_molecules_in_such_groups'] }} molecules.
+  - {{ J['tautomer_audit']['massspecgym_tautomer_groups_spanning_folds'] }} of these groups span folds, so there is no fold contamination through tautomers.
+  - Within a fold, such pairs can make a correct spectrum match count as "wrong". This affects at most {{ J['tautomer_audit']['massspecgym_molecules_in_such_groups'] }} of {{ J['prepare_audit']['structures']['n_std_molecules'] }} molecules.
+  - The external-set audit is in §6.7.
 - **Integrity audits** (`scripts/15_checks.py`):
 
 {{ table_checks() }}
@@ -360,6 +471,8 @@ The target–decoy estimate stays at its nominal level while the realized error 
 - **In-library errors are rare under the benchmark's (a) condition** ({{ pct(J['eval_extra']['errors_a']['err_rate_weighted']) }}). So "untrustworthy" is dominated by library absence in any realistic batch, and the crowding effect, although significant, acts on a small slice.
 - **Library crowding differs between folds.** The engine's in-library top-1 accuracy (scenario a, unweighted) was {{ pct(J['features_summary']['entropy/train/a']['top1_acc_unweighted']) }} on the train fold (train-only library) vs {{ pct(J['features_summary']['entropy/val/a']['top1_acc_unweighted']) }} on validation. Structure-disjoint folds make held-out molecules less crowded by near-isomers from other clusters. Calibration therefore had to come from validation, not from the training data.
 - **The middle of P(in) is heterogeneous across structurally disjoint sets.** Cross-fitting the calibrator between the two structure-cluster halves of validation moved the mid-range (0.2–0.9) calibration of P(in) (observed − predicted) by {{ mid_gaps() }} depending on direction (`results/dev_calibrators.json`). On test, the suspicious tier was nonetheless consistent (§6.5). For a new sample set the suspicious-tier accuracy should be treated as uncertain by about ±{{ mid_gap_max() :.2f }} **in addition to** sampling error. This is carried into the pre-registration.
+- **Crowding is a small part of the lead.** Of the proposed system's lead over logistic(s1, gap), query-level crowding accounts for {{ pct(lstep(0.2,4,'share_of_lead_aurc'),0) }} in AURC (not significant) and {{ pct(lstep(0.2,4,'share_of_lead_logloss'),0) }} in log loss (significant) at π = 0.2. Most of the lead comes from the top-1's support in the library ({{ pct(lstep(0.2,1,'share_of_lead_aurc'),0) }}), a non-linear score model ({{ pct(lstep(0.2,0,'share_of_lead_aurc'),0) }}) and metadata ({{ pct(lstep(0.2,3,'share_of_lead_aurc'),0) }}) (§6.3; post hoc).
+- **The decomposition is not what buys prevalence robustness on this benchmark.** A direct P(correct) model with the same features plus a Saerens EM prior correction on P(correct) matches the proposed system in ranking, log loss, ECE, group calibration and the wet-lab simulation (§6.1, added after the main test). This is reported as found; the method was not changed. What the decomposition still provides is an explicit, separately calibrated P(in), so the "likely absent" tier is defined by the probability of absence rather than by a low probability of correctness. Under a_x and on the external source, the two variants fail in the same way.
 - **A new data source breaks the trusted tier.** First through structure-representation mismatches (tautomers, duplicates), then through MS/MS-indistinguishable isomers. There, a simple score baseline ranks better than the proposed system (§6.7).
 - Two reporting bugs (e-AURC oracle ordering; a boolean-dtype average in the wet-lab summary) were found after the first test pass and fixed. The frozen evaluation was re-run unchanged (`LOG.md`).
 
@@ -370,7 +483,12 @@ The target–decoy estimate stays at its nominal level while the realized error 
 - The absent scenario is simulated by deleting molecules from a public library. A real sample's absent compounds may differ from MassSpecGym molecules that happen to have several spectra (the paired design uses only such molecules).
 - External-source calibration failed (§6.7). The method needs the lab's own library and annotation conventions — tautomer and stereo handling — to match the ones calibrated here. Otherwise it must be re-calibrated on a small labelled set from the lab (pre-registration §7).
 - MCES was not computed for the external set (Tanimoto proxy). The official MS2Query models were not run (they leak). COSMIC: see §6.11.
+- **COSMIC comparison.** It is pipeline-level: library search + confidence model vs CSI:FingerID + COSMIC. It cannot be attributed to the confidence estimation alone. It covers 150 molecules per stratum, and under a_x only 66 eligible queries.
+- **Added after the main test.** These analyses do not change the method: the MS2Query-style and target–decoy baselines (§6.9–6.10), the EM correction for all baselines (§6.1), the lead breakdown (§6.3), and the COSMIC comparisons (§6.11).
+- **Precursor-tolerance traceability.** The train-fold computation behind the 20-ppm tolerance was not kept, and the saved re-computation does not reproduce its figure (§2).
 
 ## 9. Reproducibility
 
-`make all` runs download → preparation → ClassyFire lookup → search → features → training → calibration → evaluation → shifts → external set → figures → report → checks. All settings are in `config.yaml`. Every JSON under `results/` records the script, config hash, seed, commit and time. The lab-data directory `data/lab/` is git-ignored, and no lab file may be sent to any web service (`src/msconf/interfaces.py`).
+{{ repro_summary() }}
+
+`make all` runs download → preparation → ClassyFire lookup → search → features → training → calibration → evaluation → shifts → external set → added baselines → post-hoc analyses → COSMIC package and import → figures → report → checks. SIRIUS itself runs outside the pipeline, on the owner's machine (`cosmic/README.md`, `cosmic/customdb/README.md`); its summary tables are in the repository. All settings are in `config.yaml`. Every JSON under `results/` records the script, config hash, seed, commit and time. The lab-data directory `data/lab/` is git-ignored, and no lab file may be sent to any web service (`src/msconf/interfaces.py`).

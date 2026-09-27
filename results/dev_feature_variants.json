@@ -3,9 +3,9 @@
   "script": "diag_feature_variants.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
   "dirty": true,
-  "utc": "2026-09-27T01:24:36Z"
+  "utc": "2026-09-27T06:49:54Z"
  },
  "base": {
   "C": {
@@ -19,11 +19,11 @@
  },
  "base+family_all": {
   "C": {
-   "valA_logloss": 0.021115936949049306,
-   "train_logloss": 0.03830167424762614
+   "valA_logloss": 0.020995752981053394,
+   "train_logloss": 0.0384057011185614
   },
   "I": {
-   "valA_logloss": 0.15314850524297274,
+   "valA_logloss": 0.1435037155692247,
    "train_logloss": 0.029156419212157877
   }
  },
@@ -99,29 +99,29 @@
  },
  "full": {
   "C": {
-   "valA_logloss": 0.019160271086085146,
-   "train_logloss": 0.03572450154417087,
+   "valA_logloss": 0.019195999502633364,
+   "train_logloss": 0.035803400491196395,
    "top_gain": {
-    "gap12": 0.3743,
-    "n_near_tie": 0.117,
-    "n_top1_spec": 0.0849,
-    "s2": 0.0418,
-    "s1": 0.0387,
-    "collision_energy": 0.0373,
+    "gap12": 0.3736,
+    "n_near_tie": 0.1171,
+    "n_top1_spec": 0.0861,
+    "s2": 0.0425,
+    "s1": 0.0385,
+    "collision_energy": 0.0379,
     "tani12": 0.0363,
-    "s1_mean": 0.0237,
+    "s1_mean": 0.0232,
     "n_win_spec": 0.0222,
-    "top1_specdens": 0.0178,
-    "precursor_mz": 0.0174,
-    "x1_minus_s1": 0.0164
+    "precursor_mz": 0.0185,
+    "top1_specdens": 0.0171,
+    "x1_minus_s1": 0.0165
    }
   },
   "I": {
-   "valA_logloss": 0.13187978780262863,
+   "valA_logloss": 0.12534513363593694,
    "train_logloss": 0.02558469798691601,
    "top_gain": {
     "s1": 0.3878,
-    "fam_lib_size": 0.1494,
+    "fam_lib_size": 0.1405,
     "n_win_ge05": 0.0751,
     "x1_minus_s1": 0.0525,
     "n_top1_spec": 0.0497,
@@ -130,8 +130,8 @@
     "collision_energy": 0.0256,
     "precursor_mz": 0.0217,
     "gap13": 0.0185,
-    "instrument": 0.0127,
-    "top1_specdens": 0.0117
+    "fam_spec_crowd_train": 0.0177,
+    "instrument": 0.0127
    }
   }
  },

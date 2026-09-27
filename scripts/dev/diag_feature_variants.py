@@ -27,7 +27,7 @@ tr, vA = rows[rows.fold == "train"], rows[(rows.fold == "val") & (rows.vsplit ==
 tl = json.load(open(path(cfg, "results") / "train_entropy.json"))["systems"]["M_base"]
 hpC, hpI = tl["tuning_C"]["best"], tl["tuning_I"]["best"]
 base = GROUPS["meta"] + GROUPS["sim"] + GROUPS["sim_extra"] + GROUPS["analog"]
-fam_all = GROUPS["crowd_family"]
+fam_all = GROUPS["crowd_family"] + GROUPS["crowd_family_libsize"]  # "all family features" includes fam_lib_size (the shortcut)
 fam_query = ["fam_ent_topk", "fam_frac_topk_same", "fam_n_win_same", "fam_frac_open_same"]
 spec, struct = GROUPS["crowd_spec"], GROUPS["crowd_struct"]
 counts = ["n_win_mol", "n_win_spec"]

@@ -1,0 +1,30 @@
+{
+ "_provenance": {
+  "script": "diag_precursor_tolerance.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": true,
+  "utc": "2026-09-27T06:23:21Z"
+ },
+ "n_pairs": 6341610,
+ "n_groups": 20454,
+ "coverage_all_pairs": {
+  "5": 0.9144504313573367,
+  "10": 0.9410966615733228,
+  "15": 0.9640649614214687,
+  "20": 0.9877551599672638,
+  "30": 0.996022461173109
+ },
+ "coverage_nearest": {
+  "5": 0.9940316664960281,
+  "10": 0.9969044163258914,
+  "15": 0.9983136898273339,
+  "20": 0.9991207096956812,
+  "30": 0.9996506928928048
+ },
+ "rule": "smallest tolerance with >= 99% coverage",
+ "chosen_ppm_all_pairs": 30,
+ "chosen_ppm_nearest": 5,
+ "config_ppm": 20.0
+}

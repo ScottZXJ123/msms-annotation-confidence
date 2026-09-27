@@ -1,0 +1,97 @@
+OpenJDK 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+Sep 27, 2026 12:33:19 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    00:33:19 - Sirius Workspace Successfully initialized at: /Users/xingjianzhang0816/.sirius-6.5
+INFO    00:33:19 - You run SIRIUS 6.5.4 on mac os x_aarch64
+INFO    00:33:19 - You run SIRIUS in 'CLI' mode.
+INFO    00:33:19 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v2.10.12.1
+INFO    00:33:19 - Treebuilder priorities loaded from 'sirius.properties' are: [CLP, GUROBI, CPLEX]
+INFO    00:33:19 - CPU check done. 7 cores that handle 14 threads were found.
+INFO    00:33:19 - Job manager successful initialized with 11 CPU thread(s) and 3 IO thread(s).
+INFO    00:33:19 - Starting http Client with MaxPerRoute=3 / maxTotal=5 (CPU-Threads=11).
+INFO    00:33:21 - Custom databases loaded.
+INFO    00:33:21 - Web API initialized in 00:00:01.782. Started loading active subscription in background...
+FINE    00:33:21 - <1180877016>[JJob-1180877016] Running post processing
+FINE    00:33:21 - <1180877016>[JJob-1180877016] Running cleanup
+INFO    00:33:21 - Running with following arguments: [custom-db, show, --db, msg_val_b]
+##########  BEGIN DB INFO  ##########
+Name: msg_val_b
+Display Name: msg_val_b
+Location: /Users/xingjianzhang0816/msms-annotation-confidence/cosmic/customdb/dbs/msg_val_b.siriusdb
+Number of Formulas: 2292
+Number of Structures: 3960
+Number of Reference spectra: 0
+###############  END  ###############
+
+
+INFO    00:33:21 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...
+INFO    00:33:21 - Try to delete leftover jobs on web server...
+
+
+Please cite the following publications when using our tool:
+
+When using the SIRIUS Software please cite the following paper:
+
+Kai Dührkop, Markus Fleischauer, Marcus Ludwig, Alexander A. Aksenov, Alexey V. Melnik, Marvin Meusel, Pieter C. Dorrestein, Juho Rousu and Sebastian Böcker
+SIRIUS4: a rapid tool for turning tandem mass spectra into metabolite structure information
+Nat Methods, 16, 2019.  https://doi.org/10.1038/s41592-019-0344-8
+
+
+Depending on the tools you have used please also cite:
+
+Wishart, David S and Tian, Siyang and Allen, Dana and Oler, Eponine and Peters, Harrison and Lui, Vicki W and Gautam, Vasuk and Djoumbou-Feunang, Yannick and Greiner, Russell and Metz, Thomas O
+BioTransformer 3.0—a web server for accurately predicting metabolic transformation products
+Nucleic Acids Res, 50, 2022.  https://doi.org/10.1093/nar/gkac313
+(Cite if you are using: Biotransformer for structure database generation)
+
+Xing, Shipei and Shen, Sam and Xu, Banghua and Li, Xiaoxiao and Huan, Tao
+BUDDY: molecular formula discovery via bottom-up MS/MS interrogation.
+Nat Methods, 2023.  https://doi.org/10.1038/s41592-023-01850-x
+(Cite if you are using: Bottom-up molecular formula generation)
+
+Kai Dührkop, Louis-Félix Nothias, Markus Fleischauer, Raphael Reher, Marcus Ludwig, Martin A. Hoffmann, Daniel Petras, William H. Gerwick, Juho Rousu, Pieter C. Dorrestein and Sebastian Böcker
+Systematic classification of unknown metabolites using high-resolution fragmentation mass spectra
+Nat Biotechnol, 39, 2021.  https://doi.org/10.1038/s41587-020-0740-8
+(Cite if you are using: CANOPUS)
+
+Yannick Djoumbou Feunang, Roman Eisner, Craig Knox, Leonid Chepelev, Janna Hastings, Gareth Owen, Eoin Fahy, Christoph Steinbeck, Shankar Subramanian, Evan Bolton, Russell Greiner, David S. Wishart
+ClassyFire: automated chemical classification with a comprehensive, computable taxonomy
+J Cheminf, 8, 2016.  https://doi.org/10.1186/s13321-016-0174-y
+(Cite if you are using: CANOPUS)
+
+Kim, Hyun Woo and Wang, Mingxun and Leber, Christopher A. and Nothias, Louis-Félix and Reher, Raphael and Kang, Kyo Bin and van der Hooft, Justin J. J. and Dorrestein, Pieter C. and Gerwick, William H. and Cottrell, Garrison W.
+NPClassifier: A Deep Neural Network-Based Structural Classification Tool for Natural Products
+Journal of Natural Products, 84, 2021.  https://doi.org/10.1021/acs.jnatprod.1c00399
+(Cite if you are using: CANOPUS)
+
+Kai Dührkop, Huibin Shen, Marvin Meusel, Juho Rousu and Sebastian Böcker
+Searching molecular structure databases with tandem mass spectra using CSI:FingerID
+Proc Natl Acad Sci U S A, 112, 2015.  https://doi.org/10.1073/pnas.1509788112
+(Cite if you are using: CSI:FingerID)
+
+Hoffmann, Martin A. and Nothias, Louis-Félix and Ludwig, Marcus and Fleischauer, Markus and Gentry, Emily C. and Witting, Michael and Dorrestein, Pieter C. and Dührkop, Kai and Böcker, Sebastian
+High-confidence structural annotation of metabolites absent from spectral libraries
+Nat Biotechnol, 40, 2022.  https://doi.org/10.1038/s41587-021-01045-9
+(Cite if you are using: CSI:FingerID, COSMIC)
+
+Sebastian Böcker and Kai Dührkop
+Fragmentation trees reloaded
+J Cheminform, 8, 2016.  https://doi.org/10.1186/s13321-016-0116-8
+(Cite if you are using: Fragmentation Trees)
+
+Sebastian Böcker, Matthias Letzel, Zsuzsanna Lipták and Anton Pervukhin
+SIRIUS: Decomposing isotope patterns for metabolite identification
+Bioinformatics, 25, 2009.  https://doi.org/10.1093/bioinformatics/btn603
+(Cite if you are using: Isotope Pattern analysis)
+
+Stravs, Michael A. and Dührkop, Kai and Böcker, Sebastian and Zamboni, Nicola
+MSNovelist: de novo structure generation from mass spectra
+Nat Methods, 19, 2022.  https://doi.org/10.1038/s41592-022-01486-3
+(Cite if you are using: MSNovelist)
+
+Ludwig, Marcus and Nothias, Louis-Félix and Dührkop, Kai and Koester, Irina and Fleischauer, Markus and Hoffmann, Martin A. and Petras, Daniel and Vargas, Fernando and Morsy, Mustafa and Aluwihare, Lihini and Dorrestein, Pieter C. and Böcker, Sebastian
+Database-independent molecular formula annotation using Gibbs sampling through ZODIAC
+Nat Mach Intell, 2, 2020.  https://doi.org/10.1038/s42256-020-00234-6
+(Cite if you are using: ZODIAC)
+
+

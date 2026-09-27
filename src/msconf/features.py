@@ -90,6 +90,7 @@ class FeatureContext:
         self.fam_tables = {lv: self._family_tables(lv) for lv in self.fam_levels}
         self._fam_cache = {}
         self.extra_excl_pos = None
+        self.set_excl_mols = np.zeros(0, np.int64)  # scenario "bset" only
         self.hashperm = np.random.default_rng(12345).permutation(self.nmol)  # fixed tie-break, label-free
         self.q = queries
         self.L = qlists
@@ -159,6 +160,8 @@ class FeatureContext:
                 excl = np.array([m_true])
             elif sc == "c":
                 excl = np.r_[m_true, self.struct_nbrs(m_true, self.c_tan)]
+            elif sc == "bset":  # (b) with a whole set of molecules removed at once (COSMIC head-to-head)
+                excl = np.union1d([m_true], self.set_excl_mols).astype(np.int64)
             else:
                 raise ValueError(sc)
             keepW = ~np.isin(W["mol"], excl)

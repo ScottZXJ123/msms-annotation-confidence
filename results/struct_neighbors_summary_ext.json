@@ -3,12 +3,12 @@
   "script": "04_struct_neighbors.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "unknown",
-  "dirty": true,
-  "utc": "2026-09-27T00:32:13Z"
+  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
+  "dirty": false,
+  "utc": "2026-09-27T05:23:23Z"
  },
  "n_molecules": 29669,
- "seconds": 108.09265971183777,
+ "seconds": 93.74138951301575,
  "mean_deg_ge0.4": 76.99956183221545,
  "mean_deg_ge0.7": 7.142404529980788,
  "max_tani_to_train_by_fold": {
