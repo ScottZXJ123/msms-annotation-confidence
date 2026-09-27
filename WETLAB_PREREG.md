@@ -16,7 +16,7 @@ The claim under test: **in each tier, the observed accuracy of a random sample o
 
 | item | value |
 |---|---|
-| code commit | `c9407e9880ce` (repository `msms-annotation-confidence`) |
+| code commit | `b35b43e8952a` (repository `msms-annotation-confidence`) |
 | configuration hash | `eecc176f8476` (`config.yaml`) |
 | model | `M_full_minus_family` (file `models/M_full_minus_family.pkl`, SHA-256 prefix `4dfaf6802205648f`) |
 | engine | Flash entropy library search, precursor tolerance 20.0 ppm, fragment tolerance 0.02 Da |
@@ -102,7 +102,7 @@ The binding predictions are computed from the frozen prediction file: for each t
 **Known deviations to expect (stated in advance):**
 - **Trusted tier under a_x.** It is over-confident by a few points. On the test fold at π = 0.2 (a_x), the observed accuracy was 94.5% against a predicted 98.0%; the prediction fell inside the 95% interval in 65.4% of simulated checks.
 - **Absent tier under a_x.** It contains some in-library compounds whose cross-instrument spectra score low. The observed top-1 accuracy was 2.9% vs 1.3% predicted (π = 0.2).
-- **Middle of the P(in) range.** Its calibration differs between structurally disjoint compound sets by about **±0.1**: cross-fitting between two halves of the validation data shifted the mid-range calibration by −0.11 and +0.10. The suspicious tier's true accuracy may therefore differ from its prediction by up to ~0.1 **in addition to** the ±15-point sampling interval of a 40-feature check.
+- **Middle of the P(in) range.** Its calibration differs between structurally disjoint compound sets by about **±0.11**: cross-fitting between two halves of the validation data shifted the mid-range calibration (observed − predicted) by -0.11 and +0.10. The suspicious tier's true accuracy may therefore differ from its prediction by up to ~0.11 **in addition to** the sampling interval of a 40-feature check (about ±15 points at 50% accuracy).
 - **Structure representation.** If the laboratory's reference structures use tautomer or salt conventions different from RDKit standardization, correct annotations can be scored as wrong. On an external MassBank source this broke calibration for every system tested. Verification is therefore judged on the 2-D skeleton after the same RDKit standardization, with tautomer equivalence reported separately.
 - **New data source and indistinguishable isomers.** On an external MassBank source after de-duplication, the trusted tier was badly over-confident: 51.8% observed vs 95.5% predicted at π = 0.2. Almost all confident errors were constitutional isomers with practically identical spectra (100.0% same formula). If the laboratory's samples are rich in such isomer families, criterion C1 is expected to fail for the trusted tier. The `isomer` outcome category (§5) makes this visible.
 
@@ -141,4 +141,4 @@ Any departure from this document (data, procedure, analysis) is listed with its 
 
 
 ---
-<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit c9407e9880 (dirty).</sub>
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit b35b43e895 (dirty).</sub>

@@ -34,6 +34,8 @@ Approximate time: ~2.5 h on 2 CPU cores, ~8 GB RAM. Individual stages are availa
 
 ## Laboratory data
 
+The files currently in `data/lab/` are **not used** in any experiment, result or text of this project (owner's instruction). No script reads that directory.
+
 Laboratory files belong in `data/lab/`. That directory is git-ignored. Laboratory data must never be committed, uploaded to any web service (including SIRIUS and ClassyFire), or quoted in logs or reports. `src/msconf/interfaces.py` reads engine outputs (GNPS, SIRIUS, MS-DIAL, generic CSV) without network access (`lab_mode`).
 
 ## Scope

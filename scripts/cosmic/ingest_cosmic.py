@@ -55,8 +55,8 @@ S = S[S.identifier.notna()].drop_duplicates("identifier")
 cex = next(c for c in S.columns if c.lower().replace("_", "") in ("confidencescoreexact", "siriusconfidencescoreexact"))
 cap = next(c for c in S.columns if c.lower().replace("_", "") in ("confidencescoreapproximate", "siriusconfidencescoreapproximate"))
 smi_col = next(c for c in S.columns if c.lower() in ("smiles", "sirius_smiles"))
-S["cosmic_exact"] = pd.to_numeric(S[cex], errors="coerce")
-S["cosmic_approx"] = pd.to_numeric(S[cap], errors="coerce")
+S["cosmic_exact"] = pd.to_numeric(S[cex], errors="coerce").replace([np.inf, -np.inf], np.nan)  # SIRIUS writes -Infinity when not computed
+S["cosmic_approx"] = pd.to_numeric(S[cap], errors="coerce").replace([np.inf, -np.inf], np.nan)
 S["pred_ik14"] = S[smi_col].map(lambda s: std.record(s)["ik14"] if isinstance(s, str) else None)
 S["pred_smiles"] = S[smi_col]
 
@@ -86,7 +86,7 @@ try:
         if not isinstance(a, str) or not isinstance(b, str):
             return np.nan
         try:
-            return float(MCES(a, b, threshold=2, solver="PULP_CBC_CMD")[1] <= 2)
+            return float(MCES(a, b, threshold=2, solver="PULP_CBC_CMD", solver_options={"msg": False})[1] <= 2)
         except Exception:
             return np.nan
     approx_method = "myopic_mces, threshold 2"
@@ -166,7 +166,8 @@ def summarize(d, label_c, label_o):
     return out
 
 
-res = {"n_test": int(len(T)), "n_val": int((D.split == "val").sum()), "approx_label_method": approx_method,
+res = {"n_test": int(len(T)), "n_test_annotated_by_sirius": int(T.annotated.sum()),
+       "n_test_confidence_missing": int((T.annotated & T.cosmic_exact.isna()).sum()), "n_val": int((D.split == "val").sum()), "approx_label_method": approx_method,
        "calibration": {k: v for k, v in cal.items() if k.endswith("_info")},
        "note": "COSMIC ranks structure-database (PubChem) hits; the proposed system ranks spectral-library hits "
                "(scenario a). Each system is evaluated on its own annotations.", "strata": {}}

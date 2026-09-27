@@ -306,3 +306,21 @@ a set, not individual queries.
   "correct or MCES ≤ 2" (myopic_mces). Comparison = each system's confidence on its own annotations.
 - Noticed while listing the delivery folder: `data/lab/` now contains laboratory raw files. They were not
   opened, read, copied or uploaded; only file names were listed. They stay on the owner's machine (§6).
+
+### 23:20 Owner's instruction on `data/lab/`
+- The project owner instructed that the files currently in `data/lab/` must not be used — neither in
+  experiments nor in writing the paper. They have not been opened or used at any point; no script in this
+  repository reads that directory, and the reports contain nothing derived from it.
+
+### 23:45 COSMIC baseline imported (`results/eval_cosmic_subset.json`)
+- SIRIUS 6.5.4 (academic licence) ran on the owner's Mac in ~8 min: `formulas -p <orbitrap|qtof>` →
+  `fingerprints` → `classes` → `structures --database pubchem` → `write-summaries`. Only the four
+  `structure_identifications.tsv` summaries (public-data results) were copied into the analysis environment.
+- 294/300 test spectra received a structure; 1 had a `-Infinity` confidence (treated as missing, like the
+  6 unannotated ones: lowest confidence, counted wrong). First import crashed on the `-Infinity` values;
+  fixed by treating non-finite scores as missing.
+- COSMIC scores calibrated on the 200 validation molecules with the shared rule (Platt chosen for both modes).
+- Primary stratum (not in the published CSI:FingerID training structures): CSI:FingerID exact top-1
+  accuracy 8.7%; COSMIC AUROC 0.882 vs proposed 0.995 (difference +0.113, CI [0.035, 0.209]). Leaky stratum:
+  top-1 accuracy 67.3% — the leakage effect is large. The comparison concerns confidence quality on each
+  system's own annotations (PubChem search vs spectral library containing the compound), not annotation power.

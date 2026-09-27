@@ -435,7 +435,7 @@ def cosmic_section():
                     continue
                 rows.append({"stratum": stratum, "mode": mode, "system": {"cosmic": "COSMIC (raw score)", "cosmic_calibrated": "COSMIC (val-calibrated)",
                                                                           "proposed": "Proposed (own top-1, scenario a)"}[who],
-                             "n": x["n"], "top-1 acc": pct(x["accuracy"]) + (f" {ci(x['accuracy_ci95'], 2)}" if "accuracy_ci95" in x else ""),
+                             "n": x["n"], "top-1 acc": pct(x["accuracy"]) + (f" [{pct(x['accuracy_ci95'][0])}, {pct(x['accuracy_ci95'][1])}]" if "accuracy_ci95" in x else ""),
                              "AUROC": f3(x["auroc"]) + (f" {ci(x['auroc_ci95'], 3)}" if "auroc_ci95" in x else ""),
                              "e-AURC": f"{x['e_aurc']:.4f}" + (f" {ci(x['e_aurc_ci95'], 4)}" if "e_aurc_ci95" in x else ""),
                              "ECE": f3(x.get("ece")) + (f" {ci(x['ece_ci95'], 3)}" if "ece_ci95" in x else "")})
@@ -452,12 +452,54 @@ def cosmic_section():
     return note + "\n\n" + md(pd.DataFrame(rows)) + "\n\n" + (md(pd.DataFrame(diffs)) if diffs else "")
 
 
+def cosmic_reading():
+    if not (RES / "eval_cosmic_subset.json").exists():
+        return ""
+    c = J["eval_cosmic_subset"]["strata"]
+    clean, leak = c["not_in_csi_training (primary)"]["exact"], c["in_csi_training (leaky reference)"]["exact"]
+    d = clean["proposed_minus_cosmic_auroc"]
+    return (f"Reading:\n"
+            f"- **Leakage is visible in COSMIC's own numbers.** CSI:FingerID's exact top-1 accuracy is {pct(leak['cosmic']['accuracy'])} "
+            f"for molecules in its published training structures, vs {pct(clean['cosmic']['accuracy'])} for molecules not in them. "
+            f"Only the second stratum is a fair reference.\n"
+            f"- **The tasks differ in difficulty; the comparison is about confidence quality.** COSMIC ranks candidates from all of PubChem, "
+            f"while the proposed system ranks a spectral library that contains the compound. Top-1 accuracies are therefore not comparable. "
+            f"AUROC, which does not depend on the base rate, is: COSMIC {f3(clean['cosmic']['auroc'])} {ci(clean['cosmic']['auroc_ci95'], 3)} vs "
+            f"proposed {f3(clean['proposed']['auroc'])} {ci(clean['proposed']['auroc_ci95'], 3)}; difference {d['point']:+.3f} {ci(d['ci95'], 3)}.\n"
+            f"- **Calibration.** COSMIC's raw exact-mode score has ECE {f3(clean['cosmic']['ece'])}, and {f3(clean['cosmic_calibrated']['ece'])} "
+            f"after validation calibration. The SIRIUS documentation states that these scores are not probabilities.\n"
+            f"- **Sample size.** With 150 molecules per stratum and only {round(clean['cosmic']['accuracy'] * 150)} correct COSMIC top-1 hits in "
+            f"the primary stratum, all COSMIC estimates are imprecise; the confidence intervals are percentile bootstrap intervals "
+            f"(ECE is biased upward under resampling, so its interval can sit above the point estimate).\n"
+            f"- **What this does and does not show.** This does not show that the proposed system beats SIRIUS at structure annotation. "
+            f"It shows that the proposed confidence ranks its own library-search annotations far more reliably than COSMIC ranks its "
+            f"database-search annotations on the same spectra.")
+
+
+def cosmic_summary():
+    if not (RES / "eval_cosmic_subset.json").exists():
+        return ""
+    c = J["eval_cosmic_subset"]["strata"]["not_in_csi_training (primary)"]["exact"]
+    return (f" COSMIC (SIRIUS 6, 150 test molecules outside CSI:FingerID's published training set) ranks its own PubChem "
+            f"annotations with AUROC {f3(c['cosmic']['auroc'])} vs {f3(c['proposed']['auroc'])} for the proposed system on its own "
+            f"library annotations. This is a comparison of confidence quality only (§6.11).")
+
+
 def cosmic_status():
     f = RES / "eval_cosmic_subset.json"
     if not f.exists():
         return ("**Status: pending** — the SIRIUS run on the owner's Mac has not been imported yet; no COSMIC number "
                 "appears in this report until `scripts/cosmic/ingest_cosmic.py` has produced `results/eval_cosmic_subset.json`.")
     return "Results: §6.11."
+
+
+def mid_gaps():
+    f = J["dev_calibrators"]["I"]["isotonic"]["folds"]
+    return " and ".join(f"{x['mid_gap_obs_minus_pred']:+.2f}" for x in f)
+
+
+def mid_gap_max():
+    return max(abs(x["mid_gap_obs_minus_pred"]) for x in J["dev_calibrators"]["I"]["isotonic"]["folds"])
 
 
 def dev(v, comp, key="valA_logloss"):

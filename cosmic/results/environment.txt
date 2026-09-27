@@ -1,0 +1,23 @@
+== Sat Sep 26 23:03:28 EDT 2026
+OpenJDK 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+Sep 26, 2026 11:03:28 PM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    23:03:28 - Sirius Workspace Successfully initialized at: /Users/xingjianzhang0816/.sirius-6.5
+INFO    23:03:28 - You run SIRIUS 6.5.4 on mac os x_aarch64
+INFO    23:03:28 - You run SIRIUS in 'CLI' mode.
+INFO    23:03:28 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v2.10.12.1
+INFO    23:03:28 - Treebuilder priorities loaded from 'sirius.properties' are: [CLP, GUROBI, CPLEX]
+INFO    23:03:28 - CPU check done. 7 cores that handle 14 threads were found.
+INFO    23:03:28 - Job manager successful initialized with 11 CPU thread(s) and 3 IO thread(s).
+INFO    23:03:28 - Starting http Client with MaxPerRoute=3 / maxTotal=5 (CPU-Threads=11).
+INFO    23:03:30 - Custom databases loaded.
+INFO    23:03:30 - Web API initialized in 00:00:01.290. Started loading active subscription in background...
+FINE    23:03:30 - <1113414731>[JJob-1113414731] Running post processing
+FINE    23:03:30 - <1113414731>[JJob-1113414731] Running cleanup
+INFO    23:03:30 - Running with following arguments: [--version]
+SIRIUS 6.5.4
+SIRIUS lib: 5.10.0
+CSI:FingerID lib: 3.0.16
+INFO    23:03:30 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...
+INFO    23:03:30 - Try to delete leftover jobs on web server...
+structure DB option: --database pubchem

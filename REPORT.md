@@ -12,7 +12,7 @@ Every number in this report is produced by the code in this repository and inser
 
 **Main results on the structure-disjoint test fold** (2,490 molecules; 14706 query spectra, each evaluated with its truth in the library (a) and removed (b)). π is the batch's in-library prevalence, estimated by EM unless stated.
 
-1. **Risk–coverage (claim 1): better than every baseline.** At π = 0.2: e-AURC 0.0041 for the proposed system vs 0.0314 for logistic(s1, gap) and 0.0324 for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = -0.0273, 95% CI [-0.0335, -0.0204]. Coverage at ≤ 5% risk: 18.5% vs 0.5% (the oracle maximum at π = 0.2 is ≈ 20%). The two additional baselines added after the main test do not change this; see §6.9–6.10.
+1. **Risk–coverage (claim 1): better than every baseline.** At π = 0.2: e-AURC 0.0041 for the proposed system vs 0.0272 for logistic(s1, gap), 0.0314 for the same logistic model inside our decomposed framework, and 0.0324 for a tuned score threshold. ΔAURC vs logistic(s1, gap), decomposed = -0.0273, 95% CI [-0.0335, -0.0204]. Coverage at ≤ 5% risk: 18.5% vs 0.5% (the oracle maximum at π = 0.2 equals the fraction of correct top-1 annotations, 19.6%). The two additional baselines added after the main test do not change this; see §6.9–6.10. COSMIC (SIRIUS 6, 150 test molecules outside CSI:FingerID's published training set) ranks its own PubChem annotations with AUROC 0.882 vs 0.995 for the proposed system on its own library annotations. This is a comparison of confidence quality only (§6.11).
 2. **Calibration per family and per crowding group (claim 2): holds where it can be tested.** In every top-1 ClassyFire class with enough data (20 of 212 classes at π = 0.2, covering 75.2% of queries), the predicted accuracy lies inside the 95% CI of the observed accuracy (100.0% of groups). The same holds for superclass, subclass and every crowding quartile. The logistic(s1, gap) baseline without an absence model reaches only 40.0% for classes, and 0% for every crowding grouping. The 192 small classes are not claimed.
 3. **Crowding adds information beyond similarity (claim 3): yes at the query level, no at the family level.**
    - Within similarity-score strata, top-1 errors are more likely when the top-1 has structural neighbours in the library (Mantel–Haenszel OR 2.15, 95% CI [1.60, 2.88]) and when the top-2 candidate is structurally similar (OR 6.4).
@@ -94,7 +94,7 @@ Per-family calibration offsets were **not** adopted: the cross-fitted per-family
 - **Score baselines.** Raw score threshold (s1); top-1 − top-2 gap; logistic(s1, gap). Each is used both "direct" (a single calibrated P(correct), as practitioners use it) and "decomposed" (our absence model and label shift wrapped around the same inputs).
 - **Floors.** Metadata-only and similarity-only.
 - **Added after the main test.** MS2Query-style neighbourhood consistency and target–decoy FDR (§6.9–6.10).
-- **COSMIC (SIRIUS 6 CSI:FingerID + COSMIC).** It runs on the project owner's machine under an academic licence (`cosmic/README.md`): 300 test molecules stratified by membership in the published CSI:FingerID training structures, plus 200 validation molecules for calibration. **Status: pending** — the SIRIUS run on the owner's Mac has not been imported yet; no COSMIC number appears in this report until `scripts/cosmic/ingest_cosmic.py` has produced `results/eval_cosmic_subset.json`.
+- **COSMIC (SIRIUS 6 CSI:FingerID + COSMIC).** It runs on the project owner's machine under an academic licence (`cosmic/README.md`): 300 test molecules stratified by membership in the published CSI:FingerID training structures, plus 200 validation molecules for calibration. Results: §6.11.
 
 ## 5. Population and engine
 
@@ -651,12 +651,45 @@ The target–decoy estimate stays at its nominal level while the realized error 
 
 ### 6.11 COSMIC (SIRIUS 6: CSI:FingerID + COSMIC)
 
-**Pending.** The SIRIUS/COSMIC run on the project owner's Mac has not been imported; this section is empty on purpose.
+COSMIC ranks CSI:FingerID hits from a structure database (PubChem); the proposed system ranks spectral-library hits (truth in the library). Each is scored on its own annotations; the comparison is about confidence quality, not about which engine finds more structures. Approximate labels: myopic_mces, threshold 2.
+
+| stratum | mode | system | n | top-1 acc | AUROC | e-AURC | ECE |
+|---|---|---|---|---|---|---|---|
+| not_in_csi_training (primary) | exact | COSMIC (raw score) | 150 | 8.7% [4.7%, 13.3%] | 0.882 [0.795, 0.961] | 0.0646 [0.0221, 0.1131] | 0.050 [0.036, 0.091] |
+| not_in_csi_training (primary) | exact | COSMIC (val-calibrated) | 150 | 8.7% | 0.882 | 0.0646 | 0.032 |
+| not_in_csi_training (primary) | exact | Proposed (own top-1, scenario a) | 150 | 98.0% [95.3%, 99.3%] | 0.995 [0.980, 1.000] | 0.0001 [0.0000, 0.0004] | 0.006 [0.001, 0.025] |
+| not_in_csi_training (primary) | approximate | COSMIC (raw score) | 150 | 13.3% [8.0%, 19.3%] | 0.863 [0.783, 0.934] | 0.0877 [0.0439, 0.1393] | 0.028 [0.032, 0.088] |
+| not_in_csi_training (primary) | approximate | COSMIC (val-calibrated) | 150 | 13.3% | 0.863 | 0.0877 | 0.049 |
+| not_in_csi_training (primary) | approximate | Proposed (own top-1, scenario a) | 150 | 98.0% [96.0%, 99.3%] | 0.995 [0.980, 1.000] | 0.0001 [0.0000, 0.0005] | 0.006 [0.001, 0.025] |
+| in_csi_training (leaky reference) | exact | COSMIC (raw score) | 150 | 67.3% [60.0%, 75.3%] | 0.953 [0.918, 0.979] | 0.0159 [0.0071, 0.0294] | 0.088 [0.055, 0.136] |
+| in_csi_training (leaky reference) | exact | COSMIC (val-calibrated) | 150 | 67.3% | 0.953 | 0.0159 | 0.103 |
+| in_csi_training (leaky reference) | exact | Proposed (own top-1, scenario a) | 150 | 98.7% [96.7%, 99.3%] | 0.997 [0.985, 1.000] | 0.0000 [0.0000, 0.0003] | 0.002 [0.000, 0.016] |
+| in_csi_training (leaky reference) | approximate | COSMIC (raw score) | 150 | 77.3% [70.0%, 84.0%] | 0.964 [0.931, 0.989] | 0.0086 [0.0026, 0.0175] | 0.188 [0.143, 0.234] |
+| in_csi_training (leaky reference) | approximate | COSMIC (val-calibrated) | 150 | 77.3% | 0.964 | 0.0086 | 0.121 |
+| in_csi_training (leaky reference) | approximate | Proposed (own top-1, scenario a) | 150 | 99.3% [97.3%, 99.3%] | 1.000 [1.000, 1.000] | 0.0000 [0.0000, 0.0000] | 0.009 [0.000, 0.022] |
+
+| stratum | mode | metric | proposed − COSMIC | 95% CI |
+|---|---|---|---|---|
+| not_in_csi_training (primary) | exact | auroc | +0.1134 | [0.0346, 0.2095] |
+| not_in_csi_training (primary) | exact | e_aurc | -0.0645 | [-0.1133, -0.0233] |
+| not_in_csi_training (primary) | approximate | auroc | +0.1330 | [0.0578, 0.2147] |
+| not_in_csi_training (primary) | approximate | e_aurc | -0.0876 | [-0.1412, -0.0433] |
+| in_csi_training (leaky reference) | exact | auroc | +0.0439 | [0.0168, 0.0780] |
+| in_csi_training (leaky reference) | exact | e_aurc | -0.0159 | [-0.0275, -0.0070] |
+| in_csi_training (leaky reference) | approximate | auroc | +0.0356 | [0.0114, 0.0654] |
+| in_csi_training (leaky reference) | approximate | e_aurc | -0.0086 | [-0.0165, -0.0022] |
+
+Reading:
+- **Leakage is visible in COSMIC's own numbers.** CSI:FingerID's exact top-1 accuracy is 67.3% for molecules in its published training structures, vs 8.7% for molecules not in them. Only the second stratum is a fair reference.
+- **The tasks differ in difficulty; the comparison is about confidence quality.** COSMIC ranks candidates from all of PubChem, while the proposed system ranks a spectral library that contains the compound. Top-1 accuracies are therefore not comparable. AUROC, which does not depend on the base rate, is: COSMIC 0.882 [0.795, 0.961] vs proposed 0.995 [0.980, 1.000]; difference +0.113 [0.035, 0.209].
+- **Calibration.** COSMIC's raw exact-mode score has ECE 0.050, and 0.032 after validation calibration. The SIRIUS documentation states that these scores are not probabilities.
+- **Sample size.** With 150 molecules per stratum and only 13 correct COSMIC top-1 hits in the primary stratum, all COSMIC estimates are imprecise; the confidence intervals are percentile bootstrap intervals (ECE is biased upward under resampling, so its interval can sit above the point estimate).
+- **What this does and does not show.** This does not show that the proposed system beats SIRIUS at structure annotation. It shows that the proposed confidence ranks its own library-search annotations far more reliably than COSMIC ranks its database-search annotations on the same spectra.
 
 ### 6.12 Other checks
 
 - **Scenario (c), new scaffold.** Truth and its Tanimoto ≥ 0.7 neighbours are removed. Proposed system: AUROC(in-library) 0.9957; at π = 0.2 (EM) predicted 0.184 vs observed 0.196, ECE 0.012.
-- **Engine swap** (greedy cosine, same pipeline; π = 0.2, EM). The ordering of systems is unchanged:
+- **Engine swap** (greedy cosine, same pipeline; π = 0.2, EM). The proposed system and its variants stay well ahead of every baseline:
 
 | System (cosine engine) | AURC | AUROC(in-lib) | Log loss | ECE |
 |---|---|---|---|---|
@@ -696,8 +729,8 @@ The target–decoy estimate stays at its nominal level while the realized error 
 
 - **Family-level crowding does not transfer.** The family-level version of the prior is not supported (§6.3), and family features did not help on validation once the shortcut was removed. They were therefore left out of the primary system; they are neutral on test.
 - **In-library errors are rare under the benchmark's (a) condition** (2.1%). So "untrustworthy" is dominated by library absence in any realistic batch, and the crowding effect, although significant, acts on a small slice.
-- **Library crowding differs between folds.** The engine's in-library accuracy on the train fold (train-only library) was 93.5% vs 98.6% on validation. Structure-disjoint folds make held-out molecules less crowded by near-isomers from other clusters. Calibration therefore had to come from validation, not from the training data.
-- **The middle of P(in) is heterogeneous across structurally disjoint sets.** Cross-fitting the calibrator between the two structure-cluster halves of validation moved the mid-range (0.2–0.9) calibration of P(in) by −0.11 and +0.10 depending on direction (`results/dev_calibrators.json`). On test, the suspicious tier was nonetheless consistent (§6.5). For a new sample set the suspicious-tier accuracy should be treated as uncertain by about ±0.1 **in addition to** sampling error. This is carried into the pre-registration.
+- **Library crowding differs between folds.** The engine's in-library top-1 accuracy (scenario a, unweighted) was 93.5% on the train fold (train-only library) vs 98.6% on validation. Structure-disjoint folds make held-out molecules less crowded by near-isomers from other clusters. Calibration therefore had to come from validation, not from the training data.
+- **The middle of P(in) is heterogeneous across structurally disjoint sets.** Cross-fitting the calibrator between the two structure-cluster halves of validation moved the mid-range (0.2–0.9) calibration of P(in) (observed − predicted) by -0.11 and +0.10 depending on direction (`results/dev_calibrators.json`). On test, the suspicious tier was nonetheless consistent (§6.5). For a new sample set the suspicious-tier accuracy should be treated as uncertain by about ±0.11 **in addition to** sampling error. This is carried into the pre-registration.
 - **A new data source breaks the trusted tier.** First through structure-representation mismatches (tautomers, duplicates), then through MS/MS-indistinguishable isomers. There, a simple score baseline ranks better than the proposed system (§6.7).
 - Two reporting bugs (e-AURC oracle ordering; a boolean-dtype average in the wet-lab summary) were found after the first test pass and fixed. The frozen evaluation was re-run unchanged (`LOG.md`).
 
@@ -707,7 +740,7 @@ The target–decoy estimate stays at its nominal level while the realized error 
 - **Not claimed:** negative mode; other adducts; untested instruments; stereo-isomer resolution; discovery of new metabolites. The "absent" tier is only a pointer for follow-up.
 - The absent scenario is simulated by deleting molecules from a public library. A real sample's absent compounds may differ from MassSpecGym molecules that happen to have several spectra (the paired design uses only such molecules).
 - External-source calibration failed (§6.7). The method needs the lab's own library and annotation conventions — tautomer and stereo handling — to match the ones calibrated here. Otherwise it must be re-calibrated on a small labelled set from the lab (pre-registration §7).
-- MCES was not computed for the external set (Tanimoto proxy). COSMIC was not run (licence). The official MS2Query models were not run (they leak).
+- MCES was not computed for the external set (Tanimoto proxy). The official MS2Query models were not run (they leak). COSMIC: see §6.11.
 
 ## 9. Reproducibility
 
@@ -715,4 +748,4 @@ The target–decoy estimate stays at its nominal level while the realized error 
 
 
 ---
-<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit c9407e9880 (dirty).</sub>
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit b35b43e895 (dirty).</sub>
