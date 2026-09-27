@@ -265,3 +265,44 @@ within each simulated batch, concatenated target–decoy competition with (decoy
 accept q ≤ 0.10, compared with the proposed trusted tier (nominal ≥ 90% correct) on the SAME batches
 (realized error, coverage, estimated vs realized error). This is the fair comparison because TDA certifies
 a set, not individual queries.
+
+### 22:35 Results of the two added baselines (test fold, single run; `results/eval_new_baselines.json`)
+- The proposed method was not modified. Every added baseline is significantly worse than the proposed system at π = 0.2 and 0.5
+  (paired molecule bootstrap, all ΔAURC and Δlog-loss CIs exclude 0). No baseline exceeded the proposed system.
+- MS2Query-style: its own top-1 is an analogue (outside the precursor window) for 35% of queries — expected
+  for an analogue-search tool, and it lowers exact top-1 accuracy. Its neighbourhood features inside our
+  decomposed framework (`B_ms2q_dec`) beat logistic(s1, gap) but not the proposed system.
+- Target–decoy at the set level: at nominal q ≤ 0.10 the realized error of the accepted set was far above
+  10% at every prevalence (e.g. π = 0.2: estimated FDR ≈ 0.10, realized ≈ 0.32), because decoys do not
+  reproduce the high scores of wrong-but-real library compounds or of absent compounds with close
+  analogues. The proposed trusted tier had realized error ≈ 1–2% at the same prevalences.
+
+### 22:40 Instrument shift (pre-planned; `results/eval_shift_instrument.json`)
+- First launch used the all-family `M_full` recipe instead of the validation-selected primary; stopped,
+  corrected to the primary configuration (and the same calibration rule, fitted on the instrument's
+  validation rows) and re-run. Only the corrected run is reported.
+- Train on Orbitrap → test QTOF: calibration roughly holds (π = 0.2: ECE 0.013 vs 0.010 for the
+  all-instrument model; trusted tier 93% observed vs 96% predicted).
+- Train on QTOF (≈ 28k training rows) → test Orbitrap: calibration fails (π = 0.2: predicted 0.12 vs observed 0.20;
+  trusted tier 83% vs 96%).
+
+### 22:45 Tautomer audit and external set rebuild (`results/tautomer_audit.json`)
+- Reading the external-set failure: many wrong-but-perfect-score annotations were the same compound stored
+  as different tautomers (e.g. tetracyclines, amide/iminol and keto/enol forms), i.e. the InChIKey-block
+  de-duplication across libraries missed them (§5.11). RDKit canonical-tautomer keys: 25 external
+  molecules are tautomers of MassSpecGym molecules, 4 of other external molecules. Within MassSpecGym,
+  28 tautomer groups (56 molecules) exist, none across folds (no fold contamination).
+- External set rebuilt as v2 (+ canonical-tautomer de-duplication) and v3 (+ removal of molecules with an
+  ≥ 0.99-similar spectrum of a different MassSpecGym molecule). Frozen models only; v1 kept and reported.
+
+### 22:50 COSMIC package delivered to the project owner's Mac (`cosmic/`)
+- SIRIUS 6.5.4 with an academic licence is installed on the owner's Mac; COSMIC is run there, locally.
+- 300 test molecules stratified by the published CSI:FingerID positive-mode training structures
+  (`csi.bright-giant.com/v3.0/api/fingerid/trainingstructures?predictor=1`; 28,000 structures; 24% of
+  MassSpecGym test molecules are in it): 150 in (leaky reference), 150 not in (primary). Plus 200 validation
+  molecules not in the list, used only to calibrate COSMIC scores with the shared validation rule (SIRIUS
+  documents that COSMIC scores are not probabilities).
+- Structure database: PubChem. Main result: exact mode; supplement: approximate mode against
+  "correct or MCES ≤ 2" (myopic_mces). Comparison = each system's confidence on its own annotations.
+- Noticed while listing the delivery folder: `data/lab/` now contains laboratory raw files. They were not
+  opened, read, copied or uploaded; only file names were listed. They stay on the owner's machine (§6).

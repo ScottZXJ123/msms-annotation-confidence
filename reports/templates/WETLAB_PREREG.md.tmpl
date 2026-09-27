@@ -1,7 +1,7 @@
 # Pre-registration: wet-lab check of MS/MS annotation trust tiers
 
 **For:** the collaborating LC-MS metabolomics laboratory. **From:** the algorithm side of the project.
-**Status:** frozen before any laboratory data are seen. Any change after the laboratory data arrive will be reported as a deviation (§10).
+**Status:** frozen before the algorithm side has opened or processed any laboratory data. Any change after the laboratory data have been opened will be reported as a deviation (§10).
 
 ## 1. What is being tested
 
@@ -16,7 +16,7 @@ The claim under test: **in each tier, the observed accuracy of a random sample o
 
 | item | value |
 |---|---|
-| code commit | `{{ git_commit()['commit'][:12] }}` (repository `msms-annotation-confidence`) |
+| code commit | `{{ short_commit() }}` (repository `msms-annotation-confidence`) |
 | configuration hash | `{{ cfg['_config_hash'] }}` (`config.yaml`) |
 | model | `{{ P }}` (file `models/{{ P }}.pkl`, SHA-256 prefix `{{ J['calibration_entropy']['calibrators'][P]['model_sha256'] }}`) |
 | engine | Flash entropy library search, precursor tolerance {{ cfg['engine']['precursor_tol_ppm'] }} ppm, fragment tolerance {{ cfg['engine']['ms2_tol_da'] }} Da |
@@ -44,7 +44,7 @@ The claim under test: **in each tier, the observed accuracy of a random sample o
    - an MS-DIAL alignment export (top-1 only).
 
    The full candidate list (top 10) is preferred to top-1 only.
-5. **Verification results** (after sampling, §6), as CSV. Columns: `feature_id, tier, method (standard | inhouse_library | nmr), outcome (correct | incorrect | undetermined), verified_inchikey (if determined), in_reference_library (yes | no | unknown), notes`.
+5. **Verification results** (after sampling, §6), as CSV. Columns: `feature_id, tier, method (standard | inhouse_library | nmr), outcome (correct | isomer | incorrect | undetermined), verified_inchikey (if determined), in_reference_library (yes | no | unknown), notes`.
 
 **Data protection.** Laboratory data (possibly from hospital-derived human samples) stay in `data/lab/`. That directory is excluded from version control. Nothing from it is uploaded to any web service: no ClassyFire, no SIRIUS web service, no online API. Family lookups use a local cache only. Reports contain aggregates, never raw spectra.
 
@@ -57,7 +57,9 @@ The claim under test: **in each tier, the observed accuracy of a random sample o
 5. **Verification.** The laboratory verifies every sampled feature without seeing p_correct or p_in; only the tier label is needed for bookkeeping.
    - **Trusted and suspicious tiers:** is the top-1 structure correct? Evidence: an authentic standard (RT match within the laboratory's usual tolerance, plus MS/MS match), the laboratory's confirmed in-house compound library (RT + MS/MS), or NMR.
    - **Absent tier:** the primary check is the same top-1 question. Where possible, record whether the true compound is present in the reference library.
-6. **Undetermined outcomes** (not enough evidence) are excluded from denominators and reported. A tier with > 25% undetermined is declared **inconclusive**.
+6. **Outcome categories.**
+   - `isomer`: the true compound has the same molecular formula as the top-1 but a different 2-D skeleton, and the MS/MS spectra are indistinguishable. It counts as **incorrect** for the primary criteria and is also reported separately.
+   - `undetermined`: not enough evidence. These are excluded from denominators and reported. A tier with > 25% undetermined is declared **inconclusive**.
 
 ## 6. Predictions
 
@@ -76,6 +78,7 @@ The binding predictions are computed from the frozen prediction file: for each t
 - **Absent tier under a_x.** It contains some in-library compounds whose cross-instrument spectra score low. The observed top-1 accuracy was {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['absent']['obs_acc_mean']) }} vs {{ pct(J['eval_wetlab_ax']['wetlab']['0.2']['absent']['pred_acc_mean']) }} predicted (π = 0.2).
 - **Middle of the P(in) range.** Its calibration differs between structurally disjoint compound sets by about **±0.1**: cross-fitting between two halves of the validation data shifted the mid-range calibration by −0.11 and +0.10. The suspicious tier's true accuracy may therefore differ from its prediction by up to ~0.1 **in addition to** the ±15-point sampling interval of a 40-feature check.
 - **Structure representation.** If the laboratory's reference structures use tautomer or salt conventions different from RDKit standardization, correct annotations can be scored as wrong. On an external MassBank source this broke calibration for every system tested. Verification is therefore judged on the 2-D skeleton after the same RDKit standardization, with tautomer equivalence reported separately.
+- **New data source and indistinguishable isomers.** On an external MassBank source after de-duplication, the trusted tier was badly over-confident: {{ pct(J['eval_external_v3']['systems'][P]['0.2']['em']['tiers']['trusted']['acc']) }} observed vs {{ pct(J['eval_external_v3']['systems'][P]['0.2']['em']['tiers']['trusted']['pred_acc']) }} predicted at π = 0.2. Almost all confident errors were constitutional isomers with practically identical spectra ({{ pct(J['eval_external_v3']['confident_errors_pi0.5']['frac_same_formula_as_truth']) }} same formula). If the laboratory's samples are rich in such isomer families, criterion C1 is expected to fail for the trusted tier. The `isomer` outcome category (§5) makes this visible.
 
 ## 7. Criteria for "the prediction holds"
 

@@ -1,0 +1,36 @@
+{
+ "_provenance": {
+  "script": "07_features.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
+  "dirty": true,
+  "utc": "2026-09-27T02:50:59Z"
+ },
+ "seconds": 2.175574779510498,
+ "n_rows": 10560,
+ "cosine/ext/a": {
+  "n_queries": 2640,
+  "frac_no_candidate": 0.0,
+  "n_mol": 319,
+  "top1_acc_unweighted": 0.9564393939393939
+ },
+ "cosine/ext/b": {
+  "n_queries": 2640,
+  "frac_no_candidate": 0.38787878787878793,
+  "n_mol": 319,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/ext/a": {
+  "n_queries": 2640,
+  "frac_no_candidate": 0.0,
+  "n_mol": 319,
+  "top1_acc_unweighted": 0.9568181818181818
+ },
+ "entropy/ext/b": {
+  "n_queries": 2640,
+  "frac_no_candidate": 0.38787878787878793,
+  "n_mol": 319,
+  "top1_acc_unweighted": 0.0
+ }
+}

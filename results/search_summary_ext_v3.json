@@ -1,0 +1,31 @@
+{
+ "_provenance": {
+  "script": "05_search.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
+  "dirty": true,
+  "utc": "2026-09-27T02:50:52Z"
+ },
+ "n_library_spectra": 206923,
+ "n_eligible_by_fold": {
+  "train": 165897,
+  "val": 15999,
+  "test": 14706,
+  "ext": 2640
+ },
+ "n_kept_by_fold": {
+  "train": 172047,
+  "val": 16613,
+  "test": 15275,
+  "ext": 2988
+ },
+ "n_queries_by_fold": {
+  "ext": 2640
+ },
+ "n_query_molecules_by_fold": {
+  "ext": 319
+ },
+ "mean_window_molecules": 3.058712121212121,
+ "seconds": 283.98172307014465
+}

@@ -3,9 +3,9 @@
   "script": "15_checks.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "7188f132dc941e2b1011cab1273a779cf500c931",
+  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
   "dirty": true,
-  "utc": "2026-09-27T00:47:24Z"
+  "utc": "2026-09-27T03:01:58Z"
  },
  "query_molecules_single_fold": {
   "pass": true,
@@ -50,5 +50,13 @@
  "paired_a_b_rows_share_query_metadata": {
   "pass": true,
   "detail": "78572 paired queries"
+ },
+ "info_metadata_only_floor_auroc_in_library_pi0.5": {
+  "pass": true,
+  "detail": 0.5805123324601273
+ },
+ "info_metadata_only_floor_auroc_correct_pi0.5": {
+  "pass": true,
+  "detail": 0.5756223830440169
  }
 }

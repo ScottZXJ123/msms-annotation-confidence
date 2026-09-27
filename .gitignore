@@ -16,3 +16,7 @@ __pycache__/
 .Rhistory
 external/
 *.log
+
+# SIRIUS projects (large); summaries are kept
+cosmic/results/*.sirius
+cosmic/run_console.txt

@@ -1,0 +1,18 @@
+{
+ "_provenance": {
+  "script": "csi_training_keys.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "c9407e9880cea4890d9832a04a7bb7739f222522",
+  "dirty": true,
+  "utc": "2026-09-27T03:01:27Z"
+ },
+ "n_inchi": 28000,
+ "n_parse_fail": 0,
+ "n_keys": 28004,
+ "frac_in_list_by_fold": {
+  "test": 0.23957290623957292,
+  "train": 0.3496042216358839,
+  "val": 0.24780150753768845
+ }
+}

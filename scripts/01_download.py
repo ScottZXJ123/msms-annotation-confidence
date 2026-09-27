@@ -17,4 +17,11 @@ for key, rel in cfg["data"]["files"].items():
         continue
     print("downloading", base + rel)
     urllib.request.urlretrieve(base + rel, out)
+# external source for the data-source shift test: MassBank-data 2026.03 (Zenodo record 19590880)
+mb = path(cfg, "raw") / "massbank"
+mb.mkdir(parents=True, exist_ok=True)
+zf = mb / "MassBank-data-2026.03.zip"
+if not zf.exists():
+    print("downloading MassBank-data 2026.03 from Zenodo")
+    urllib.request.urlretrieve("https://zenodo.org/api/records/19590880/files/MassBank/MassBank-data-2026.03.zip/content", zf)
 print("done")

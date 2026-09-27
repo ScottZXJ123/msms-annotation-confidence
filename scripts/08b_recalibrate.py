@@ -78,3 +78,11 @@ for engine in [a for a in sys.argv[1:] if not a.startswith("--")] or ["entropy",
                                         "use_group_offsets": bool(g < 0.9 * n and lg <= ln + 1e-4), "folds": gaps}
         print("group offsets recheck:", out["group_offsets_recheck"]["use_group_offsets"], n, g, ln, lg)
     write_result(cfg, f"calibration_{engine}", out)
+    if engine == "entropy":  # frozen copy of the primary model for the pre-registration
+        import shutil
+
+        sel = json.load(open(path(cfg, "results") / "selection.json"))
+        from msconf.config import ROOT
+
+        (ROOT / "models").mkdir(exist_ok=True)
+        shutil.copy(der / "models" / engine / f"{sel['primary_system']}.pkl", ROOT / "models" / f"{sel['primary_system']}.pkl")

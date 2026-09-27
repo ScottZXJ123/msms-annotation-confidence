@@ -31,13 +31,23 @@ class Results(dict):
 
 J = Results()
 P = J["selection"]["primary_system"]
-NAMES = {P: "**Proposed**", "M_full": "Full features (decomposed)", "M_full_gc": "Full + family offsets",
+NAMES = {P: "**Proposed**", "B_ms2q_rerank_direct": "MS2Query-style, own top-1", "B_ms2q_conf_direct": "MS2Query-style score of our top-1",
+         "B_ms2q_dec": "MS2Query features in our decomposed framework", "B_tda_margin_direct": "Target−decoy margin (s1 − d1)", "M_full": "Full features (decomposed)", "M_full_gc": "Full + family offsets",
          "M_base": "No crowding (base)", "M_sim_plus_crowd": "Similarity + crowding", "M_full_minus_family": "Full − family crowding",
          "M_full_minus_spec": "Full − spectral crowding", "M_full_minus_struct": "Full − structural crowding",
          "M_candidate_only": "Candidate-list-only (engine-agnostic)", "M_full_direct": "Full features, direct P(correct)",
          "M_full_lr": "Full features, logistic", "B_s1_direct": "Score threshold s1", "B_gap_direct": "Gap s1−s2",
          "B_lr_direct": "Logistic(s1, gap)", "B_s1_dec": "s1, decomposed", "B_gap_dec": "gap, decomposed",
          "B_lr_dec": "Logistic(s1, gap), decomposed", "F_meta": "Floor: metadata only", "F_sim": "Floor: similarity only"}
+
+
+def short_commit():
+    return git_commit()["commit"][:12]
+
+
+NAMES["M_full_nocounts"] = "Full without window counts"
+NAMES["M_full_with_libsize"] = "Full + fam_lib_size (shortcut demo)"
+NAMES[P] = "**Proposed** (full − family features)"
 
 
 def f3(x):
@@ -52,11 +62,15 @@ def ci(v, d=3):
     return f"[{v[0]:.{d}f}, {v[1]:.{d}f}]"
 
 
+def _esc(x):
+    return str(x).replace("|", "\\|")
+
+
 def md(df):
     cols = list(df.columns)
-    out = ["| " + " | ".join(map(str, cols)) + " |", "|" + "|".join(["---"] * len(cols)) + "|"]
+    out = ["| " + " | ".join(_esc(c) for c in cols) + " |", "|" + "|".join(["---"] * len(cols)) + "|"]
     for _, r in df.iterrows():
-        out.append("| " + " | ".join(str(r[c]) for c in cols) + " |")
+        out.append("| " + " | ".join(_esc(r[c]) for c in cols) + " |")
     return "\n".join(out)
 
 
@@ -70,7 +84,7 @@ def table_main(pi, mode="em", systems=None):
         if s not in sw:
             continue
         r = sw[s][str(pi)][mode]
-        rows.append({"System": NAMES.get(s, s), "AURC ↓": f3(r["aurc"]), "e-AURC ↓": f3(r["e_aurc"]),
+        rows.append({"System": NAMES.get(s, s), "AURC ↓": f3(r["aurc"]), "e-AURC ↓": f"{r['e_aurc']:.4f}",
                      "Cov@risk≤5%": pct(r["cov@risk0.05"]), "Cov@risk≤10%": pct(r["cov@risk0.1"]),
                      "AUROC(correct)": f3(r["auroc_correct"]), "AUROC(in-lib)": f3(r["auroc_in"]),
                      "Log loss ↓": f3(r["cal_logloss"]), "ECE ↓": f3(r["cal_ece"]),
@@ -184,7 +198,7 @@ def table_shift_instrument(pi="0.2", mode="em"):
     s = J["eval_shift_instrument"]
     rows = []
     for key in [k for k in s if k.startswith("test_on_")]:
-        for name in ["M_full", "M_base", "B_lr_dec"]:
+        for name in [P.replace("_gc", ""), "M_base", "B_lr_dec"]:
             if name not in s[key]:
                 continue
             x, r = s[key][name]["cross_instrument"][pi][mode], s[key][name]["all_instruments_reference"][pi][mode]
@@ -252,7 +266,76 @@ def table_checks():
     c = J["checks"]
     return md(pd.DataFrame([{"Check": k, "Result": ("PASS" if v["pass"] else "FAIL") if not k.startswith("info_") else "info",
                              "Detail": "" if v["detail"] is None else (f"{v['detail']:.3f}" if isinstance(v["detail"], float) else v["detail"])}
-                            for k, v in c.items()]))
+                            for k, v in c.items() if not k.startswith("_")]))
+
+
+def table_ext_variants(pi="0.2", mode="em"):
+    rows = []
+    for v, name in [("v1", "eval_external"), ("v2", "eval_external_v2"), ("v3", "eval_external_v3")]:
+        if not (RES / f"{name}.json").exists():
+            continue
+        e = J[name]
+        for s_ in [P, "M_base", "B_lr_dec", "B_lr_direct", "B_s1_direct"]:
+            if s_ not in e["systems"]:
+                continue
+            r = e["systems"][s_][pi][mode]
+            t = r["tiers"]["trusted"]
+            rows.append({"set": v, "molecules": e["n_mol"], "engine top-1 acc (a)": pct(e["top1_acc_a"]), "system": NAMES.get(s_, s_),
+                         "AUROC(in-lib)": f3(r["auroc_in"]), "AURC": f3(r["aurc"]), "ECE": f3(r["cal_ece"]),
+                         "pred/obs acc": f"{f3(r['cal_mean_p'])} / {f3(r['cal_mean_y'])}", "π̂": f3(r["pi_used"]),
+                         "trusted: obs (pred), share": f"{pct(t.get('acc'))} ({pct(t.get('pred_acc'))}), {pct(t.get('frac'))}"})
+    return md(pd.DataFrame(rows))
+
+
+def table_ext_sources(name="eval_external_v3"):
+    e = J[name]["systems"].get("_per_source_primary", {})
+    rows = []
+    for src, v in e.items():
+        r = v["0.5"]
+        rows.append({"source (MassBank contributor)": src, "molecules": v["n_mol"], "AUROC(in-lib)": f3(r["auroc_in"]),
+                     "AURC": f3(r["aurc"]), "ECE": f3(r["cal_ece"]), "pred/obs acc": f"{f3(r['cal_mean_p'])} / {f3(r['cal_mean_y'])}",
+                     "trusted obs (pred)": f"{pct(r['tiers']['trusted'].get('acc'))} ({pct(r['tiers']['trusted'].get('pred_acc'))})"})
+    return md(pd.DataFrame(rows))
+
+
+def table_new_baselines(pi="0.2", mode="em"):
+    nbj = J["eval_new_baselines"]
+    rows = []
+    for n, v in nbj["sweep"].items():
+        r = v[pi][mode]
+        t = r["tiers"]["trusted"]
+        d = nbj["bootstrap"][pi].get(f"{P} - {n}")
+        rows.append({"system": NAMES.get(n, n), "e-AURC": f"{r['e_aurc']:.4f}", "Cov@risk≤5%": pct(r["cov@risk0.05"]),
+                     "AUROC(correct)": f3(r["auroc_correct"]), "Log loss": f3(r["cal_logloss"]), "ECE": f3(r["cal_ece"]),
+                     "pred/obs acc": f"{f3(r['cal_mean_p'])} / {f3(r['cal_mean_y'])}",
+                     "trusted obs (pred), share": f"{pct(t.get('acc'))} ({pct(t.get('pred_acc'))}), {pct(t.get('frac'))}",
+                     "ΔAURC proposed − this [95% CI]": "—" if d is None else f"{d['d_aurc']:+.4f} {ci(d['d_aurc_ci'], 4)}",
+                     "ΔLog loss [95% CI]": "—" if d is None else f"{d['d_logloss']:+.4f} {ci(d['d_logloss_ci'], 4)}"})
+    return md(pd.DataFrame(rows))
+
+
+def table_tda():
+    t = J["eval_new_baselines"]["tda_set_level"]
+    rows = []
+    for pi, v in t.items():
+        rows.append({"π": pi, "TDA q≤0.10: coverage": pct(v["tda_cov"]["mean"]), "TDA realized error": pct(v["tda_err"]["mean"]),
+                     "TDA est. FDR": pct(v["tda_est_fdr"]["mean"]), "P(TDA error > 10%)": pct(v["P(tda_err > 0.10)"]),
+                     "Proposed trusted: coverage": pct(v["prop_cov"]["mean"]), "Proposed realized error": pct(v["prop_err"]["mean"]),
+                     "Proposed predicted error": pct(v["prop_est_err"]["mean"]), "P(proposed error > 10%)": pct(v["P(prop_err > 0.10)"]),
+                     "AURC TDA / proposed": f"{v['tda_aurc']['mean']:.3f} / {v['prop_aurc']['mean']:.3f}"})
+    return md(pd.DataFrame(rows))
+
+
+def table_ext_boot(name="eval_external_v3"):
+    b = J[name]["bootstrap"]
+    rows = []
+    for pi, v in b.items():
+        for k, x in v.items():
+            a, c = k.split(" - ")
+            rows.append({"π": pi, "comparison": f"{NAMES.get(a, a)} − {NAMES.get(c, c)}",
+                         "Δ e-AURC [95% CI]": f"{x['d_e_aurc']:+.4f} {ci(x['d_e_aurc_ci'], 4)}",
+                         "Δ log loss [95% CI]": f"{x['d_logloss']:+.4f} {ci(x['d_logloss_ci'], 4)}"})
+    return md(pd.DataFrame(rows))
 
 
 def prereg_table(resname):
@@ -327,6 +410,54 @@ def ext(s, pi, key, mode="em"):
 
 def shift(test_on, s, which, pi, key, mode="em"):
     return J["eval_shift_instrument"][f"test_on_{test_on}"][s][which][str(pi)][mode][key]
+
+
+def nc(pi, pair, key):
+    v = J["eval_neighbourhood_comparison"][str(pi)]["diffs"][pair][key]
+    return f"{v['d']:+.4f} {ci(v['ci95'], 4)}"
+
+
+def ext3(s, pi, mode="em"):
+    return J["eval_external_v3"]["systems"][s][str(pi)][mode]
+
+
+def cosmic_section():
+    f = RES / "eval_cosmic_subset.json"
+    if not f.exists():
+        return "**Pending.** The SIRIUS/COSMIC run on the project owner's Mac has not been imported; this section is empty on purpose."
+    c = J["eval_cosmic_subset"]
+    rows = []
+    for stratum, v in c["strata"].items():
+        for mode in ["exact", "approximate"]:
+            for who in ["cosmic", "cosmic_calibrated", "proposed"]:
+                x = v[mode].get(who)
+                if not x or "auroc" not in x:
+                    continue
+                rows.append({"stratum": stratum, "mode": mode, "system": {"cosmic": "COSMIC (raw score)", "cosmic_calibrated": "COSMIC (val-calibrated)",
+                                                                          "proposed": "Proposed (own top-1, scenario a)"}[who],
+                             "n": x["n"], "top-1 acc": pct(x["accuracy"]) + (f" {ci(x['accuracy_ci95'], 2)}" if "accuracy_ci95" in x else ""),
+                             "AUROC": f3(x["auroc"]) + (f" {ci(x['auroc_ci95'], 3)}" if "auroc_ci95" in x else ""),
+                             "e-AURC": f"{x['e_aurc']:.4f}" + (f" {ci(x['e_aurc_ci95'], 4)}" if "e_aurc_ci95" in x else ""),
+                             "ECE": f3(x.get("ece")) + (f" {ci(x['ece_ci95'], 3)}" if "ece_ci95" in x else "")})
+    diffs = []
+    for stratum, v in c["strata"].items():
+        for mode in ["exact", "approximate"]:
+            for k in ["auroc", "e_aurc"]:
+                d = v[mode].get(f"proposed_minus_cosmic_{k}")
+                if d and d["point"] == d["point"]:
+                    diffs.append({"stratum": stratum, "mode": mode, "metric": k, "proposed − COSMIC": f"{d['point']:+.4f}", "95% CI": ci(d["ci95"], 4)})
+    note = ("COSMIC ranks CSI:FingerID hits from a structure database (PubChem); the proposed system ranks spectral-library hits "
+            "(truth in the library). Each is scored on its own annotations; the comparison is about confidence quality, not about "
+            f"which engine finds more structures. Approximate labels: {c['approx_label_method']}.")
+    return note + "\n\n" + md(pd.DataFrame(rows)) + "\n\n" + (md(pd.DataFrame(diffs)) if diffs else "")
+
+
+def cosmic_status():
+    f = RES / "eval_cosmic_subset.json"
+    if not f.exists():
+        return ("**Status: pending** — the SIRIUS run on the owner's Mac has not been imported yet; no COSMIC number "
+                "appears in this report until `scripts/cosmic/ingest_cosmic.py` has produced `results/eval_cosmic_subset.json`.")
+    return "Results: §6.11."
 
 
 def dev(v, comp, key="valA_logloss"):

@@ -1,0 +1,144 @@
+# Pre-registration: wet-lab check of MS/MS annotation trust tiers
+
+**For:** the collaborating LC-MS metabolomics laboratory. **From:** the algorithm side of the project.
+**Status:** frozen before the algorithm side has opened or processed any laboratory data. Any change after the laboratory data have been opened will be reported as a deviation (§10).
+
+## 1. What is being tested
+
+For every MS/MS feature, the system gives the top-1 annotation of a spectral-library search together with:
+- **p_correct**, the predicted probability that the top-1 structure is right (2-D skeleton, i.e. InChIKey first block; stereochemistry is never claimed);
+- **p_in**, the predicted probability that the true compound is in the reference library;
+- a **tier**: **trusted** (p_correct ≥ 0.9), **likely absent from library** (p_in ≤ 0.2), or **suspicious** (everything else).
+
+The claim under test: **in each tier, the observed accuracy of a random sample of verified features agrees with the mean predicted p_correct of those same features.** "Likely absent from library" means only that the compound is probably not in the searched library. It does not mean the compound is a new metabolite.
+
+## 2. Frozen system
+
+| item | value |
+|---|---|
+| code commit | `c9407e9880ce` (repository `msms-annotation-confidence`) |
+| configuration hash | `eecc176f8476` (`config.yaml`) |
+| model | `M_full_minus_family` (file `models/M_full_minus_family.pkl`, SHA-256 prefix `4dfaf6802205648f`) |
+| engine | Flash entropy library search, precursor tolerance 20.0 ppm, fragment tolerance 0.02 Da |
+| reference library | MassSpecGym v1.5, all folds (203935 processed spectra), identical processing to queries |
+| spectrum processing | drop peaks > precursor − 1.6 Da, < 1% of base peak; merge < 0.05 Da; ≥ 3 peaks |
+| thresholds | trusted: p_correct ≥ 0.9; absent: p_in ≤ 0.2 |
+| prevalence handling | EM estimate π̂ of the in-library fraction on the laboratory's own batch, then Bayes prior shift (calibration prevalence 0.539) |
+
+## 3. Conditions under which this pre-registration applies
+
+- Positive ion mode ESI; precursor adducts [M+H]+ or [M+Na]+. Other adducts are excluded and reported.
+- Orbitrap or QTOF instruments. Other analyzers are outside scope.
+- Data-dependent MS/MS with centroided spectra.
+- Features whose representative MS/MS spectrum has ≥ 3 peaks after processing, and ≥ 1 library candidate within the precursor tolerance. Features without a candidate are counted and reported but not tiered.
+
+## 4. Data the laboratory provides
+
+1. **Raw data.** mzML files (centroided, MS1 + MS2), converted from vendor formats with ProteoWizard msConvert (peak picking on) or the vendor exporter. Ion mode: positive.
+2. **Acquisition metadata.** Instrument type and model; collision-energy scheme (eV or NCE; stepped or not); chromatography (column, gradient); the precursor isolation window.
+3. **Feature table** from the laboratory's usual workflow (e.g. MS-DIAL, MZmine), as CSV. Columns: `feature_id, mz, rt_min, adduct (if assigned), ms2_scan_ids` (the scans in the mzML that belong to the feature).
+4. **Optional: the laboratory's own annotation output**, so its engine can be scored too, in one of these formats:
+   - a generic CSV (`query_id, rank, score, smiles or inchikey`);
+   - a GNPS library-search TSV;
+   - a SIRIUS `structure_candidates.tsv`;
+   - an MS-DIAL alignment export (top-1 only).
+
+   The full candidate list (top 10) is preferred to top-1 only.
+5. **Verification results** (after sampling, §6), as CSV. Columns: `feature_id, tier, method (standard | inhouse_library | nmr), outcome (correct | isomer | incorrect | undetermined), verified_inchikey (if determined), in_reference_library (yes | no | unknown), notes`.
+
+**Data protection.** Laboratory data (possibly from hospital-derived human samples) stay in `data/lab/`. That directory is excluded from version control. Nothing from it is uploaded to any web service: no ClassyFire, no SIRIUS web service, no online API. Family lookups use a local cache only. Reports contain aggregates, never raw spectra.
+
+## 5. Procedure (blinded order)
+
+1. **Representative spectrum.** For each feature, the MS/MS scan with the highest total ion current is used.
+2. **Frozen scoring and prediction file.** The algorithm side runs the frozen system offline and delivers a prediction file before any verification is done. The file contains `feature_id, top1_inchikey, top1_smiles, p_correct, p_in, tier`, together with its SHA-256 hash and a timestamp. The laboratory stores the hash.
+3. **Seed.** The laboratory chooses the random seed after receiving the file, for example from a dice roll recorded in the lab notebook.
+4. **Sampling.** In each tier, draw **40 features** by simple random sampling without replacement (all features if the tier has fewer). If two sampled features share the same top-1 skeleton, keep only the first, and draw a replacement until 40 distinct features are reached or the tier is exhausted.
+5. **Verification.** The laboratory verifies every sampled feature without seeing p_correct or p_in; only the tier label is needed for bookkeeping.
+   - **Trusted and suspicious tiers:** is the top-1 structure correct? Evidence: an authentic standard (RT match within the laboratory's usual tolerance, plus MS/MS match), the laboratory's confirmed in-house compound library (RT + MS/MS), or NMR.
+   - **Absent tier:** the primary check is the same top-1 question. Where possible, record whether the true compound is present in the reference library.
+6. **Outcome categories.**
+   - `isomer`: the true compound has the same molecular formula as the top-1 but a different 2-D skeleton, and the MS/MS spectra are indistinguishable. It counts as **incorrect** for the primary criteria and is also reported separately.
+   - `undetermined`: not enough evidence. These are excluded from denominators and reported. A tier with > 25% undetermined is declared **inconclusive**.
+
+## 6. Predictions
+
+The binding predictions are computed from the frozen prediction file: for each tier, the **mean p_correct of the verified features**. For planning, the tables below show what the frozen system produced on the held-out MassSpecGym test fold in simulated checks of exactly this design (40 per tier, 1,000 simulated batches, EM prevalence). "Obs." is the distribution of the observed accuracy over simulated batches.
+
+**Condition (a)** — the library contains the compound measured on the same instrument type (optimistic):
+
+| batch in-library fraction π | tier | tier size / batch | predicted accuracy | obs. accuracy, mean (2.5–97.5%) | P(pred ∈ 95% CI) | obs. in-library (pred.) |
+|---|---|---|---|---|---|---|
+| 0.1 | trusted | 71 | 96.3% | 98.2% (92.5%–100.0%) | 99.9% | 98.2% (96.3%) |
+| 0.1 | suspicious | 74 | 59.0% | 61.7% (47.5%–75.0%) | 97.9% | 63.5% (61.6%) |
+| 0.1 | absent | 1086 | 0.4% | 0.4% (0.0%–2.5%) | 93.7% | 0.6% (0.6%) |
+| 0.2 | trusted | 200 | 97.1% | 98.1% (92.5%–100.0%) | 99.5% | 98.1% (97.2%) |
+| 0.2 | suspicious | 110 | 60.1% | 62.2% (47.5%–77.5%) | 96.6% | 65.2% (64.2%) |
+| 0.2 | absent | 1075 | 0.6% | 0.6% (0.0%–5.0%) | 92.7% | 0.8% (0.8%) |
+| 0.3 | trusted | 375 | 97.7% | 98.8% (95.0%–100.0%) | 99.2% | 98.8% (97.8%) |
+| 0.3 | suspicious | 141 | 60.6% | 62.2% (47.5%–75.0%) | 98.1% | 66.5% (66.2%) |
+| 0.3 | absent | 1067 | 0.7% | 0.7% (0.0%–5.0%) | 94.8% | 1.0% (1.0%) |
+| 0.5 | trusted | 965 | 98.4% | 99.0% (95.0%–100.0%) | 98.6% | 99.0% (98.5%) |
+| 0.5 | suspicious | 204 | 57.4% | 59.2% (45.0%–72.5%) | 97.8% | 67.3% (66.9%) |
+| 0.5 | absent | 1047 | 0.9% | 0.9% (0.0%–5.0%) | 95.9% | 1.4% (1.5%) |
+
+**Condition (a_x)** — the library contains the compound only as measured on a *different* instrument type. **This is the planning condition for a laboratory querying a public library**:
+
+| batch in-library fraction π | tier | tier size / batch | predicted accuracy | obs. accuracy, mean (2.5–97.5%) | P(pred ∈ 95% CI) | obs. in-library (pred.) |
+|---|---|---|---|---|---|---|
+| 0.1 | trusted | 10 | 97.4% | 90.6% (71.4%–100.0%) | 67.4% | 90.6% (97.5%) |
+| 0.1 | suspicious | 17 | 47.7% | 34.4% (13.3%–53.8%) | 82.7% | 36.1% (52.2%) |
+| 0.1 | absent | 159 | 1.0% | 1.8% (0.0%–7.5%) | 86.4% | 2.2% (1.2%) |
+| 0.2 | trusted | 23 | 98.0% | 94.5% (84.6%–100.0%) | 65.4% | 94.5% (98.2%) |
+| 0.2 | suspicious | 28 | 52.3% | 46.8% (30.4%–63.2%) | 94.9% | 50.1% (57.4%) |
+| 0.2 | absent | 158 | 1.3% | 2.9% (0.0%–10.0%) | 78.4% | 3.6% (1.6%) |
+| 0.3 | trusted | 42 | 98.2% | 96.2% (90.0%–100.0%) | 79.1% | 96.2% (98.4%) |
+| 0.3 | suspicious | 40 | 53.9% | 52.3% (39.5%–65.0%) | 97.6% | 57.1% (59.7%) |
+| 0.3 | absent | 156 | 1.5% | 3.9% (0.0%–10.0%) | 69.7% | 4.9% (1.9%) |
+| 0.5 | trusted | 111 | 98.3% | 96.6% (90.0%–100.0%) | 82.1% | 96.7% (98.5%) |
+| 0.5 | suspicious | 69 | 55.1% | 60.6% (47.5%–72.5%) | 92.7% | 68.2% (62.5%) |
+| 0.5 | absent | 153 | 1.9% | 6.0% (0.0%–12.5%) | 54.6% | 7.8% (2.5%) |
+
+**Known deviations to expect (stated in advance):**
+- **Trusted tier under a_x.** It is over-confident by a few points. On the test fold at π = 0.2 (a_x), the observed accuracy was 94.5% against a predicted 98.0%; the prediction fell inside the 95% interval in 65.4% of simulated checks.
+- **Absent tier under a_x.** It contains some in-library compounds whose cross-instrument spectra score low. The observed top-1 accuracy was 2.9% vs 1.3% predicted (π = 0.2).
+- **Middle of the P(in) range.** Its calibration differs between structurally disjoint compound sets by about **±0.1**: cross-fitting between two halves of the validation data shifted the mid-range calibration by −0.11 and +0.10. The suspicious tier's true accuracy may therefore differ from its prediction by up to ~0.1 **in addition to** the ±15-point sampling interval of a 40-feature check.
+- **Structure representation.** If the laboratory's reference structures use tautomer or salt conventions different from RDKit standardization, correct annotations can be scored as wrong. On an external MassBank source this broke calibration for every system tested. Verification is therefore judged on the 2-D skeleton after the same RDKit standardization, with tautomer equivalence reported separately.
+- **New data source and indistinguishable isomers.** On an external MassBank source after de-duplication, the trusted tier was badly over-confident: 51.8% observed vs 95.5% predicted at π = 0.2. Almost all confident errors were constitutional isomers with practically identical spectra (100.0% same formula). If the laboratory's samples are rich in such isomer families, criterion C1 is expected to fail for the trusted tier. The `isomer` outcome category (§5) makes this visible.
+
+## 7. Criteria for "the prediction holds"
+
+For each tier with ≥ 20 verified features (smaller tiers are reported descriptively):
+
+- **C1 (calibration).** The mean predicted p_correct of the verified features lies inside the 95% Wilson interval of the observed accuracy.
+- **C2 (ordering).** Observed accuracy: trusted > suspicious > absent. The trusted-minus-suspicious difference must be significant (one-sided Fisher exact test, p < 0.05).
+- **C3 (usefulness of the trusted tier).** The lower 95% Wilson bound of the trusted tier's observed accuracy is ≥ 0.80.
+
+**Verdict:**
+- **Holds:** C1 in all tiers, plus C2 and C3.
+- **Holds with a pre-stated deviation:** C2 and C3 hold, and C1 fails only in the trusted tier, with the observed accuracy within 0.10 below the prediction (the a_x deviation stated in §6).
+- **Fails:** anything else.
+
+Expected probability of C1 in each tier from the simulations: see the "P(pred ∈ 95% CI)" columns in §6.
+
+**If the prediction fails:** the model is re-calibrated on the verified laboratory features (Platt scaling of the two components). The result is then evaluated only on a *new*, never-used laboratory batch. The failed result is reported, not replaced.
+
+## 8. Secondary analyses (descriptive, not part of the verdict)
+
+- Estimated prevalence π̂ versus the fraction of verified in-library compounds.
+- Calibration by top-1 ClassyFire class, for classes with ≥ 20 verified features.
+- The same evaluation for the laboratory's own annotation engine (if provided): its top-1 is scored with the candidate-list-only model after re-calibration on a public calibration run, and reported separately.
+
+## 9. Scope statements (to be repeated in any report)
+
+- Positive mode, [M+H]+ / [M+Na]+, Orbitrap and QTOF only.
+- Stereoisomers are not distinguished.
+- "Absent from library" is not "new metabolite".
+
+## 10. Deviations
+
+Any departure from this document (data, procedure, analysis) is listed with its reason in `LOG.md` and in the final report. Analyses not listed here are exploratory.
+
+
+---
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit c9407e9880 (dirty).</sub>
