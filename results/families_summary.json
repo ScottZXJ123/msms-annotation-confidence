@@ -1,0 +1,54 @@
+{
+ "_provenance": {
+  "script": "06_families.py",
+  "config_hash": "c46a2e1dcdbe",
+  "seed": 20260926,
+  "commit": "unknown",
+  "dirty": true,
+  "utc": "2026-09-27T00:11:36Z"
+ },
+ "n_molecules": 28921,
+ "cf_status": {
+  "missing": 22374,
+  "ok": 6547
+ },
+ "frac_unclassified": 0.7736247017737976,
+ "frac_no_class_level": 0.0006915390200892085,
+ "n_groups": {
+  "superclass": 18,
+  "class": 247,
+  "subclass": 556
+ },
+ "frac_unclassified_by_fold": {
+  "test": 0.7794461127794461,
+  "train": 0.7729111697449428,
+  "val": 0.7732412060301508
+ },
+ "top_classes": {
+  "unclassified": 22374,
+  "Benzene and substituted derivatives": 903,
+  "Carboxylic acids and derivatives": 895,
+  "Prenol lipids": 326,
+  "Organooxygen compounds": 254,
+  "Steroids and steroid derivatives": 245,
+  "Fatty Acyls": 232,
+  "Indoles and derivatives": 216,
+  "Quinolines and derivatives": 212,
+  "Azoles": 210,
+  "Flavonoids": 204,
+  "Coumarins and derivatives": 157,
+  "Benzopyrans": 129,
+  "Diazinanes": 128,
+  "Pyridines and derivatives": 122,
+  "Diazanaphthalenes": 121,
+  "Diazines": 97,
+  "Organonitrogen compounds": 96,
+  "Piperidines": 83,
+  "Glycerophospholipids": 82,
+  "Isoflavonoids": 71,
+  "Imidazopyrimidines": 70,
+  "Peptidomimetics": 62,
+  "Naphthalenes": 61,
+  "Phenol ethers": 58
+ }
+}

@@ -1,0 +1,120 @@
+{
+ "_provenance": {
+  "script": "02_prepare.py",
+  "config_hash": "f004c26ebad8",
+  "seed": 20260926,
+  "commit": "unknown",
+  "dirty": true,
+  "utc": "2026-09-27T00:00:03Z"
+ },
+ "n_spectra_raw": 231104,
+ "adducts": {
+  "[M+H]+": 195237,
+  "[M+Na]+": 35867
+ },
+ "instrument_type": {
+  "Orbitrap": 172058,
+  "QTOF": 53823,
+  "NA": 5223
+ },
+ "folds_spectra": {
+  "train": 194119,
+  "val": 19429,
+  "test": 17556
+ },
+ "structures": {
+  "n_unique_provided_ik14": 28929,
+  "n_standardization_failed": 0,
+  "n_ik14_changed_by_standardization": 33,
+  "examples_changed": [
+   {
+    "ik14_provided": "ASUOLLHGALPRFK",
+    "ik14": "YFPJFKYCVYXDJK",
+    "smiles": "O=[P+](c1ccccc1)c1ccccc1",
+    "std_smiles": "O=[P+](c1ccccc1)c1ccccc1"
+   },
+   {
+    "ik14_provided": "UZFMOKQJFYMBGY",
+    "ik14": "CSGAUKGQUCHWDP",
+    "smiles": "CC1(C)CC(O)CC(C)(C)N1O",
+    "std_smiles": "CC1(C)CC(O)CC(C)(C)N1O"
+   },
+   {
+    "ik14_provided": "RYLNFGJYRKJXQE",
+    "ik14": "QQSIRURWBGEHFS",
+    "smiles": "CC(C)(C)[P+](=O)C(C)(C)C",
+    "std_smiles": "CC(C)(C)[P+](=O)C(C)(C)C"
+   },
+   {
+    "ik14_provided": "QYTDEUPAUMOIOP",
+    "ik14": "VUZNLSBZRVZGIK",
+    "smiles": "CC1(C)CCCC(C)(C)N1O",
+    "std_smiles": "CC1(C)CCCC(C)(C)N1O"
+   },
+   {
+    "ik14_provided": "DSTNUFDTTMKLQR",
+    "ik14": "XIVOUNPJCNJBPR",
+    "smiles": "Oc1cccc2nc3ccccc3cc12",
+    "std_smiles": "Oc1cccc2nc3ccccc3cc12"
+   },
+   {
+    "ik14_provided": "WXPNDRBBWZMPQG",
+    "ik14": "KVWDHTXUZHCGIO",
+    "smiles": "Cc1cc2c(s1)Nc1ccccc1N=C2N1CCN(C)CC1",
+    "std_smiles": "Cc1cc2c(s1)Nc1ccccc1N=C2N1CCN(C)CC1"
+   },
+   {
+    "ik14_provided": "OWBBAPRUYLEWRR",
+    "ik14": "VXIXUWQIVKSKSA",
+    "smiles": "O=c1cc(O)c2ccccc2o1",
+    "std_smiles": "O=c1cc(O)c2ccccc2o1"
+   },
+   {
+    "ik14_provided": "ZZWPMFROUHHAKY",
+    "ik14": "LLHVQDWTNVJRDD",
+    "smiles": "COc1cc(-c2oc3cc(=O)cc(O)c-3cc2O[C@@H]2O[C@H](CO)[C@H](O)[C@H](O)[C@H]2O)ccc1O",
+    "std_smiles": "COc1cc(-c2oc3cc(=O)cc(O)c-3cc2O[C@@H]2O[C@H](CO)[C@H](O)[C@H](O)[C@H]2O)ccc1O"
+   },
+   {
+    "ik14_provided": "KRUPPTWQKIEURV",
+    "ik14": "YZOKEUBBLDCIBV",
+    "smiles": "COc1cc(-c2oc3cc(=O)cc(O)c-3cc2OC2OCC(O)C(O)C2O)ccc1O",
+    "std_smiles": "COc1cc(-c2oc3cc(=O)cc(O)c-3cc2OC2OCC(O)C(O)C2O)ccc1O"
+   },
+   {
+    "ik14_provided": "ZKMZBAABQFUXFE",
+    "ik14": "FADMMGXLSPNVID",
+    "smiles": "O=c1cc2oc(-c3ccc(O)cc3)ccc-2c(O)c1",
+    "std_smiles": "O=c1cc2oc(-c3ccc(O)cc3)ccc-2c(O)c1"
+   }
+  ],
+  "n_std_molecules": 28921,
+  "n_std_molecules_spanning_folds": 0
+ },
+ "folds_molecules": {
+  "train": 22740,
+  "val": 3184,
+  "test": 2997
+ },
+ "spectra": {
+  "n_after_structure_audit": 231104,
+  "n_kept_min_peaks": 203935,
+  "frac_dropped_min_peaks": 0.11756179036278036,
+  "frac_dropped_by_fold": {
+   "test": 0.12992709045340622,
+   "train": 0.11370344994565185,
+   "val": 0.14493797930927999
+  }
+ },
+ "precursor_ppm_error": {
+  "n_eval": 231104,
+  "abs_quantiles": [
+   0.21074773901340554,
+   7.008117071314251,
+   11.696411008575646,
+   22.266089214339505,
+   63.82757071619801
+  ],
+  "frac_within_tol": 0.9330301509277209
+ }
+}

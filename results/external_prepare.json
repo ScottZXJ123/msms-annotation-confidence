@@ -1,0 +1,49 @@
+{
+ "_provenance": {
+  "script": "11_external_massbank.py",
+  "config_hash": "0f3dbbcca431",
+  "seed": 20260926,
+  "commit": "unknown",
+  "dirty": true,
+  "utc": "2026-09-27T00:29:55Z"
+ },
+ "n_record_files": 139240,
+ "n_pos_ms2_hplus_na": 67442,
+ "n_highres_mapped": 62823,
+ "n_records_molecule_in_massspecgym_removed": 57622,
+ "n_new_molecules": 999,
+ "n_new_molecules_tanimoto_lt0.7_to_train": 748,
+ "n_external_spectra": 3928,
+ "n_external_kept": 3307,
+ "by_contributor": {
+  "Eawag": 2308,
+  "BAFG": 506,
+  "mFam": 300,
+  "Athens_Univ": 191,
+  "MSSJ": 154,
+  "RIKEN": 136,
+  "ACES_SU": 68,
+  "HBM4EU": 66,
+  "ENTACT_AGILENT": 43,
+  "Univ_Connecticut": 35,
+  "AAFC": 23,
+  "NaToxAq": 20,
+  "UFZ": 20,
+  "NILU": 13,
+  "CPU": 7,
+  "BGC_Munich": 6,
+  "CASMI_2016": 6,
+  "UvA_IBED": 5,
+  "IPB_Halle": 4,
+  "KWR": 4,
+  "Washington_State_Univ": 4,
+  "CASMI_2012": 3,
+  "Eawag_Additional_Specs": 3,
+  "LCSB": 2,
+  "MPI_for_Chemical_Ecology": 1
+ },
+ "by_instrument": {
+  "Orbitrap": 2735,
+  "QTOF": 1193
+ }
+}

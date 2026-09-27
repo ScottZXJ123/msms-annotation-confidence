@@ -1,0 +1,108 @@
+{
+ "_provenance": {
+  "script": "07_features.py",
+  "config_hash": "c46a2e1dcdbe",
+  "seed": 20260926,
+  "commit": "unknown",
+  "dirty": true,
+  "utc": "2026-09-27T00:16:24Z"
+ },
+ "seconds": 116.8995418548584,
+ "n_rows": 431126,
+ "cosine/test/a": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.0,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.9821841425268598
+ },
+ "cosine/test/b": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.182578539371685,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.0
+ },
+ "cosine/test/c": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.20427036583707325,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.0
+ },
+ "cosine/train/a": {
+  "n_queries": 61724,
+  "frac_no_candidate": 0.0,
+  "n_mol": 17681,
+  "top1_acc_unweighted": 0.922331670014905
+ },
+ "cosine/train/b": {
+  "n_queries": 61724,
+  "frac_no_candidate": 0.13276845311386176,
+  "n_mol": 17681,
+  "top1_acc_unweighted": 0.0
+ },
+ "cosine/val/a": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.0,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.9823113944621539
+ },
+ "cosine/val/b": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.1860741296331021,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.0
+ },
+ "cosine/val/c": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.21576348521782607,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/test/a": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.0,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.9874881000951993
+ },
+ "entropy/test/b": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.182578539371685,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/test/c": {
+  "n_queries": 14706,
+  "frac_no_candidate": 0.20427036583707325,
+  "n_mol": 2490,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/train/a": {
+  "n_queries": 61724,
+  "frac_no_candidate": 0.0,
+  "n_mol": 17681,
+  "top1_acc_unweighted": 0.9347741559199015
+ },
+ "entropy/train/b": {
+  "n_queries": 61724,
+  "frac_no_candidate": 0.13276845311386176,
+  "n_mol": 17681,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/val/a": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.0,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.9858741171323208
+ },
+ "entropy/val/b": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.1860741296331021,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.0
+ },
+ "entropy/val/c": {
+  "n_queries": 15999,
+  "frac_no_candidate": 0.21576348521782607,
+  "n_mol": 2626,
+  "top1_acc_unweighted": 0.0
+ }
+}

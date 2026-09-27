@@ -1,0 +1,105 @@
+# Single source of configuration for the whole pipeline.
+# Every script reads this file; every result JSON records its hash.
+# Changing any value here changes the config hash and must be logged in LOG.md.
+
+project:
+  name: msms-annotation-confidence
+  seed: 20260926
+
+paths:
+  raw: data/raw
+  derived: data/derived
+  cache: data/cache
+  lab: data/lab            # future collaborator data; git-ignored, never uploaded
+  results: results
+  figures: figures
+  tables: reports/tables
+
+data:
+  massspecgym_version: "1.5"
+  hf_repo: roman-bushuiev/MassSpecGym
+  files:
+    spectra_tsv: data/MassSpecGym1.5.tsv
+    classyfire_flat: data/auxiliary/MassSpecGym_classyfire_all.tsv
+  ion_mode: positive       # MassSpecGym is positive mode only; nothing is claimed for negative mode
+
+# Spectrum processing: applied IDENTICALLY to query and library spectra (failure mode #10).
+spectrum_processing:
+  remove_precursor_region_da: 1.6     # drop peaks with m/z > precursor_mz - 1.6
+  noise_threshold_rel: 0.01           # drop peaks < 1% of base peak
+  merge_peaks_within_da: 0.05         # centroid peaks closer than this
+  normalize: sum                      # intensities sum to 1 (required by entropy similarity)
+  min_peaks: 3                        # spectra with fewer peaks after cleaning are dropped everywhere
+  max_mz_indexed: 1500.0
+
+# Structure standardization: one RDKit pipeline for everything (failure mode #11).
+structure:
+  cleanup: true
+  largest_fragment: true      # strip salts / counter-ions
+  uncharge: true
+  tautomer_canonicalize: false   # InChI standard mobile-H already normalizes common tautomers; see LOG
+  identity_key: inchikey14       # §4: correct iff top-1 InChIKey first block == truth first block
+  fingerprint: {type: morgan, radius: 2, nbits: 2048}
+
+# Annotation engine (primary): spectral library search with entropy similarity.
+engine:
+  primary: entropy
+  precursor_tol_ppm: 20.0   # chosen on TRAIN fold: smallest of {5,10,15,20,30} ppm covering >=99% of same-molecule same-adduct precursor pairs (99.2%); see LOG
+  precursor_tol_min_da: 0.0
+  ms2_tol_da: 0.02
+  filter_by_adduct: false      # library search matches precursor m/z only (like GNPS); see LOG
+  top_k_store: 10              # candidate molecules kept per query for candidate-level features
+  tie_break: spectra_count_then_hash   # deterministic, never label-informed
+  secondary: cosine            # greedy cosine on the same processed peaks (engine-swap check)
+
+# Scenarios / libraries (see REPORT §Evaluation design)
+scenarios:
+  phases:                    # the reference library visible to queries of each fold (nested)
+    train: [train]
+    val: [train, val]
+    test: [train, val, test]
+    ext: [train, val, test, ext]     # external MassBank source (shift test): MassSpecGym library + new source
+  c_struct_neighbor_tanimoto: 0.7    # scenario (c): also remove library molecules with Tanimoto >= this to the truth
+  max_query_spectra_per_molecule_train: 5   # cap to limit heavy-molecule dominance (weights also 1/n_mol)
+
+# Chemical family (§4)
+family:
+  source: classyfire
+  primary_level: class
+  sensitivity_levels: [superclass, subclass]
+  unclassified_label: unclassified
+  min_group_size_val: 150     # queries (in val-calibration split) needed for a group-specific calibration; else merged
+  min_group_molecules_val: 30
+
+# Crowding thresholds (fixed a priori; variants logged)
+crowding:
+  spec_sim_hi: 0.7
+  spec_sim_lo: 0.5
+  struct_tanimoto: 0.7
+  near_tie_delta: 0.1
+  topk_family: 5
+
+models:
+  lgbm_budget: 16            # random hyperparameter configs per model family (same for baselines with tunables)
+  lr_budget: 16
+  val_split_frac_calib: 0.5  # val fold split (by structure cluster) into model-selection (A) and calibration (B)
+  val_cluster_tanimoto: 0.4
+
+tiers:
+  # Frozen on validation, before the test fold is touched.
+  trusted_min_p_correct: 0.9
+  absent_max_p_in: 0.2
+  risk_control: {alpha: 0.10, delta: 0.05}
+
+evaluation:
+  prevalence_grid: [0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9]
+  prevalence_headline: [0.2, 0.5]
+  wetlab_per_tier: 40
+  wetlab_repeats: 1000
+  bootstrap_repeats: 1000
+  ci_level: 0.95
+  calibration_bins: 10
+  min_group_n_test: 100            # effective rows needed before a group's calibration is interpreted
+  min_group_mol_test: 20
+  crowding_bins: 4                 # quantile bins, edges fixed on val-B
+  approx_correct_tanimoto: 0.8     # supplementary "near-correct" definition, fixed before test (see LOG)

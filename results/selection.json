@@ -1,0 +1,153 @@
+{
+ "_provenance": {
+  "script": "08_train.py",
+  "config_hash": "eecc176f8476",
+  "seed": 20260926,
+  "commit": "unknown",
+  "dirty": true,
+  "utc": "2026-09-27T00:42:56Z"
+ },
+ "group_offsets_decision": {
+  "rule": "use per-family offsets iff cross-fitted mean |obs-pred| over sufficient groups drops by >10% and log loss does not increase",
+  "global": [
+   {
+    "comp": "C",
+    "fit": "A",
+    "mean_abs_gap_sufficient": 0.004243902896648481,
+    "frac_consistent_sufficient": 1.0,
+    "n_sufficient_groups": 3,
+    "logloss": 0.04249125937539768
+   },
+   {
+    "comp": "I",
+    "fit": "A",
+    "mean_abs_gap_sufficient": 0.09507571680712909,
+    "frac_consistent_sufficient": 0.7142857142857143,
+    "n_sufficient_groups": 7,
+    "logloss": 0.17173144741566906
+   },
+   {
+    "comp": "C",
+    "fit": "B",
+    "mean_abs_gap_sufficient": 0.017620342249115815,
+    "frac_consistent_sufficient": 0.6,
+    "n_sufficient_groups": 5,
+    "logloss": 0.034283957768603594
+   },
+   {
+    "comp": "I",
+    "fit": "B",
+    "mean_abs_gap_sufficient": 0.06361361141602564,
+    "frac_consistent_sufficient": 0.5714285714285714,
+    "n_sufficient_groups": 7,
+    "logloss": 0.14974234429115238
+   }
+  ],
+  "group": [
+   {
+    "comp": "C",
+    "fit": "A",
+    "mean_abs_gap_sufficient": 0.004298154241612136,
+    "frac_consistent_sufficient": 1.0,
+    "n_sufficient_groups": 3,
+    "logloss": 0.04242597421488314
+   },
+   {
+    "comp": "I",
+    "fit": "A",
+    "mean_abs_gap_sufficient": 0.0955572768405961,
+    "frac_consistent_sufficient": 0.5714285714285714,
+    "n_sufficient_groups": 7,
+    "logloss": 0.17269187322261612
+   },
+   {
+    "comp": "C",
+    "fit": "B",
+    "mean_abs_gap_sufficient": 0.01760139942416339,
+    "frac_consistent_sufficient": 0.6,
+    "n_sufficient_groups": 5,
+    "logloss": 0.0342694200883301
+   },
+   {
+    "comp": "I",
+    "fit": "B",
+    "mean_abs_gap_sufficient": 0.061209705587084814,
+    "frac_consistent_sufficient": 0.5714285714285714,
+    "n_sufficient_groups": 7,
+    "logloss": 0.14354404608381918
+   }
+  ],
+  "mean_gap_global": 0.04513839334222976,
+  "mean_gap_group": 0.04466663402336411,
+  "ll_global": 0.09956225221270568,
+  "ll_group": 0.09823282840241213,
+  "use_group_offsets": false
+ },
+ "primary_system": "M_full",
+ "frozen_thresholds": {
+  "trusted_min_p_correct": 0.9,
+  "absent_max_p_in": 0.2
+ },
+ "valB_tiers_reweighted": {
+  "pi=0.1": {
+   "trusted": {
+    "weight_frac": 0.04789408846465218,
+    "acc": 0.9503573707890403,
+    "pred": 0.9448379790824406,
+    "in_rate": 0.9506718196374606
+   },
+   "suspicious": {
+    "weight_frac": 0.07645454735372521,
+    "acc": 0.5837494681476356,
+    "pred": 0.574847446934043,
+    "in_rate": 0.5988776977749446
+   },
+   "absent": {
+    "weight_frac": 0.8756513641816226,
+    "acc": 0.00794538851588352,
+    "pred": 0.007510895756530117,
+    "in_rate": 0.009914352698942981
+   }
+  },
+  "pi=0.2": {
+   "trusted": {
+    "weight_frac": 0.11627076337426182,
+    "acc": 0.9709140394731524,
+    "pred": 0.9685586711545477,
+    "in_rate": 0.9711730941232947
+   },
+   "suspicious": {
+    "weight_frac": 0.12224751098647359,
+    "acc": 0.6137980127450547,
+    "pred": 0.6065789788337663,
+    "in_rate": 0.6427507622910583
+   },
+   "absent": {
+    "weight_frac": 0.7614817256392645,
+    "acc": 0.008252578120976687,
+    "pred": 0.007284803171313845,
+    "in_rate": 0.011170697623582781
+   }
+  },
+  "pi=0.5": {
+   "trusted": {
+    "weight_frac": 0.40000782921693634,
+    "acc": 0.9810334627277508,
+    "pred": 0.9794894023672885,
+    "in_rate": 0.9816923353737774
+   },
+   "suspicious": {
+    "weight_frac": 0.15190474472754215,
+    "acc": 0.5827994880727773,
+    "pred": 0.5707844924724361,
+    "in_rate": 0.6523303575269369
+   },
+   "absent": {
+    "weight_frac": 0.4480874260555213,
+    "acc": 0.01019864572137243,
+    "pred": 0.010340142172992303,
+    "in_rate": 0.018352006889512842
+   }
+  }
+ }
+}
