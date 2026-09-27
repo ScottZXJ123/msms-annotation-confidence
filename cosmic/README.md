@@ -39,12 +39,12 @@ class and structure steps use the SIRIUS web service, so time depends on server 
 High-mass spectra dominate the running time. The test subset runs first (~60% of the time).
 
 ## Import (done on the analysis side, not on the Mac)
-`ingest_cosmic.py` in this folder is a copy of `scripts/cosmic/ingest_cosmic.py`; it needs the full repository
-(derived data and frozen models) and is run from the repository root as
-`python scripts/cosmic/ingest_cosmic.py <path to cosmic/results>`. Nothing needs to be run on the Mac for the import. It reports:
-- per stratum (not in CSI training = primary; in CSI training = leaky reference);
-- COSMIC **exact** mode as the main result, **approximate** mode ("correct or MCES distance ≤ 2") as a supplement;
-- each system's confidence ranking of **its own** annotations (AURC, e-AURC, AUROC) and calibration (ECE,
-  raw and validation-calibrated), with bootstrap 95% CIs. COSMIC ranks structure-database (PubChem) hits,
-  the proposed system ranks spectral-library hits — the comparison is about confidence quality, not about
-  which annotation engine finds more structures.
+Run from the repository root (it needs the derived data and the frozen models):
+`python scripts/cosmic/ingest_cosmic.py cosmic/results`. Nothing needs to be run on the Mac for the import.
+It reports, per stratum (not in CSI training = primary; in CSI training = leaky reference), COSMIC exact mode
+(main) and approximate mode (supplement), with counts of correct and wrong annotations for every system,
+instability flags (minority class < 20) and bootstrap 95% CIs. The proposed system is shown on scenario (a)
+alone and on (a)+(b) mixtures at π = 0.2 and 0.5. COSMIC ranks PubChem hits and the proposed system ranks
+spectral-library hits, so this run is background only; the like-for-like comparison is `customdb/`.
+(An earlier stand-alone copy of the import script that was placed in this folder is superseded by
+`scripts/cosmic/ingest_cosmic.py`.)

@@ -23,3 +23,8 @@ cosmic/run_console.txt
 cosmic/customdb/results/*.sirius
 cosmic/customdb/dbs/
 cosmic/customdb/results/.done_*
+# owner's local files (never tracked)
+.RData
+.Rhistory
+.DS_Store
+cosmic/_to_delete/

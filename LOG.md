@@ -469,3 +469,16 @@ a set, not individual queries.
   (`scripts/dev/diag_precursor_tolerance.py`) gives 98.8% at 20 ppm over all same-molecule/adduct pairs (the
   stated rule would then have chosen 30 ppm) and 99.9% for each spectrum's nearest same-molecule spectrum. The
   engine tolerance is not changed after the fact; the report states the gap.
+
+### 03:25 Final re-run of the new analyses from the committed code (commit aebe5f4)
+- All result files written today by then-uncommitted code were regenerated from commit aebe5f4 (clean
+  provenance): `eval_baselines_em`, `eval_cosmic_subset`, `eval_lead_attribution`, `eval_cosmic_customdb`,
+  `cosmic_customdb_audit`, `dev_precursor_tolerance`, `dev_feature_variants`; then figures and checks.
+  Every number is identical to the earlier outputs (checked file by file).
+- `ingest_cosmic_customdb.py` now computes the tautomer sensitivity itself instead of reading the audit file
+  (removes a circular dependency; `make cosmic` runs the import, then the audit). Output unchanged.
+- The lead-attribution ablation models were trained at 01:32–02:14 with the same script content and reused from
+  `data/derived/models/entropy_lead/`; the final JSON therefore has no per-model training log (a fresh
+  `make posthoc` retrains them).
+- `results/repro_check.json` was produced by `scripts/dev/compare_runs.py`; the per-file notes in it were
+  added by hand from the analysis in the 02:25 entry.

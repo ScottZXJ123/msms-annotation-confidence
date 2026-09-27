@@ -550,7 +550,7 @@ Per-family tables: `reports/tables/groups_top1_class_pi0.2.csv`, `…_pi0.5.csv`
 
 Reading:
 - Crowding measured **around the individual candidate** carries information that s1 does not. This holds for near-ties, Tanimoto(top-1, top-2), the top-1's structural neighbours and the query's spectral neighbourhood.
-- Most of the advantage over the baselines, however, comes from the non-crowding features (score structure, analogue hits, metadata). Over that rich base, crowding improves probability quality (log loss) but not ranking.
+- Most of the advantage over the baselines, however, comes from non-crowding features: the top-1's support in the library, a non-linear score model and metadata. Analogue hits add nothing measurable (lead breakdown below). Over that rich base, crowding improves probability quality (log loss) but not ranking.
 - Crowding measured as a **family attribute** does not predict errors once s1 is controlled for: the MH odds ratio for family spectral crowding is 0.93, CI [0.68, 1.28].
 - At the family level, the correlation between train-library family crowding and test family error is ρ = 0.19 for the top-1 family (33 families, CI [-0.20, 0.53]) and ρ = -0.05 for the true family.
 - **The collaborator's prior therefore holds in a narrower form than stated.** Crowding predicts errors at the level of each annotation's own candidate neighbourhood, not as a transferable property of a chemical family.
@@ -886,7 +886,7 @@ Reading:
 - In the like-for-like comparison, adding our competition-type crowding to the similarity scores improves both ranking and log loss (row 3). Adding MS2Query's consistency features does not significantly improve on similarity alone at either prevalence (row 2).
 - Head-to-head (row 1), competition crowding gives a lower log loss at both prevalences, and a lower e-AURC at π = 0.5; at π = 0.2 the e-AURC difference is not significant.
 - So, for deciding whether an exact top-1 is right, knowing how many plausible alternatives compete with it is more informative than knowing whether its structural neighbourhood agrees with the spectrum.
-- The larger remaining gap between the proposed system and every MS2Query variant comes from the non-neighbourhood features (score structure, analogue hits, metadata). The gap remains when every MS2Query variant receives the same EM prior correction (§6.1).
+- The larger remaining gap between the proposed system and every MS2Query variant comes from non-neighbourhood features: the top-1's support in the library, a non-linear score model and metadata (§6.3, lead breakdown). The gap remains when every MS2Query variant receives the same EM prior correction (§6.1).
 
 ### 6.10 Baseline added after the main test: target–decoy FDR
 
@@ -913,7 +913,9 @@ The target–decoy estimate stays at its nominal level while the realized error 
 - Inputs: 300 public test spectra, one per molecule, plus 200 validation spectra that are used only to calibrate COSMIC scores.
 - Test molecules are stratified by the published CSI:FingerID positive-mode training structures. 150 are not in them: the **primary** stratum. 150 are in them: a **leaky reference**, because CSI:FingerID was trained on those structures.
 
-**Pre-declared evaluation rules.** These were fixed before the head-to-head results existed (`scripts/cosmic/cosmic_common.py`; LOG 2026-09-27 00:05).
+**Pre-declared evaluation rules.** These were fixed before the head-to-head results existed (`scripts/cosmic/cosmic_common.py`; LOG 2026-09-27 00:05 and 01:45).
+- The π values and metrics are the report's headline choices, fixed on 2026-09-26.
+- The instability threshold and the EM correction for COSMIC were written after the supplementary PubChem results had been seen. The threshold equals the existing minimum for group calibration.
 - In-library mixtures at π = 0.2, 0.5: within each stratum, (a) rows get total weight π and (b) rows 1 − π.
 - A metric whose minority class (correct or wrong top-1) has fewer than 20 rows is marked **⚠ unstable**. It is not interpreted.
 - A query without an annotation gets confidence 0 and counts as wrong, for both systems.
@@ -1160,4 +1162,4 @@ Reading:
 
 
 ---
-<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit d1745d09f0 (dirty).</sub>
+<sub>Rendered by scripts/14_render_report.py from results/*.json; config eecc176f8476, commit aebe5f489b.</sub>

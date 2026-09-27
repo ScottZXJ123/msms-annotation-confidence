@@ -3,9 +3,9 @@
   "script": "23_lead_attribution.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
-  "dirty": true,
-  "utc": "2026-09-27T06:14:29Z"
+  "commit": "aebe5f489bd30c770a48edf452299f6aa0c33e85",
+  "dirty": false,
+  "utc": "2026-09-27T07:04:45Z"
  },
  "post_hoc": true,
  "primary": "M_full_minus_family",
@@ -62,115 +62,7 @@
    "analog"
   ]
  },
- "training": {
-  "L_minus_meta": {
-   "groups": [
-    "sim",
-    "sim_extra",
-    "analog",
-    "crowd_spec",
-    "crowd_struct"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 1693.1658205986023
-  },
-  "L_minus_sim": {
-   "groups": [
-    "meta",
-    "sim_extra",
-    "analog",
-    "crowd_spec",
-    "crowd_struct"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 101.02882742881775
-  },
-  "L_minus_sim_extra": {
-   "groups": [
-    "meta",
-    "sim",
-    "analog",
-    "crowd_spec",
-    "crowd_struct"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 106.67368912696838
-  },
-  "L_minus_analog": {
-   "groups": [
-    "meta",
-    "sim",
-    "sim_extra",
-    "crowd_spec",
-    "crowd_struct"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 112.42235612869263
-  },
-  "L_minus_crowd_spec": {
-   "groups": [
-    "meta",
-    "sim",
-    "sim_extra",
-    "analog",
-    "crowd_struct"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 108.60161852836609
-  },
-  "L_minus_crowd_struct": {
-   "groups": [
-    "meta",
-    "sim",
-    "sim_extra",
-    "analog",
-    "crowd_spec"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 103.1135630607605
-  },
-  "L_path_sim_simx": {
-   "groups": [
-    "sim",
-    "sim_extra"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 69.91188287734985
-  },
-  "L_path_sim_simx_analog": {
-   "groups": [
-    "sim",
-    "sim_extra",
-    "analog"
-   ],
-   "calibrators": {
-    "C": "platt",
-    "I": "platt"
-   },
-   "seconds": 76.74205923080444
-  }
- },
+ "training": {},
  "point_em": {
   "0.2": {
    "B_lr_dec": {
@@ -947,5 +839,5 @@
    "n_boot": 1000
   }
  },
- "seconds": 2494.830327272415
+ "seconds": 134.95134019851685
 }

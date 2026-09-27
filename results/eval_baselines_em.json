@@ -3,9 +3,9 @@
   "script": "24_baselines_em.py",
   "config_hash": "eecc176f8476",
   "seed": 20260926,
-  "commit": "d1745d09f08a051661c77bd0c014b07b0dcefb70",
-  "dirty": true,
-  "utc": "2026-09-27T05:32:53Z"
+  "commit": "aebe5f489bd30c770a48edf452299f6aa0c33e85",
+  "dirty": false,
+  "utc": "2026-09-27T06:59:54Z"
  },
  "prior_correct_calibration_main": 0.5264312245834256,
  "sweep": {
@@ -14394,5 +14394,5 @@
    }
   }
  },
- "seconds": 217.825021982193
+ "seconds": 169.4727702140808
 }
